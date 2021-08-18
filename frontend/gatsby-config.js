@@ -10,6 +10,14 @@ module.exports = {
     `gatsby-plugin-image`,
     `gatsby-plugin-material-ui`,
     {
+      resolve: 'gatsby-plugin-web-font-loader',
+      options: {
+        google: {
+          families: ['Philosopher:i7:latin', 'Montserrat:n5,n4,n3:latin']
+        }
+      }
+    },
+    {
       resolve: `gatsby-source-strapi`,
       options: {
         apiURL: `http://localhost:1337`,
@@ -35,7 +43,7 @@ module.exports = {
         background_color: `#663399`,
         theme_color: `#663399`,
         display: `minimal-ui`,
-        //icon: `src/images/gatsby-icon.png`, // This path is relative to the root of the site.
+        icon: `src/images/gatsby-icon.png`, // This path is relative to the root of the site.
       },
     },
     `gatsby-plugin-gatsby-cloud`,
