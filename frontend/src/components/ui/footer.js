@@ -11,9 +11,23 @@ import instagram from '../../images/instagram.svg'
 const useStyles = makeStyles(theme => ({
     footer: {
         backgroundColor: theme.palette.primary.main,
+        padding: "2rem"
+    },
+    link: {
+        color: "#fff",
+        fontSize: "1.25rem"
     },
     linkColumn: {
         width: "20rem"
+    },
+    spacer: {
+        marginTop: "2rem",
+        marginBottom: "2rem",
+    },
+    linkContainer: {
+        [theme.breakpoints.down('md')] : {
+            marginBottom: "3rem"
+        }     
     },
     "@global": {
         body: {
@@ -30,17 +44,17 @@ export default function Footer() {
             <Grid container justify="space-between">
 
                 {/* Links */}
-                <Grid item>
+                <Grid item classes={{root: classes.linkContainer}}>
                     <Grid container>
                         <Grid item container direction="column" classes={{root: classes.linkColumn}}>
                             <Grid item>
                                 <Typography variant="h5">Contact Us</Typography>
                             </Grid>
                             <Grid item>
-                                <Typography variant="body1">(555) 555-5555)</Typography>
+                                <Typography variant="body1" classes={{body1: classes.link}}>(555) 555-5555)</Typography>
                             </Grid>
                             <Grid item>
-                                <Typography variant="body1">info@var-x.com</Typography>
+                                <Typography variant="body1" classes={{body1: classes.link}}>info@var-x.com</Typography>
                             </Grid>
                         </Grid>
                     
@@ -49,10 +63,10 @@ export default function Footer() {
                                 <Typography variant="h5">Customer Service</Typography>
                             </Grid>
                             <Grid item>
-                                <Typography variant="body1">Contact Us</Typography>
+                                <Typography variant="body1" classes={{body1: classes.link}}>Contact Us</Typography>
                             </Grid>
                             <Grid item>
-                                <Typography variant="body1">My Account</Typography>
+                                <Typography variant="body1" classes={{body1: classes.link}}>My Account</Typography>
                             </Grid>
                         </Grid>
                         <Grid item container direction="column" classes={{root: classes.linkColumn}}>
@@ -60,10 +74,10 @@ export default function Footer() {
                                 <Typography variant="h5">Information</Typography>
                             </Grid>
                             <Grid item>
-                                <Typography variant="body1">Privacy Policy</Typography>
+                                <Typography variant="body1" classes={{body1: classes.link}}>Privacy Policy</Typography>
                             </Grid>
                             <Grid item>
-                                <Typography variant="body1">Terms and Conditions</Typography>
+                                <Typography variant="body1" classes={{body1: classes.link}}>Terms and Conditions</Typography>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -71,11 +85,11 @@ export default function Footer() {
 
                 {/* Social Media Icons*/}
                 <Grid item>
-                    <Grid container direction="column">
+                    <Grid container direction="column" alignItems="center">
                         <Grid item>
                             <img src={facebook} alt="facebook" />
                         </Grid>
-                        <Grid item>
+                        <Grid item classes={{root: classes.spacer}}>
                             <img src={twitter} alt="twitter" />
                         </Grid>
                         <Grid item>
