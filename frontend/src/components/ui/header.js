@@ -7,13 +7,13 @@ import IconButton from '@material-ui/core/IconButton'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
-import Hidden from '@material-ui/core/Hidden'
+//import Hidden from '@material-ui/core/Hidden'
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import { makeStyles } from '@material-ui/core/styles'
-import { Link, navigate } from 'gatsby'
+import { Link/*, navigate*/ } from 'gatsby'
 
 import search from '../../images/search.svg'
 import cart from '../../images/cart.svg'
@@ -147,7 +147,7 @@ export default function Header({ categories }) {
                 <img className={classes.icon} src={action.icon} alt={action.alt} />
               </IconButton>
             )
-          }
+          } else { return null }
         })}
       </Toolbar>
     </AppBar>
