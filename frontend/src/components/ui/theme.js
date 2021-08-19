@@ -36,7 +36,7 @@ const theme = createTheme({
             fontFamily: "Montserrat",
             fontSize: "3rem",
             fontWeight: 500,
-            color: "FFF"
+            color: "#FFF"
         },
         h3: {
             fontFamily: "Montserrat",
@@ -48,14 +48,14 @@ const theme = createTheme({
             fontSize: "3rem",
             fontStyle: "italic",
             fontWeight: 700,
-            color: "FFF"
+            color: "#FFF"
         },
         h5: {
             fontFamily: "Philosopher",
             fontSize: "2rem",
             fontStyle: "italic",
             fontWeight: 700,
-            color: "FFF"
+            color: "#FFF"
         },
         h6: {},
         body1: {
