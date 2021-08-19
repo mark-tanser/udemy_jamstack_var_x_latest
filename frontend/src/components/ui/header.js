@@ -27,6 +27,15 @@ const useStyles = makeStyles(theme => ({
   logoText: {
     color: theme.palette.common.offBlack,
   },
+  logoContainer: {
+    [theme.breakpoints.down('md')]: {
+      marginRight: 'auto'
+    }
+  },
+  tab: {
+    ...theme.typography.body1,
+    fontWeight: 600
+  },
   tabs: {
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -34,6 +43,12 @@ const useStyles = makeStyles(theme => ({
   icon: {
     height: '3rem',
     width: '3rem'
+  },
+  drawer: {
+    backgroundColor: theme.palette.primary.main,
+  },
+  listItemText: {
+    color: "#fff",
   }
 }))
 
@@ -48,7 +63,7 @@ export default function Header({ categories }) {
 
   const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent)
 
-  const routes = [...categories, {node: {name: 'Contact Us', strapiId: 'contact'}}]
+  const routes = [...categories, {node: {name: 'Contact Us', strapiId: 'contact', link: '/contact'}}]
 
   const tabs = (
     <Tabs 
@@ -57,6 +72,8 @@ export default function Header({ categories }) {
     >
       {routes.map(route => (
         <Tab 
+          component={Link} 
+          to={route.node.link || `/${route.node.name.toLowerCase()}`}
           classes={{ root: classes.tab }}
           label={route.node.name} 
           key={route.node.strapiId}
@@ -72,6 +89,7 @@ export default function Header({ categories }) {
       onClose={() => setDrawerOpen(false)} 
       disableBackdropTransition={!iOS} 
       disableDiscovery={iOS}
+      classes={{ paper: classes.drawer }}
     >
       <List disablePadding>
         {routes.map(route => (
@@ -79,7 +97,7 @@ export default function Header({ categories }) {
             divider 
             button 
             key={route.node.strapiId}>
-            <ListItemText primary={route.node.name} />
+            <ListItemText classes={{primary: classes.listItemText}} primary={route.node.name} />
           </ListItem>
         ))}
       </List>
@@ -88,23 +106,27 @@ export default function Header({ categories }) {
 
   const actions = [
     {icon: search, alt: 'search', visible: true},
-    {icon: cart, alt: 'cart', visible: true},
-    {icon: account, alt: 'account', visible: true},
+    {icon: cart, alt: 'cart', visible: true, link: '/cart'},
+    {icon: account, alt: 'account', visible: !matchesMD, link: '/account'},
     {icon: menu, alt: 'menu', visible: matchesMD, onClick: () => setDrawerOpen(true)}
   ]
 
   return (
     <AppBar color="transparent" elevation={0}>
       <Toolbar>
-        <Button>
+        <Button classes={{root: classes.logoContainer}}>
           <Typography variant="h1"><span className={classes.logoText}>VAR</span> X</Typography>
         </Button>
         {matchesMD ? drawer : tabs}
-        {actions.map(action => (
-          <IconButton>
-          <img className={classes.icon} src={action.icon} alt={action.alt} onClick={action.onClick} />
-        </IconButton>
-        ))}
+        {actions.map(action => {
+          if (action.visible) {
+            return (
+              <IconButton key={action.alt} component={Link} to={action.link}>
+                <img className={classes.icon} src={action.icon} alt={action.alt} onClick={action.onClick} />
+              </IconButton>
+            )
+          }
+        })}
       </Toolbar>
     </AppBar>
   )
