@@ -13,6 +13,7 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import { makeStyles } from '@material-ui/core/styles'
+import { Link, navigate } from 'gatsby'
 
 import search from '../../images/search.svg'
 import cart from '../../images/cart.svg'
@@ -85,6 +86,13 @@ export default function Header({ categories }) {
     </SwipeableDrawer>  
   )
 
+  const actions = [
+    {icon: search, alt: 'search', visible: true},
+    {icon: cart, alt: 'cart', visible: true},
+    {icon: account, alt: 'account', visible: true},
+    {icon: menu, alt: 'menu', visible: matchesMD, onClick: () => setDrawerOpen(true)}
+  ]
+
   return (
     <AppBar color="transparent" elevation={0}>
       <Toolbar>
@@ -92,19 +100,11 @@ export default function Header({ categories }) {
           <Typography variant="h1"><span className={classes.logoText}>VAR</span> X</Typography>
         </Button>
         {matchesMD ? drawer : tabs}
-        <IconButton>
-          <img className={classes.icon} src={search} alt="search" />
+        {actions.map(action => (
+          <IconButton>
+          <img className={classes.icon} src={action.icon} alt={action.alt} onClick={action.onClick} />
         </IconButton>
-        <IconButton>
-          <img className={classes.icon} src={cart} alt="cart" />
-        </IconButton>
-        <IconButton onClick={() => (matchesMD ? setDrawerOpen(true) : null)}>
-          <img 
-            className={classes.icon} 
-            src={matchesMD ? menu : account} 
-            alt={matchesMD ? "menu" : "account"} 
-          />
-        </IconButton>
+        ))}
       </Toolbar>
     </AppBar>
   )
