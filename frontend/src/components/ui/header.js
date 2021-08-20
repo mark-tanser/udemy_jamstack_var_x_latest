@@ -132,7 +132,7 @@ export default function Header({ categories }) {
           to="/"
           classes={{root: classes.logoContainer}}
         >
-          <Typography variant="h1"><span className={classes.logoText}>VAR</span> X</Typography>
+          <Typography variant="h1"><span className={classes.logoText}>Var</span> X</Typography>
         </Button>
         {matchesMD ? drawer : tabs}
         {actions.map(action => {

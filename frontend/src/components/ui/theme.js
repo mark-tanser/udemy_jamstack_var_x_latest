@@ -41,7 +41,8 @@ const theme = createTheme({
         h3: {
             fontFamily: "Montserrat",
             fontSize: "2rem",
-            fontWeight: 300
+            fontWeight: 300,
+            color: green
         },
         h4: {
             fontFamily: "Philosopher",
