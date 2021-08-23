@@ -24,6 +24,32 @@ const useStyles = makeStyles(theme => ({
     },
     productName: {
         color: '#fff'
+    },
+    iconButton: {
+        "&:hover": {
+            backgroundColor: "transparent"
+        }
+    },
+    carouselImage: {
+        height: '30rem',
+        width: '25rem',
+        backgroundColor: '#fff',
+        borderRadius: 20,
+        boxShadow: theme.shadows[5],
+    },
+    carouselContainer: {
+        marginLeft: '20rem'
+    },
+    space: {
+        margin: '0 15rem',
+        marginBotto : '10rem'
+    },
+    explore: {
+        textTransform: 'none',
+        marginRight: '2rem'
+    },
+    descriptionContainer: {
+        textAlign: 'right'
     }
 }))
 
@@ -57,22 +83,31 @@ export default function PromotionalProducts() {
         {
             key: i,
             content: (
-                <Grid container direction='column'>
+                <Grid container direction='column' alignItems='center'>
                     <Grid item>
-                        <IconButton disableRipple>
+                        <IconButton 
+                            disableRipple
+                            onClick={() => setSelectedSlide(i)}
+                            classes={{ 
+                                root: clsx(classes.iconButton, {
+                                    [classes.space]: selectedSlide !== i
+                                }),
+                            }}
+                        >
                             <img 
                                 src={
                                     process.env.GATSBY_STRAPI_URL + 
                                     node.variants[0].images[0].url
                                 } 
                                 alt={`image-${i}`} 
+                                className={classes.carouselImage}
                             />
                         </IconButton>
                     </Grid>
                     <Grid item>
                         {selectedSlide === i ? (
                             <Typography variant="h1" classes={{ root: classes.productName }}>
-                                {node.name}
+                                {node.name.split(" ")[0]}
                             </Typography>
                         ) : null}
                     </Grid>
@@ -91,11 +126,19 @@ export default function PromotionalProducts() {
             alignItems="center"
             classes={{root: classes.mainContainer}}
         >
-            <Grid item>
+            <Grid item classes={{ root: classes.carouselContainer }}>
                 <Carousel slides={slides} goToSlide={selectedSlide} />
             </Grid>
-            <Grid item>
-                {slides[selectedSlide].description}
+            <Grid item classes={{ root: classes.descriptionContainer }}>
+                <Typography variant="h2" paragraph>
+                    {slides[selectedSlide].description}
+                </Typography>
+                <Button>
+                    <Typography variant="h4" classes={{ root: classes.explore }}>
+                        Explore 
+                    </Typography>
+                    <img src={explore} alt="go to product page" />
+                </Button>
             </Grid>
         </Grid>    
     )
