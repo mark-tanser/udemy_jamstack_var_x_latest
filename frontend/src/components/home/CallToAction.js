@@ -3,6 +3,7 @@ import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link } from 'gatsby'
 
@@ -15,6 +16,9 @@ const useStyles = makeStyles(theme => ({
     },
     body: {
         maxWidth: '45rem',
+        [theme.breakpoints.down('md')]: {
+            padding: '0 1rem',
+        },
     },
     container: {
         marginBottom: '15rem',
@@ -22,10 +26,16 @@ const useStyles = makeStyles(theme => ({
     buttonContainer: {
         marginTop: '2rem',
     },
+    headingContainer: {
+        [theme.breakpoints.down('md')]: {
+            padding: '0 1rem',
+        },
+    },
 }))
 
 export default function CallToAction() {
     const classes = useStyles()
+    const matchesMD = useMediaQuery(theme => theme.breakpoints.down('md'))
 
     return (
         <Grid 
@@ -38,14 +48,23 @@ export default function CallToAction() {
                     <img src={cta} alt="quality committed" />
                 </Grid>
                 <Grid item>
-                    <Grid container direction="column">
-                        <Grid item>
-                            <Typography variant="h1">
+                    <Grid 
+                        container 
+                        direction={matchesMD ? "column" : "row"}
+                    >
+                        <Grid item classes={{ root: classes.headingContainer }}>
+                            <Typography 
+                                align={matchesMD ? 'center' : undefined} 
+                                variant="h1"
+                            >
                                 Commited To Quality
                             </Typography>
                         </Grid>
                         <Grid item classes={{ root: classes.body }}>
-                            <Typography variant="body1">
+                            <Typography 
+                                align={matchesMD ? 'center' : undefined} 
+                                variant="body1"
+                            >
                                 At VAR X our mission is top provide confortable, durable,
                                 premium, designer clothing and clothing accessories to
                                 developers and technology enthusiasts.
@@ -54,6 +73,7 @@ export default function CallToAction() {
                         <Grid 
                             item 
                             container 
+                            justifyContent={matchesMD ? 'center' : undefined}
                             classes={{ root: classes.buttonContainer }}
                         >
                             <Grid item>
