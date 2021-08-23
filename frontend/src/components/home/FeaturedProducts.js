@@ -3,12 +3,16 @@ import clsx from 'clsx'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
+import Button from '@material-ui/core/Button'
+import Chip from '@material-ui/core/Chip'
 import { useStaticQuery, graphql } from 'gatsby'
 import { makeStyles } from '@material-ui/core/styles'
 
 import featuredAdornment from '../../images/featured-adornment.svg'
 import frame from '../../images/product-frame-grid.svg'
-import { mergeClasses } from '@material-ui/styles'
+import explore from '../../images/explore.svg'
+
+import Rating from './Rating'
 
 const useStyles = makeStyles(theme => ({
     background: {
@@ -42,7 +46,8 @@ const useStyles = makeStyles(theme => ({
         height: '20rem',
         width: '24.5rem',
         zIndex: 0,
-        transition: 'transform 0.5s ease'
+        transition: 'transform 0.5s ease',
+        padding: '1rem 2rem',
     },
     slideLeft: {
         transform: 'translate(-24.5rem, 0px)',
@@ -51,8 +56,24 @@ const useStyles = makeStyles(theme => ({
         transform: 'translate(24.5rem, 0px)',
     },
     productContainer: {
-        margin: '5rem 0'
-    }
+        margin: '5rem 0',
+    },
+    exploreContainer: {
+        marginTop: 'auto',
+    },
+    exploreButton: {
+        textTransform: 'none',
+    },
+    exploreIcon: {
+        height: '1.5rem',
+        marginLeft: '1rem',
+    },
+    chipLabel: {
+        ...theme.typography.h5,
+    },
+    chipRoot: {
+        backgroundColor: theme.palette.secondary.main,
+    },
 }))
 
 export default function FeaturedProducts() {
@@ -90,42 +111,65 @@ export default function FeaturedProducts() {
             {data.allStrapiProduct.edges.map(({node}, i) => {
                 const alignment = i === 0 || i === 3 ? "flex-start" : i === 1 || i === 4 ? "center" : "flex-end"
                 return (
-                <Grid 
-                    item 
-                    container 
-                    justifyContent={alignment} 
-                    key={node.strapiId}
-                    classes={{ root: classes.productContainer }}
-                    alignItems="center"
-                >
-                        
-                            <IconButton 
-                                onClick={() => expanded === i ? setExpanded(null) : setExpanded(i)}
-                                classes={{ root: classes.frame }}
-                            >
+                    <Grid 
+                        item 
+                        container 
+                        justifyContent={alignment} 
+                        key={node.strapiId}
+                        classes={{ root: classes.productContainer }}
+                        alignItems="center"
+                    >
+                        <IconButton 
+                            onClick={() => expanded === i ? setExpanded(null) : setExpanded(i)}
+                            classes={{ root: classes.frame }}
+                        >
+                            <img 
+                                src={
+                                    process.env.GATSBY_STRAPI_URL +
+                                    node.variants[0].images[0].url
+                                }
+                                alt={node.name}
+                                className={classes.featured}
+                            />
+                        </IconButton>
+                        <Grid 
+                            container 
+                            direction="column" 
+                            classes={{ 
+                                root: clsx(classes.slide, {
+                                    [classes.slideLeft] : 
+                                        expanded === i && alignment === "flex-end",
+                                    [classes.slideRight] : 
+                                        expanded === i && (alignment === "flex-start" || alignment === "center"),
+                                }),
+                            }}
+                        >
+                            <Grid item>
+                                <Typography variant="h4">{node.name.split(" ")[0]}</Typography>  
+                            </Grid>
+                            <Grid item>
+                                <Rating number={3.5} />
+                            </Grid>
+                            <Grid item>
+                                <Chip
+                                    classes={{ root: classes.chipRoot, label: classes.chipLabel }}
+                                    label={`$${node.variants[0].price}`} 
+                                />
+                            </Grid>
+                            <Grid item classes={{ root: classes.exploreContainer }}>
+                                <Button classes={{ root: classes.exploreButton }}>
+                                    <Typography variant="h5">Details</Typography>
                                     <img 
-                                        src={
-                                            process.env.GATSBY_STRAPI_URL +
-                                            node.variants[0].images[0].url
-                                        }
-                                        alt={node.name}
-                                        className={classes.featured}
+                                        src={explore} 
+                                        alt="go to product details" 
+                                        className={classes.exploreIcon} 
                                     />
-                            </IconButton>
-                            <Grid 
-                                container 
-                                direction="column" 
-                                classes={{ root: clsx(classes.slide, {
-                                    [classes.slideLeft] : expanded === i && alignment === "flex-end",
-                                    [classes.slideRight] : expanded === i && (alignment === "flex-start" || alignment === "center")
-
-                                }) }}
-                            >
-
-                            </Grid>    
-                        
-                </Grid>
-            )})}
+                                </Button>
+                            </Grid> 
+                        </Grid> 
+                    </Grid>
+                )
+            })}
         </Grid>
     )
 }
