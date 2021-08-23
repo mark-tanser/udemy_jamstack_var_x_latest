@@ -32,6 +32,12 @@
     "variants": {
       "via": "product",
       "collection": "variant"
+    },
+    "promo": {
+      "type": "boolean",
+      "private": false,
+      "required": false,
+      "unique": false
     }
   }
 }

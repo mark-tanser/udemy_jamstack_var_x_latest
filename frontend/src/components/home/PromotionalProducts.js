@@ -10,6 +10,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import promoAdornment from '../../images/promo-adornment.svg'
 import explore from '../../images/explore.svg'
+import { node } from 'prop-types'
 
 const useStyles = makeStyles(theme => ({
     mainContainer: {
@@ -20,6 +21,9 @@ const useStyles = makeStyles(theme => ({
         width: '100%',
         height: '70rem',
         padding: '30rem 10rem 10rem 10rem'
+    },
+    productName: {
+        color: '#fff'
     }
 }))
 
@@ -47,15 +51,38 @@ export default function PromotionalProducts() {
     }
     `)
 
-    var slides = [
-        {key: 1, content: <div>First Slide</div>},
-        {key: 2, content: <div>Second Slide</div>},
-        {key: 3, content: <div>Third Slide</div>}
-    ]
+    var slides = []
 
-    // data.allStrapiProduct.edges.map({ node } => )
+    data.allStrapiProduct.edges.map(({ node }, i) => slides.push(
+        {
+            key: i,
+            content: (
+                <Grid container direction='column'>
+                    <Grid item>
+                        <IconButton disableRipple>
+                            <img 
+                                src={
+                                    process.env.GATSBY_STRAPI_URL + 
+                                    node.variants[0].images[0].url
+                                } 
+                                alt={`image-${i}`} 
+                            />
+                        </IconButton>
+                    </Grid>
+                    <Grid item>
+                        {selectedSlide === i ? (
+                            <Typography variant="h1" classes={{ root: classes.productName }}>
+                                {node.name}
+                            </Typography>
+                        ) : null}
+                    </Grid>
+                </Grid>
+            ),
+            description: node.description
+        })
+    )
 
-    console.log(data)
+    console.log(process.env.GATSBY_STRAPI_URL)
 
     return (
         <Grid 
@@ -68,7 +95,7 @@ export default function PromotionalProducts() {
                 <Carousel slides={slides} goToSlide={selectedSlide} />
             </Grid>
             <Grid item>
-                Description
+                {slides[selectedSlide].description}
             </Grid>
         </Grid>    
     )
