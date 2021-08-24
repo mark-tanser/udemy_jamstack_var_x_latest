@@ -4,7 +4,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import fullStar from '../../images/full-star.svg'
 import halfStar from '../../images/half-star.svg'
 import emptyStar from '../../images/empty-star.svg'
-import { mergeClasses } from '@material-ui/styles'
 
 const useStyles = makeStyles(theme => ({
     size: {

@@ -11,7 +11,6 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import promoAdornment from '../../images/promo-adornment.svg'
 import explore from '../../images/explore.svg'
-import { node } from 'prop-types'
 
 const useStyles = makeStyles(theme => ({
     mainContainer: {
@@ -34,7 +33,7 @@ const useStyles = makeStyles(theme => ({
     },
     iconButton: {
         "&:hover": {
-            backgroundColor: "transparent"
+            backgroundColor: "transparent",
         }
     },
     carouselImage: {
