@@ -17,11 +17,12 @@ import nameAdornment from '../images/name-adornment.svg'
 import PhoneAdornment from '../images/PhoneAdornment.js'
 
 import Layout from "../components/ui/layout"
+import validate from "../components/ui/validate"
 //import Seo from "../components/ui/seo"
 
 const useStyles = makeStyles(theme => ({
   mainContainer: {
-    height: '40rem',
+    height: '45rem',
     backgroundColor: theme.palette.primary.main,
     marginBottom: '10rem',
   },
@@ -101,17 +102,23 @@ const useStyles = makeStyles(theme => ({
     width: 25.173,
     height: 25.122,
   },
+  multiline: {
+    border: '2px solid #fff',
+    borderRadius: 10,
+    padding: '1rem',
+  },
+  multilineError: {
+    border: `2px solid ${theme.palette.error.main}`
+  },
+  buttonDisabled: {
+    backgroundColor: theme.palette.grey[500],
+  },
   "@global": {
     ".MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before": {
       borderBottom: '2px solid #fff',
     },
     ".MuiInput-underline:after": {
       borderBottom: `2px solid ${theme.palette.secondary.main}`,
-    },
-    ".MuiInput-multiline": {
-      border: '2px solid #fff',
-      borderRadius: 10,
-      padding: '1rem',
     },
   },
 }))
@@ -122,8 +129,9 @@ const ContactPage = () => {
 
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
-  const [phoneNumber, setPhoneNumber] = useState("")
+  const [phone, setPhone] = useState("")
   const [message, setMessage] = useState("")
+  const [errors, setErrors] = useState({})
 
   return (
     <Layout>
@@ -158,7 +166,19 @@ const ContactPage = () => {
                 <Grid item classes={{ root: classes.fieldContainer }}>
                   <TextField 
                     value={name} 
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={e => {
+                      if (errors.name) {
+                        const valid = validate({ name: e.target.value })
+                        setErrors({ ...errors, name: !valid.name })
+                      }
+                      setName(e.target.value)
+                    }}
+                    onBlur={e => {
+                      const valid = validate({ name })
+                      setErrors({...errors, name: !valid.name})
+                    }}
+                    error={errors.name}
+                    helperText={errors.name && "you must enter a name"}
                     placeholder="Name" 
                     classes={{ root: classes.textField }}
                     InputProps={{ classes: { input: classes.input }, startAdornment: (
@@ -171,7 +191,19 @@ const ContactPage = () => {
                 <Grid item classes={{ root: classes.fieldContainer }}>
                   <TextField 
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={e => {
+                      if (errors.email) {
+                        const valid = validate({ email: e.target.value })
+                        setErrors({ ...errors, email: !valid.email })
+                      }
+                      setEmail(e.target.value)
+                    }}
+                    onBlur={e => {
+                      const valid = validate({ email })
+                      setErrors({ ...errors, email: !valid.email} )
+                    }}
+                    error={errors.email}
+                    helperText={errors.email && "you must enter a valid email address"}
                     placeholder="Email" 
                     classes={{ root: classes.textField }}
                     InputProps={{ classes: { input: classes.input }, startAdornment: (
@@ -185,8 +217,20 @@ const ContactPage = () => {
                 </Grid>
                 <Grid item classes={{ root: classes.fieldContainer }}>
                   <TextField 
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    value={phone}
+                    onChange={e => {
+                      if (errors.phone) {
+                        const valid = validate({ phone: e.target.value })
+                        setErrors({ ...errors, phone: !valid.phone })
+                      }
+                      setPhone(e.target.value)
+                    }}
+                    onBlur={e => {
+                      const valid = validate({ phone })
+                      setErrors({...errors, phone: !valid.phone})
+                    }}
+                    error={errors.phone}
+                    helperText={errors.phone && "you must enter a valid phone number"}
                     placeholder="Phone Number" 
                     classes={{ root: classes.textField }}
                     InputProps={{ classes: { input: classes.input }, startAdornment: (
@@ -201,12 +245,31 @@ const ContactPage = () => {
                 <Grid item classes={{ root: classes.multilineContainer }}>
                   <TextField 
                     value={message}
-                    onChange={(e) => setMessage(e.target.value)}
+                    onChange={e => {
+                      if (errors.message) {
+                        const valid = validate({ message: e.target.value })
+                        setErrors({ ...errors, message: !valid.message })
+                      }
+                      setMessage(e.target.value)
+                    }}
+                    onBlur={e => {
+                      const valid = validate({ message })
+                      setErrors({...errors, message: !valid.message})
+                    }}
+                    error={errors.message}
+                    helperText={errors.message && "you must enter a message"}
                     placeholder="Message" 
                     multiline
                     rows={8}
                     classes={{ root: classes.textField }}
-                    InputProps={{ disableUnderline: true, classes: { input: classes.input } }}
+                    InputProps={{ 
+                      disableUnderline: true, 
+                      classes: { 
+                        input: classes.input, 
+                        multiline: classes.multiline, 
+                        error: classes.multilineError, 
+                      } 
+                    }}
                   />
                 </Grid>
               </Grid>
@@ -215,7 +278,10 @@ const ContactPage = () => {
             <Grid 
               item 
               component={Button}
-              classes={{ root: clsx(classes.buttonContainer, classes.blockContainer)}}
+              disabled={Object.keys(errors).some(error => errors[error] === true) || Object.keys(errors).length !== 4}
+              classes={{ root: clsx(classes.buttonContainer, classes.blockContainer, {
+                [classes.buttonDisabled]: Object.keys(errors).some(error => errors[error] === true) || Object.keys(errors).length !== 4
+              })}}
             >
               <Typography variant="h4">
                 send message
