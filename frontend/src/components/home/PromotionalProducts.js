@@ -24,7 +24,10 @@ const useStyles = makeStyles(theme => ({
         padding: '30rem 10rem 10rem 10rem',
         [theme.breakpoints.down('lg')]: {
             padding: '20rem 2rem 2rem 2rem',
-        }
+        },
+        [theme.breakpoints.down('xs')]: {
+            overflow: 'hidden',
+        },
     },
     productName: {
         color: '#fff'

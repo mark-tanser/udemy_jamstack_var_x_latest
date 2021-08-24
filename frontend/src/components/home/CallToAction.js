@@ -19,6 +19,9 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down('md')]: {
             padding: '0 1rem',
         },
+        [theme.breakpoints.down('xs')]: {
+            padding: '0',
+        },
     },
     container: {
         marginBottom: '15rem',
@@ -29,6 +32,15 @@ const useStyles = makeStyles(theme => ({
     headingContainer: {
         [theme.breakpoints.down('md')]: {
             padding: '0 1rem',
+        },
+        [theme.breakpoints.down('xs')]: {
+            padding: '0',
+        },
+    },
+    icon: {
+        [theme.breakpoints.down('xs')]: {
+            height: '18rem',
+            width: '20rem',
         },
     },
 }))
@@ -45,7 +57,7 @@ export default function CallToAction() {
             classes={{ root: classes.container }}
             >
                 <Grid item>
-                    <img src={cta} alt="quality committed" />
+                    <img className={classes.icon} src={cta} alt="quality committed" />
                 </Grid>
                 <Grid item>
                     <Grid 
@@ -65,7 +77,7 @@ export default function CallToAction() {
                                 align={matchesMD ? 'center' : undefined} 
                                 variant="body1"
                             >
-                                At VAR X our mission is top provide confortable, durable,
+                                At VAR X our mission is to provide confortable, durable,
                                 premium, designer clothing and clothing accessories to
                                 developers and technology enthusiasts.
                             </Typography>
