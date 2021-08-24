@@ -2,17 +2,19 @@ import React, { useState } from "react"
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
 import TextField from "@material-ui/core/TextField"
+import InputAdornment from "@material-ui/core/InputAdornment"
 import Button from "@material-ui/core/Button"
 import clsx from "clsx"
 import useMediaQuery from '@material-ui/core/useMediaQuery'
-import { makeStyles } from "@material-ui/core/styles"
+import { makeStyles, useTheme } from "@material-ui/core/styles"
 import { Link } from "gatsby"
 //import { StaticImage } from "gatsby-plugin-image"
 
 import address from '../images/address.svg'
-import phone from '../images/phone-adornment.svg'
 import Email from '../images/EmailAdornment.js'
 import send from '../images/send.svg'
+import nameAdornment from '../images/name-adornment.svg'
+import PhoneAdornment from '../images/PhoneAdornment.js'
 
 import Layout from "../components/ui/layout"
 //import Seo from "../components/ui/seo"
@@ -90,6 +92,15 @@ const useStyles = makeStyles(theme => ({
   multilineContainer: {
     marginTop: '1rem',
   },
+  emailAdornment: {
+    height: 17,
+    width: 22,
+    marginBottom: '10px',
+  },
+  phoneAdornment: {
+    width: 25.173,
+    height: 25.122,
+  },
   "@global": {
     ".MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before": {
       borderBottom: '2px solid #fff',
@@ -107,6 +118,7 @@ const useStyles = makeStyles(theme => ({
 
 const ContactPage = () => {
   const classes = useStyles()
+  const theme = useTheme()
 
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
@@ -149,7 +161,11 @@ const ContactPage = () => {
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Name" 
                     classes={{ root: classes.textField }}
-                    InputProps={{ classes: { input: classes.input }}}
+                    InputProps={{ classes: { input: classes.input }, startAdornment: (
+                      <InputAdornment position="start">
+                        <img src={nameAdornment} alt="name" />
+                      </InputAdornment>
+                    )}}
                   />
                 </Grid>
                 <Grid item classes={{ root: classes.fieldContainer }}>
@@ -158,7 +174,13 @@ const ContactPage = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Email" 
                     classes={{ root: classes.textField }}
-                    InputProps={{ classes: { input: classes.input }}}
+                    InputProps={{ classes: { input: classes.input }, startAdornment: (
+                      <InputAdornment position="start">
+                        <div className={classes.emailAdornment}>
+                          <Email color={theme.palette.secondary.main} />
+                        </div>
+                      </InputAdornment>
+                    )}}
                   />
                 </Grid>
                 <Grid item classes={{ root: classes.fieldContainer }}>
@@ -167,7 +189,13 @@ const ContactPage = () => {
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     placeholder="Phone Number" 
                     classes={{ root: classes.textField }}
-                    InputProps={{ classes: { input: classes.input }}}
+                    InputProps={{ classes: { input: classes.input }, startAdornment: (
+                      <InputAdornment position="start">
+                        <div className={classes.phoneAdornment}>
+                          <PhoneAdornment color={theme.palette.secondary.main} />
+                        </div>
+                      </InputAdornment>
+                    )}}
                   />
                 </Grid>
                 <Grid item classes={{ root: classes.multilineContainer }}>
@@ -211,7 +239,9 @@ const ContactPage = () => {
             </Grid>
             <Grid item container alignItems="center" classes={{ root: classes.middleInfo }}>
               <Grid item classes={{ root: classes.iconContainer }}>
-                <img src={phone} className={classes.contactIcon} alt="phone" />
+                <div className={classes.contactIcon}>
+                  <PhoneAdornment color="#fff" />
+                </div>
               </Grid>
               <Grid item>
                 <Typography variant="h2" classes={{ root: classes.contactInfo }}>
