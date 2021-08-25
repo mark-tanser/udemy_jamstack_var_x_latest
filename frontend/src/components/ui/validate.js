@@ -12,7 +12,7 @@ export default function validate(values) {
     const valid = {}
 
     Object.keys(values).map(field => {
-        valid[field] = validators[field](values[field])
+        return valid[field] = validators[field](values[field])
     })
 
     return valid

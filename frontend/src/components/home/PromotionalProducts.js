@@ -127,7 +127,7 @@ export default function PromotionalProducts() {
                                     process.env.GATSBY_STRAPI_URL + 
                                     node.variants[0].images[0].url
                                 } 
-                                alt={`image-${i}`} 
+                                alt={`images-${i}`} 
                                 className={classes.carouselImage}
                             />
                         </IconButton>

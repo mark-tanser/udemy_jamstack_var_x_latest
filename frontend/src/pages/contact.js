@@ -7,7 +7,6 @@ import Button from "@material-ui/core/Button"
 import clsx from "clsx"
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 import { makeStyles, useTheme } from "@material-ui/core/styles"
-import { Link } from "gatsby"
 
 import address from '../images/address.svg'
 import Email from '../images/EmailAdornment.js'
@@ -194,6 +193,21 @@ const ContactPage = () => {
     },
   }
 
+  const info = [
+    {
+      label: <span>1234 S Example St {matchesXS ? <br /> : null}Wichita, KS 67111</span>, 
+      icon: (<img src={address} className={classes.contactIcon} alt="address" />)
+    },
+    {
+      label: "(555) 555-5555",
+      icon: (<div className={classes.contactIcon}><PhoneAdornment color="#fff" /></div>),
+    },
+    {
+      label: "contact@var-x.com",
+      icon: (<div className={classes.contactEmailIcon}><Email color="#fff"/></div>),
+    },
+  ]
+
   const disabled = Object.keys(errors).some(error => errors[error] === true) || 
   Object.keys(errors).length !== 4
 
@@ -235,7 +249,7 @@ const ContactPage = () => {
                   }
 
                   return (
-                    <Grid item classes={{ root: field === "message" ? 
+                    <Grid item key={field} classes={{ root: field === "message" ? 
                       classes.multilineContainer : classes.fieldContainer }}>
                       <TextField 
                         value={values[field]} 
@@ -253,7 +267,7 @@ const ContactPage = () => {
                         InputProps={{ 
                           classes: { input: classes.input, ...fields[field].inputClasses }, 
                           disableUnderline: field === "message",
-                          startAdornment: (
+                          startAdornment: field === "message" ? undefined : (
                             <InputAdornment position="start">
                               {fields[field].adornment}
                             </InputAdornment>
@@ -289,40 +303,19 @@ const ContactPage = () => {
             justifyContent="space-between" 
             classes={{ root: classes.infoContainer }}
           >
-            <Grid item container alignItems="center">
-              <Grid item classes={{ root: classes.iconContainer }}>
-                <img src={address} className={classes.contactIcon} alt="address" />
+            {info.map((section, i) => (
+              <Grid item key={section.label} container alignItems="center" classes={{ root: i === 1 ? classes.middleInfo : undefined }}>
+                <Grid item classes={{ root: classes.iconContainer }}>
+                  {section.icon}
+                </Grid>
+                <Grid item>
+                  <Typography variant="h2" classes={{ root: classes.contactInfo }}>
+                    {section.label}
+                  </Typography>
+                </Grid>
               </Grid>
-              <Grid item>
-                <Typography variant="h2" classes={{ root: classes.contactInfo }}>
-                  1234 S Example St {matchesXS ? <br /> : null} Wichita, KS 67111
-                </Typography>
-              </Grid>
-            </Grid>
-            <Grid item container alignItems="center" classes={{ root: classes.middleInfo }}>
-              <Grid item classes={{ root: classes.iconContainer }}>
-                <div className={classes.contactIcon}>
-                  <PhoneAdornment color="#fff" />
-                </div>
-              </Grid>
-              <Grid item>
-                <Typography variant="h2" classes={{ root: classes.contactInfo }}>
-                  (555) 555-5555
-                </Typography>
-              </Grid>
-            </Grid>
-            <Grid item container alignItems="center">
-              <Grid item classes={{ root: classes.iconContainer }}>
-                <div className={classes.contactEmailIcon}>
-                  <Email color="#fff"/>
-                </div>
-              </Grid>
-              <Grid item>
-                <Typography variant="h2" classes={{ root: classes.contactInfo }}>
-                  contact@var-x.com
-                </Typography>
-              </Grid>
-            </Grid>
+            ))}
+            
           </Grid>
         </Grid>
       </Grid>
