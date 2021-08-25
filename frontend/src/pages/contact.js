@@ -244,8 +244,8 @@ const ContactPage = () => {
                           setValues({...values, [field]: e.target.value})
                         }}
                         onBlur={e => {validateHelper(e)}}
-                        error={errors.[field]}
-                        helperText={errors.[field] && fields[field].helperText}
+                        error={errors[field]}
+                        helperText={errors[field] && fields[field].helperText}
                         placeholder={fields[field].placeholder} 
                         classes={{ root: classes.textField }}
                         multiline={field === "message"}
