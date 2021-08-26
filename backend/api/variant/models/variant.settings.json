@@ -45,6 +45,16 @@
     "product": {
       "via": "variants",
       "model": "product"
+    },
+    "colorLabel": {
+      "type": "enumeration",
+      "enum": [
+        "black",
+        "white",
+        "green",
+        "red",
+        "tan"
+      ]
     }
   }
 }
