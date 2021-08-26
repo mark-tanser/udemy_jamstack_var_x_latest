@@ -3,10 +3,13 @@ import Grid from '@material-ui/core/Grid'
 import { graphql } from 'gatsby'
 
 import Layout from '../components/ui/layout'
-import DynamicToolbar from '../components/product-list/DynamicToolbar.js'
+import DynamicToolbar from '../components/product-list/DynamicToolbar'
+import ListOfProducts from '../components/product-list/ListOfProducts'
 
-export default function ProductList({ pageContext: { filterOptions, name, description }, data, }) {
-    console.log(data)
+export default function ProductList({ 
+    pageContext: { filterOptions, name, description }, 
+    data: { allStrapiProduct: { edges: products } },
+}) {
     
     return (
         <Layout>
@@ -16,6 +19,7 @@ export default function ProductList({ pageContext: { filterOptions, name, descri
                     name={name}
                     description={description}
                 />
+                <ListOfProducts products={products} />
             </Grid>
         </Layout>
         
