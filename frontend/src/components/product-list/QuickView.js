@@ -13,6 +13,7 @@ import Swatches from './Swatches'
 
 import frame from '../../images/selected-frame.svg'
 import explore from '../../images/explore.svg'
+import ProductList from "../../templates/ProductList"
 
 
 const useStyles = makeStyles(theme => ({
@@ -69,6 +70,7 @@ const useStyles = makeStyles(theme => ({
 export default function QuickView({ open, setOpen, url, name, price, product }) {
     const classes = useStyles()
     const [selectedSize, setSelectedSize] = useState(null)
+    const [selectedColor, setSelectedColor] = useState(null)
 
     var sizes = []
     var colors = []
@@ -125,7 +127,11 @@ export default function QuickView({ open, setOpen, url, name, price, product }) 
                                     selectedSize={selectedSize} 
                                     setSelectedSize={setSelectedSize}
                                 />
-                                <Swatches key={colors} colors={colors}/>
+                                <Swatches 
+                                    selectedColor={selectedColor}
+                                    setSelectedColor={setSelectedColor}
+                                    colors={colors}
+                                />
                             </Grid>
 
                         </Grid>
