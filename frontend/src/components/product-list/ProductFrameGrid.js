@@ -33,7 +33,16 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-export default function ProductFrameGrid({ product, variant }) {
+export default function ProductFrameGrid({ 
+    product, 
+    variant, 
+    sizes, 
+    colors, 
+    selectedSize, 
+    selectedColor, 
+    setSelectedSize, 
+    setSelectedColor 
+}) {
     const classes = useStyles()
 
     const [open, setOpen] = useState(false)
@@ -64,6 +73,12 @@ export default function ProductFrameGrid({ product, variant }) {
                 name={productName} 
                 price={variant.price}
                 product={product}
+                sizes={sizes}
+                colors={colors}
+                selectedSize={selectedSize}
+                selectedColor={selectedColor}
+                setSelectedSize={setSelectedSize}
+                setSelectedColor={setSelectedColor}
             />
 
         </Grid>

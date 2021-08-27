@@ -15,7 +15,6 @@ const useStyles = makeStyles(theme => ({
     },
     mainGroup: {
         height: '3rem',
-        marginTop: '2.25rem',
     },
     editButtons: {
         height: '1.525rem',
@@ -29,6 +28,7 @@ const useStyles = makeStyles(theme => ({
     endButtons: {
         backgroundColor: theme.palette.secondary.main,
         borderRadius: 50,
+        border: 0,
     },
     cartButton: {
         marginLeft: '0 !important',
