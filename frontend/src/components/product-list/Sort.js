@@ -10,16 +10,6 @@ import close from '../../images/close-outline.svg'
 
 import FunctionContainer from './FunctionContainer'
 
-const useStyles = makeStyles(theme => ({
-    chipRoot: {
-        backgroundColor: theme.palette.secondary.main,
-    },
-    chipLabel: {
-        ...theme.typography.body1,
-        color: '#fff',
-        fontWeight: 500,
-    },
-}))
 
 const sortOptions = [
     {label: "A-Z"}, 
@@ -32,7 +22,6 @@ const sortOptions = [
 ]
 
 export default function Sort({ setOption }) {
-    const classes = useStyles()
 
     return (
         <Grid item container justify="space-between" alignItems="center">
@@ -45,7 +34,7 @@ export default function Sort({ setOption }) {
                 <Grid container justify="space-around">
                     {sortOptions.map(option => (
                         <Grid item key={option.label} >
-                            <Chip label={option.label} classes={{ root: classes.chipRoot, label: classes.chipLabel }} />
+                            <Chip label={option.label} />
                         </Grid>
                     ))}
                 </Grid>
