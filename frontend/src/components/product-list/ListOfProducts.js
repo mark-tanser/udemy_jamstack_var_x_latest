@@ -31,7 +31,10 @@ export default function ListOfProducts({ products, layout, page, productsPerPage
         var colors = []
         product.node.variants.map(variant => {
             sizes.push(variant.size)
-            colors.push(variant.color)
+
+            if (!colors.includes(variant.color)) {
+                colors.push(variant.color)
+            }
         })
 
         return (

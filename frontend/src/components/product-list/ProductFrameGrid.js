@@ -42,9 +42,10 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-export const colorIndex = (product, color) => {
+export const colorIndex = (product, variant, color) => {
     return product.node.variants.indexOf(
-        product.node.variants.filter(variant => variant.color === color)[0]
+        product.node.variants.filter(item=> item.color === color &&
+            variant.style === item.style)[0]
     )
 }
 
@@ -62,7 +63,7 @@ export default function ProductFrameGrid({
 
     const [open, setOpen] = useState(false)
 
-    const imageIndex = colorIndex(product, selectedColor)
+    const imageIndex = colorIndex(product, variant, selectedColor)
 
     const imgURL = 
         process.env.GATSBY_STRAPI_URL + 
