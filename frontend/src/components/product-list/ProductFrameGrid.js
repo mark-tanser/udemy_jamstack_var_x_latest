@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
 import { makeStyles } from "@material-ui/core/styles"
@@ -30,8 +31,22 @@ const useStyles = makeStyles(theme => ({
         justifyContent: "center",
         alignItems: "center",
         marginTop: "-0.1rem",
-    }
+    },
+    invisibility: {
+        visibility: 'hidden',
+    },
+    frameContainer: {
+        "&:hover": {
+            cursor: "pointer"
+        },
+    },
 }))
+
+export const colorIndex = (product, color) => {
+    return product.node.variants.indexOf(
+        product.node.variants.filter(variant => variant.color === color)[0]
+    )
+}
 
 export default function ProductFrameGrid({ 
     product, 
@@ -46,11 +61,26 @@ export default function ProductFrameGrid({
     const classes = useStyles()
 
     const [open, setOpen] = useState(false)
-    const imgURL = process.env.GATSBY_STRAPI_URL + variant.images[0].url
+
+    const imageIndex = colorIndex(product, selectedColor)
+
+    const imgURL = 
+        process.env.GATSBY_STRAPI_URL + 
+        (imageIndex !== -1 
+            ? product.node.variants[imageIndex].images[0].url 
+            : variant.images[0].url)
+
     const productName = product.node.name.split(" ")[0]
 
     return (
-        <Grid item>
+        <Grid 
+            item 
+            classes={{ 
+                root: clsx(classes.frameContainer, {
+                    [classes.invisibility]: open === true,
+                }),
+            }}
+        >
             <Grid item container direction="column" onClick={() => setOpen(true)}>
                 <Grid item classes={{ root: classes.frame }}>
                     <img 

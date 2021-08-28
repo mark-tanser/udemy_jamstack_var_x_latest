@@ -5,11 +5,14 @@ import Typography from "@material-ui/core/Typography"
 import Chip from "@material-ui/core/Chip"
 import Button from "@material-ui/core/Button"
 import { makeStyles } from "@material-ui/core/styles"
+import { Link } from 'gatsby'
 
 import Rating from '../home/Rating'
 import Sizes from './Sizes'
 import Swatches from './Swatches'
 import QtyButton from './QtyButton'
+
+import { colorIndex } from './ProductFrameGrid'
 
 import frame from '../../images/product-frame-list.svg'
 
@@ -37,6 +40,12 @@ const useStyles = makeStyles(theme => ({
     sizesAndSwatches: {
         maxWidth: '13rem',
     },
+    chipLabel: {
+        fontSize: '2rem',
+        "&:hover" : {
+            cursor: "pointer"
+        },
+    },
 }))
 
 export default function ProductFrameList({ 
@@ -50,19 +59,44 @@ export default function ProductFrameList({
     setSelectedColor  
 }) {
     const classes = useStyles()
+    const imageIndex = colorIndex(product, selectedColor)
+
+    const images = imageIndex !== -1 ? product.node.variants[imageIndex].images : variant.images
 
     return (
         <Grid item container>
-            <Grid item xs={9} container alignItems="center" justifyContent="space-around" classes={{ root: classes.frame }}>
-                {variant.images.slice(0, 4).map(image => (
-                    <Grid item key={image.url}>
-                        <img src={process.env.GATSBY_STRAPI_URL + image.url} alt={image.url} className={classes.productImage} />
+            <Grid 
+                item 
+                xs={9} 
+                container 
+                alignItems="center" 
+                justifyContent="space-around" 
+                classes={{ root: classes.frame }}
+            >
+                {images.map(image => (
+                    <Grid 
+                        item key={image.url} 
+                        component={Link} 
+                        to={`/${product.node.category.name.toLowerCase()}/${product.node.name.split(" ")[0].toLowerCase()}`} 
+                    >
+                        <img 
+                            src={process.env.GATSBY_STRAPI_URL + image.url} 
+                            alt={image.url} 
+                            className={classes.productImage} 
+                        />
                     </Grid>
                 ))}
             </Grid>
             <Grid item xs={3} container direction="column" justifyContent="space-between" classes={{ root: classes.info }}>
                 
-                <Grid item container direction="column">
+                <Grid 
+                    item 
+                    container 
+                    direction="column"
+                    component={Link} 
+                    to={`/${product.node.category.name.toLowerCase()}
+                        /${product.node.name.split(" ")[0].toLowerCase()}`} 
+                >
                     <Grid item>
                         <Typography variant="h4">
                             {product.node.name.split(" ")[0]}
@@ -72,7 +106,7 @@ export default function ProductFrameList({
                         <Rating number={3.5}/>
                     </Grid>
                     <Grid item>
-                        <Chip label={`$${variant.price}`} />
+                        <Chip label={`$${variant.price}`} classes={{ label: classes.chipLabel }}/>
                     </Grid>
                     <Grid item>
                         <Typography variant="h3" classes={{ root: classes.stock }}>

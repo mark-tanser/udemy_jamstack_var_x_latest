@@ -98,22 +98,25 @@ export default function ProductList({
 export const query = graphql`
     query GetCategoryProducts($id: String!) {
         allStrapiProduct(filter: {category: {id: {eq: $id}}}) {
-        edges {
-            node {
-            strapiId
-            name
-            variants {
-                color
-                id
-                price
-                size
-                style
-                images {
-                url
+            edges {
+                node {
+                    strapiId
+                    name
+                    category {
+                        name
+                    }
+                    variants {
+                        color
+                        id
+                        price
+                        size
+                        style
+                        images {
+                            url
+                        }
+                    }
                 }
             }
-            }
-        }
         }
     }
 `
