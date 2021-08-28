@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-export default function ListOfProducts({ products, layout }) {
+export default function ListOfProducts({ products, layout, page, productsPerPage }) {
     const classes = useStyles({ layout })
 
     const FrameHelper = ({ Frame, product, variant }) => {
@@ -34,8 +34,21 @@ export default function ListOfProducts({ products, layout }) {
             colors.push(variant.color)
         })
 
-        return <Frame variant={variant} product={product} sizes={sizes} colors={colors} selectedSize={selectedSize} selectedColor={selectedColor} setSelectedSize={setSelectedSize} setSelectedColor={setSelectedColor}/>
+        return (
+            <Frame 
+                variant={variant} 
+                product={product} 
+                sizes={sizes} 
+                colors={colors} 
+                selectedSize={selectedSize} 
+                selectedColor={selectedColor} 
+                setSelectedSize={setSelectedSize} 
+                setSelectedColor={setSelectedColor}
+            />)
     }
+
+    var content = []
+    products.map((product, i) => product.node.variants.map(variant => content.push({ product: i, variant })))
 
     return (
         <Grid 
@@ -43,10 +56,13 @@ export default function ListOfProducts({ products, layout }) {
             container 
             classes={{ root: classes.productContainer}}
         >
-            {products.map(product => (
-                product.node.variants.map(variant => (
-                    <FrameHelper Frame={layout === "grid" ? ProductFrameGrid : ProductFrameList} key={variant.id} variant={variant} product={product}/>
-                ))
+            {content.slice((page - 1 ) * productsPerPage, page * productsPerPage).map(item => (
+                <FrameHelper 
+                    Frame={layout === "grid" ? ProductFrameGrid : ProductFrameList} 
+                    key={item.variant.id} 
+                    variant={item.variant} 
+                    product={products[item.product]}
+                />
             ))}
         </Grid>
     )
