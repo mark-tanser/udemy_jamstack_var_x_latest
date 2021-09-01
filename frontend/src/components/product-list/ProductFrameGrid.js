@@ -2,7 +2,9 @@ import React, { useState } from "react"
 import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
+import useMediaQuery from "@material-ui/core/useMediaQuery"
 import { makeStyles } from "@material-ui/core/styles"
+import { navigate } from "gatsby"
 
 import QuickView from './QuickView'
 import frame from '../../images/product-frame-grid.svg'
@@ -63,7 +65,13 @@ export default function ProductFrameGrid({
 
     const [open, setOpen] = useState(false)
 
+    const matchesMD = useMediaQuery(theme => theme.breakpoints.down('md'))
+
     const imageIndex = colorIndex(product, variant, selectedColor)
+
+    if (matchesMD && open) {
+        setOpen(false)
+    }
 
     const imgURL = 
         process.env.GATSBY_STRAPI_URL + 
@@ -82,19 +90,22 @@ export default function ProductFrameGrid({
                 }),
             }}
         >
-            <Grid item container direction="column" onClick={() => setOpen(true)}>
-                <Grid item classes={{ root: classes.frame }}>
-                    <img 
-                        src={imgURL} 
-                        alt={product.node.name} 
-                        className={classes.product}
-                    />
-                </Grid>
-                <Grid item classes={{ root: classes.title }}>
-                    <Typography variant="h5">
-                        {productName}
-                    </Typography>
-                </Grid>
+            <Grid item container direction="column" onClick={() => matchesMD 
+                ? navigate(`/${product.node.category.name.toLowerCase()}
+                    /${product.node.name.split(" ")[0].toLowerCase()}`) 
+                : setOpen(true)}>
+                    <Grid item classes={{ root: classes.frame }}>
+                        <img 
+                            src={imgURL} 
+                            alt={product.node.name} 
+                            className={classes.product}
+                        />
+                    </Grid>
+                    <Grid item classes={{ root: classes.title }}>
+                        <Typography variant="h5">
+                            {productName}
+                        </Typography>
+                    </Grid>
             </Grid>
 
             <QuickView 
