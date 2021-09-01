@@ -5,6 +5,7 @@ import Typography from "@material-ui/core/Typography"
 import ButtonGroup from "@material-ui/core/ButtonGroup"
 import Button from "@material-ui/core/Button"
 import { makeStyles } from "@material-ui/core/styles"
+import useMediaQuery from   '@material-ui/core/useMediaQuery'
 
 import background from '../../images/toolbar-background.svg'
 import ListIcon from '../../images/List'
@@ -18,9 +19,15 @@ const useStyles = makeStyles(theme => ({
     descriptionContainer: {
         backgroundColor: theme.palette.primary.main,
         height: '15rem',
-        width: '60rem',
+        width: '60%',
         borderRadius: 25,
         padding: '1rem',
+        [theme.breakpoints.down('md')]: {
+            width: '100%',
+        },
+        [theme.breakpoints.down('sm')]: {
+            borderRadius: 0,
+        }
     },
     mainContainer: {
         padding: '3rem',
@@ -29,6 +36,9 @@ const useStyles = makeStyles(theme => ({
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         position: 'relative',
+        [theme.breakpoints.down('sm')]: {
+            padding: "3rem 0",
+        },
     },
     button: {
         border: `2px solid ${theme.palette.primary.main}`,
@@ -52,6 +62,17 @@ const useStyles = makeStyles(theme => ({
         bottom: 0,
         marginRight: '3rem',
         marginBottom: '3rem',
+        [theme.breakpoints.down('md')]: {
+            position: 'relative',
+            display: 'flex',
+            alignSelf: 'flex-end',
+            marginTop: '3rem',
+            marginRight: 0,
+            marginBottom: 0,
+        },
+        [theme.breakpoints.down('sm')]: {
+            marginRight: "1.5rem",
+        },
     },
 }))
 
@@ -64,15 +85,24 @@ export default function DescriptionContainer({
 }) {
     const classes = useStyles()
 
+    const matchesMD = useMediaQuery(theme => theme.breakpoints.down('md'))
+
     const changeLayout = (option) => {
         setPage(1)
         setLayout(option)
     }
 
     return (
-        <Grid item container classes={{ root: classes.mainContainer }} justifyContent="center">
+        <Grid 
+            item 
+            container 
+            direction={matchesMD ? "column" : "row"} 
+            classes={{ root: classes.mainContainer }} 
+            justifyContent="center" 
+            alignItems={matchesMD ? 'center' : undefined}
+        >
             <Grid item classes={{ root: classes.descriptionContainer }}>
-                <Typography variant="h4" paragraph gutterBottom align="center">
+                <Typography variant="h4" align="center">
                     {name}
                 </Typography>
                 <Typography variant="body1" classes={{ root: classes.description }} align="center">
