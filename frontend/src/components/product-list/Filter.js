@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
 import IconButton from "@material-ui/core/IconButton"
@@ -29,8 +29,16 @@ const useStyles = makeStyles(theme => ({
 }))
 
 
-export default function Filter({ setOption, filterOptions }) {
+export default function Filter({ setOption, filterOptions, setFilterOptions }) {
     const classes = useStyles()
+
+    const handleFilter = (option, i) => {
+        const newFilters = { ...filterOptions }
+
+        newFilters[option][i].checked = !newFilters[option][i].checked  //toggles value true/false
+
+        setFilterOptions(newFilters)
+    }
 
     //eg:  {Color: [{label: "white", checked: false},...]}
 
@@ -52,7 +60,7 @@ export default function Filter({ setOption, filterOptions }) {
                                 <Grid item>
                                     <FormControl>
                                         <FormGroup>
-                                            {filterOptions[option].map(({ label, checked }) => (
+                                            {filterOptions[option].map(({ label, checked }, i) => (
                                                 <FormControlLabel 
                                                 classes={{label: classes.checkbox }} 
                                                 key={label} label={label} 
@@ -61,6 +69,7 @@ export default function Filter({ setOption, filterOptions }) {
                                                         classes={{ root: classes.checkbox }}
                                                         checked={checked} 
                                                         name={label} 
+                                                        onChange={() => handleFilter(option, i)}
                                                     />} 
                                                 />
                                             ))}
