@@ -76,6 +76,7 @@ export default function ProductList({
                 />
                 <ListOfProducts 
                     page={page} 
+                    filterOptions={filterOptions}
                     productsPerPage={productsPerPage} 
                     layout={layout} 
                     products={products} 
