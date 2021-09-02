@@ -22,8 +22,7 @@ export default function DynamicToolbar({
     name, 
     description, 
     layout, 
-    setLayout, 
-    setPage 
+    setLayout
 }) {
     const classes = useStyles()
     const [option, setOption] = useState(null)
@@ -48,7 +47,6 @@ export default function DynamicToolbar({
                         setLayout={setLayout} 
                         name={name} 
                         description={description} 
-                        setPage={setPage}
                     />
                 )
             }

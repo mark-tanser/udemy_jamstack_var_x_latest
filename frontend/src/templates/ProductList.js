@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import Fab from '@material-ui/core/Fab'
 import Pagination from '@material-ui/lab/Pagination'
 import Grid from '@material-ui/core/Grid'
@@ -49,6 +49,9 @@ export default function ProductList({
     const [page, setPage] = useState(1)
     const [filterOptions, setFilterOptions] = useState(options)
     const scrollRef= useRef(null)
+    useEffect(() => {
+        setPage(1)
+    }, [filterOptions, layout]) // useEffects runs {function} when any of the [dependency array] states change
 
     const scroll = () => {
         scrollRef.current.scrollIntoView({ behavior: 'smooth' })
@@ -72,7 +75,6 @@ export default function ProductList({
                     description={description}
                     layout={layout}
                     setLayout={setLayout}
-                    setPage={setPage}
                 />
                 <ListOfProducts 
                     page={page} 
