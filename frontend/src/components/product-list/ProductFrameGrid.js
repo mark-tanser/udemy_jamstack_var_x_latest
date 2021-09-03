@@ -103,8 +103,7 @@ export default function ProductFrameGrid({
             }}
         >
             <Grid item container direction="column" onClick={() => matchesMD 
-                ? navigate(`/${product.node.category.name.toLowerCase()}
-                    /${product.node.name.split(" ")[0].toLowerCase()}`) 
+                ? navigate(`/${product.node.category.name.toLowerCase()}/${product.node.name.split(" ")[0].toLowerCase()}`) 
                 : setOpen(true)}>
                     <Grid item classes={{ root: classes.frame }}>
                         <img 

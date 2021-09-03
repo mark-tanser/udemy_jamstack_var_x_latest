@@ -67,6 +67,7 @@ export default function ProductFrameList({
 
     const images = imageIndex !== -1 ? product.node.variants[imageIndex].images : variant.images
 
+
     return (
         <Grid item container>
             <Grid 
