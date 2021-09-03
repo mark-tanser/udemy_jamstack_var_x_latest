@@ -7,7 +7,6 @@ import IconButton from '@material-ui/core/IconButton'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
-//import Hidden from '@material-ui/core/Hidden'
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -77,7 +76,7 @@ export default function Header({ categories }) {
     const found = routes.indexOf(
       routes.filter(
         ({ node: { name, link } }) => 
-          (link || `/${name.toLowerCase()}`) === window.location.pathname
+          (link || `/${name.toLowerCase()}`) === `/${window.location.pathname.split("/")[1]}`
       )[0]
     )
     return found === -1 ? false : found
