@@ -92,6 +92,7 @@ export default function ProductFrameGrid({
             ? product.node.variants[imageIndex].images[0].url 
             : variant.images[0].url)
 
+        
     const productName = product.node.name.split(" ")[0]
 
     return (
@@ -104,7 +105,12 @@ export default function ProductFrameGrid({
             }}
         >
             <Grid item container direction="column" onClick={() => matchesMD 
-                ? navigate(`/${product.node.category.name.toLowerCase()}/${product.node.name.split(" ")[0].toLowerCase()}${hasStyles ? `?style=${variant.style}` : ""} `) 
+
+                ? navigate(
+                    `/${product.node.category.name.toLowerCase()}/${product.node.name
+                    .split(" ")[0]
+                    .toLowerCase()}${hasStyles ? `?style=${variant.style}` : ""}`
+                )
                 : setOpen(true)}>
                     <Grid item classes={{ root: classes.frame }}>
                         <img 

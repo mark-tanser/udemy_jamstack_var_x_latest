@@ -77,7 +77,8 @@ exports.createPages = async ({ graphql, actions} ) => {
                 id: product.node.strapiId,
                 category: product.node.category.name,
                 description: product.node.description,
-                variants: product.node.variants
+                variants: product.node.variants,
+                product: product
             },
         })
     })
