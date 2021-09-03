@@ -54,6 +54,8 @@ export default function ListOfProducts({ products, content, layout, page, produc
         const [selectedSize, setSelectedSize] = useState(null)
         const [selectedColor, setSelectedColor] = useState(null)
 
+        const hasStyles = product.node.variants.some(variant => variant.style !== null)
+
         var sizes = []
         var colors = []
         product.node.variants.map(variant => {
@@ -74,6 +76,9 @@ export default function ListOfProducts({ products, content, layout, page, produc
                 selectedColor={selectedColor} 
                 setSelectedSize={setSelectedSize} 
                 setSelectedColor={setSelectedColor}
+                variant={variant}
+                product={product}
+                hasStyles={hasStyles}
             />)
     }
 

@@ -87,14 +87,17 @@ export default function QuickView({
     name, 
     price, 
     product, 
+    variant,
     sizes, 
     colors, 
     selectedSize, 
     selectedColor, 
     setSelectedSize, 
-    setSelectedColor 
+    setSelectedColor,
+    hasStyles
 }) {
     const classes = useStyles()
+
 
     return (
         <Dialog 
@@ -107,8 +110,7 @@ export default function QuickView({
                     <Grid 
                         item
                         component={Link} 
-                        to={`/${product.node.category.name.toLowerCase()}
-                            /${product.node.name.split(" ")[0].toLowerCase()}`} 
+                        to={`/${product.node.category.name.toLowerCase()}/${product.node.name.split(" ")[0].toLowerCase()}${hasStyles ? `?style=${variant.style}` : ""} `}
                     >
                         <img 
                             src={url} 
@@ -124,8 +126,7 @@ export default function QuickView({
                                 justifyContent="space-between" 
                                 classes={{ root: classes.infoContainer}}
                                 component={Link} 
-                                to={`/${product.node.category.name.toLowerCase()}
-                                    /${product.node.name.split(" ")[0].toLowerCase()}`} 
+                                to={`/${product.node.category.name.toLowerCase()}/${product.node.name.split(" ")[0].toLowerCase()}${hasStyles ? `?style=${variant.style}` : ""} `} 
                             >
                                 <Grid item>
                                     <Typography variant="h4">

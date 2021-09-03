@@ -71,7 +71,8 @@ export default function ProductFrameGrid({
     selectedSize, 
     selectedColor, 
     setSelectedSize, 
-    setSelectedColor 
+    setSelectedColor,
+    hasStyles
 }) {
     const classes = useStyles()
 
@@ -103,7 +104,7 @@ export default function ProductFrameGrid({
             }}
         >
             <Grid item container direction="column" onClick={() => matchesMD 
-                ? navigate(`/${product.node.category.name.toLowerCase()}/${product.node.name.split(" ")[0].toLowerCase()}`) 
+                ? navigate(`/${product.node.category.name.toLowerCase()}/${product.node.name.split(" ")[0].toLowerCase()}${hasStyles ? `?style=${variant.style}` : ""} `) 
                 : setOpen(true)}>
                     <Grid item classes={{ root: classes.frame }}>
                         <img 
@@ -126,12 +127,14 @@ export default function ProductFrameGrid({
                 name={productName} 
                 price={variant.price}
                 product={product}
+                variant={variant}
                 sizes={sizes}
                 colors={colors}
                 selectedSize={selectedSize}
                 selectedColor={selectedColor}
                 setSelectedSize={setSelectedSize}
                 setSelectedColor={setSelectedColor}
+                hasStyles={hasStyles}
             />
 
         </Grid>
