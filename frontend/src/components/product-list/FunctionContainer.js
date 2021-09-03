@@ -1,6 +1,5 @@
-import React, { useState } from "react"
+import React from "react"
 import Grid from "@material-ui/core/Grid"
-import Typography from "@material-ui/core/Typography"
 import IconButton from "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
 
@@ -23,7 +22,9 @@ export default function FunctionContainer({
     filterOptions, 
     setFilterOptions,
     option, 
-    setOption 
+    setOption,
+    sortOptions,
+    setSortOptions
 }) {
     const classes = useStyles({option})
 
@@ -31,7 +32,7 @@ export default function FunctionContainer({
         switch (option) {
             
             case "sort":
-                return <Sort setOption={setOption} />
+                return <Sort setOption={setOption} sortOptions={sortOptions} setSortOptions={setSortOptions} />
             
             case "filter":
                 return (

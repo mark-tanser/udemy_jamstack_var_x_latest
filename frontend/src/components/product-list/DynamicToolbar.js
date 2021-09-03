@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import Grid from "@material-ui/core/Grid"
-import Typography from "@material-ui/core/Typography"
 import { makeStyles } from "@material-ui/core/styles"
 
 import FunctionContainer from './FunctionContainer'
@@ -22,7 +21,9 @@ export default function DynamicToolbar({
     name, 
     description, 
     layout, 
-    setLayout
+    setLayout,
+    sortOptions,
+    setSortOptions
 }) {
     const classes = useStyles()
     const [option, setOption] = useState(null)
@@ -39,6 +40,8 @@ export default function DynamicToolbar({
                 setOption={setOption} 
                 filterOptions={filterOptions}
                 setFilterOptions={setFilterOptions}
+                sortOptions={sortOptions}
+                setSortOptions={setSortOptions}
             />
             {
                 option === null && (

@@ -8,6 +8,7 @@ import { graphql } from 'gatsby'
 import Layout from '../components/ui/layout'
 import DynamicToolbar from '../components/product-list/DynamicToolbar'
 import ListOfProducts from '../components/product-list/ListOfProducts'
+import { alphabetic, time, price } from '../components/product-list/SortFunctions'
 
 const useStyles = makeStyles(theme => ({
     fab: {
@@ -48,6 +49,18 @@ export default function ProductList({
     const [layout, setLayout] = useState("grid")
     const [page, setPage] = useState(1)
     const [filterOptions, setFilterOptions] = useState(options)
+    const [sortOptions, setSortOptions] = useState(
+        [
+            {label: "A-Z", active: true, function: (data) => alphabetic(data, "asc")}, 
+            {label: "Z-A", active: false, function: (data) => alphabetic(data, "desc")}, 
+            {label: "NEWEST", active: false, function: (data) => time(data, "asc")}, 
+            {label: "OLDEST", active: false, function: (data) => time(data, "desc")}, 
+            {label: "PRICE ↑", active: false, function: (data) => price(data, "asc")}, 
+            {label: "PRICE ↓", active: false, function: (data) => price(data, "desc")}, 
+            {label: "REVIEWS", active: false, function: data => data}
+        ]
+    )
+
     const scrollRef= useRef(null)
     useEffect(() => {
         setPage(1)
@@ -57,15 +70,14 @@ export default function ProductList({
         scrollRef.current.scrollIntoView({ behavior: 'smooth' })
     }
 
-    const productsPerPage = layout === "grid" ? 16 : 6
-    var numVariants = 0
-
-    //products.map(product => numVariants += product.node.variants.length)
-
-    
+    const productsPerPage = layout === "grid" ? 16 : 6  // this should also be adjusted for current page display / screen width (?)
 
     var content = []
-    products.map((product, i) => product.node.variants.map(variant => content.push({ product: i, variant })))
+
+    const selectedSort = sortOptions.filter(option => option.active)[0]
+    const sortedProducts = selectedSort.function(products)
+
+    sortedProducts.map((product, i) => product.node.variants.map(variant => content.push({ product: i, variant })))
 
     var isFiltered = false
     var filters = {}
@@ -137,6 +149,8 @@ export default function ProductList({
                     description={description}
                     layout={layout}
                     setLayout={setLayout}
+                    sortOptions={sortOptions}
+                    setSortOptions={setSortOptions}
                 />
                 <ListOfProducts 
                     page={page} 
@@ -172,6 +186,7 @@ export const query = graphql`
             edges {
                 node {
                     strapiId
+                    createdAt
                     name
                     category {
                         name

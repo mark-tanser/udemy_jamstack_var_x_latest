@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import clsx from "clsx"
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
@@ -10,7 +10,6 @@ import useMediaQuery from   '@material-ui/core/useMediaQuery'
 import background from '../../images/toolbar-background.svg'
 import ListIcon from '../../images/List'
 import GridIcon from '../../images/Grid'
-import { white } from "chalk"
 
 const useStyles = makeStyles(theme => ({
     description: {

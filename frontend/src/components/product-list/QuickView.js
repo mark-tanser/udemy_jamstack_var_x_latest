@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
@@ -15,8 +15,6 @@ import QtyButton from './QtyButton'
 
 import frame from '../../images/selected-frame.svg'
 import explore from '../../images/explore.svg'
-import ProductList from "../../templates/ProductList"
-
 
 const useStyles = makeStyles(theme => ({
     selectedFrame: {
