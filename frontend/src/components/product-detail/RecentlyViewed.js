@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import Grid from "@material-ui/core/Grid"
 import Button from "@material-ui/core/Button"
+import useMediaQuery from "@material-ui/core/useMediaQuery"
 import { makeStyles } from "@material-ui/core/styles"
 
 import ProductFrameGrid from "../product-list/ProductFrameGrid"
@@ -9,7 +10,7 @@ const useStyles = makeStyles(theme => ({
     recentContainer: {
         margin: "10rem 0",
         "& > :not(:last-child)": {
-            marginRight: "5rem",
+            marginRight: "2rem",
         },
     },
     arrow: {
@@ -19,6 +20,10 @@ const useStyles = makeStyles(theme => ({
         fontSize: "4rem",
         color: theme.palette.primary.main,
         borderRadius: 50,
+        [theme.breakpoints.down("xs")]: {
+            height: "1rem",
+            width: "1rem",
+        },
     },
 }))
 
@@ -26,9 +31,14 @@ export default function RecentlyViewed({ products }) {
     const classes = useStyles()
     const [firstIndex, setFirstIndex] = useState(0)
 
+    const matchesMD = useMediaQuery(theme => theme.breakpoints.down('md'))
+    const matchesSM = useMediaQuery(theme => theme.breakpoints.down('sm'))
+
+    const displayNum = matchesSM ? 1 : matchesMD ? 2 : 4
+
     const handleNavigation = direction => {
         if (firstIndex === 0 && direction === "backward") return null
-        if (firstIndex + 4 === products.length && direction === "forward") return null
+        if (firstIndex + displayNum === products.length && direction === "forward") return null
         setFirstIndex(direction === "forward" ? firstIndex + 1 : firstIndex - 1)
     }
 
@@ -51,7 +61,7 @@ export default function RecentlyViewed({ products }) {
             </Grid>
 
             {products 
-                ? products.slice(firstIndex, firstIndex + 4).map(product => {
+                ? products.slice(firstIndex, firstIndex + displayNum).map(product => {
                     const hasStyles = product.node.variants.some(variant => variant.style !== null)
                     return (
                         <ProductFrameGrid 
