@@ -76,8 +76,6 @@ export default function ListOfProducts({ products, content, layout, page, produc
                 selectedColor={selectedColor} 
                 setSelectedSize={setSelectedSize} 
                 setSelectedColor={setSelectedColor}
-                variant={variant}
-                product={product}
                 hasStyles={hasStyles}
             />)
     }

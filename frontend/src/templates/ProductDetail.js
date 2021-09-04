@@ -9,8 +9,11 @@ export default function ProductDetail({ pageContext: { name, id, category, descr
     const [selectedVariant, setSelectedVariant] = useState(0)
     const [selectedImage, setSelectedImage] = useState(0)
 
+    const params = new URLSearchParams(window.location.search)
+    const style = params.get("style")
+
     useEffect(() => {
-        const params = new URLSearchParams(window.location.search)
+        
         const styledVariant = variants.filter(variant => variant.style === params.get("style"))[0]
 
         const variantIndex = variants.indexOf(styledVariant)
@@ -34,7 +37,7 @@ export default function ProductDetail({ pageContext: { name, id, category, descr
         window.localStorage.setItem("recentlyViewed", JSON.stringify(recentlyViewed))
 
         setSelectedVariant(variantIndex)
-    }, [])
+    }, [style])
 
     return (
         <Layout>

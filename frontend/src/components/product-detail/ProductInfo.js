@@ -3,7 +3,6 @@ import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
-import IconButton from "@material-ui/core/IconButton"
 import Chip from "@material-ui/core/Chip"
 import { makeStyles } from "@material-ui/core/styles"
 
@@ -47,7 +46,8 @@ const useStyles = makeStyles(theme => ({
         color: "#fff"
     },
     reviewButton: {
-        textTransform: 'none'
+        textTransform: 'none',
+        marginLeft: "-8px"
     },
     detailsContainer: {
         padding: "0.5rem 1rem",
@@ -57,7 +57,7 @@ const useStyles = makeStyles(theme => ({
     },
     chipRoot: {
         height: "3rem",
-        width: "10rem",
+        width: "auto",
         borderRadius: 50,
     },
     chipLabel: {

@@ -1,8 +1,5 @@
-import React, { useState } from "react"
-import clsx from 'clsx'
+import React from "react"
 import Grid from "@material-ui/core/Grid"
-import Typography from "@material-ui/core/Typography"
-import Button from "@material-ui/core/Button"
 import IconButton from  "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
 
@@ -42,7 +39,7 @@ export default function ProductImages({ images, selectedImage, setSelectedImage 
                         <IconButton>
                             <img 
                                 src={process.env.GATSBY_STRAPI_URL + image.url} 
-                                alt={'product_small${i}'} 
+                                alt={`product_small${i}`} 
                                 className={classes.small}
                             />
                         </IconButton>
