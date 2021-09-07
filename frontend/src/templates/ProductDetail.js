@@ -20,6 +20,7 @@ const GET_DETAILS = gql`
 export default function ProductDetail({ pageContext: { name, id, category, description, variants, product} }) {
     const [selectedVariant, setSelectedVariant] = useState(0)
     const [selectedImage, setSelectedImage] = useState(0)
+    const [stock, setStock] = useState(null)
 
     const matchesMD = useMediaQuery(theme => theme.breakpoints.down("md"))
 
@@ -30,7 +31,15 @@ export default function ProductDetail({ pageContext: { name, id, category, descr
         variables: { id }
     })
 
-    console.log(data)
+    useEffect(() => {
+        if (error) { 
+            setStock(-1)
+        } else if (data) {
+            setStock(data.product.variants)
+        }
+    }, [error, data])
+
+    console.log(stock)
 
     useEffect(() => {
         
@@ -74,6 +83,7 @@ export default function ProductDetail({ pageContext: { name, id, category, descr
                         variants={variants}
                         selectedVariant={selectedVariant}
                         setSelectedVariant={setSelectedVariant}
+                        stock={stock}
                     />
                 </Grid>
                 <RecentlyViewed products={JSON.parse(window.localStorage.getItem("recentlyViewed"))}/>

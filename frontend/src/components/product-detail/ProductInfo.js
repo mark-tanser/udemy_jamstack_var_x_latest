@@ -99,7 +99,14 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-export default function ProductInfo({ name, description, variants, selectedVariant, setSelectedVariant}) {
+export default function ProductInfo({ 
+    name, 
+    description, 
+    variants, 
+    selectedVariant, 
+    setSelectedVariant,
+    stock
+}) {
     const classes = useStyles()
     const [selectedSize, setSelectedSize] = useState(null)
     const [selectedColor, setSelectedColor] = useState(null)
@@ -123,6 +130,25 @@ export default function ProductInfo({ name, description, variants, selectedVaria
             setSelectedVariant(imageIndex)
         }
     }, [imageIndex])
+    
+    var stockDisplay;
+
+    switch (stock) {
+        case undefined:
+        case null:
+            stockDisplay = "Loading Inventory..."
+            break;
+        case -1:
+            stockDisplay = "Error Loading Inventory"
+            break;
+        default:
+            if (stock[selectedVariant].qty === 0) {
+                stockDisplay = "Out of Stock"
+            } else {
+                stockDisplay = `${stock[selectedVariant].qty} Currently in Stock`
+            }
+            break;
+    }
 
     return (
         <Grid 
@@ -204,7 +230,9 @@ export default function ProductInfo({ name, description, variants, selectedVaria
                                 <Swatches colors={colors} selectedColor={selectedColor} setSelectedColor={setSelectedColor}/>
                             </Grid>
                             <Grid item>
-                                <Typography variant="h3" classes={{ root: classes.stock }}>12 Currently in Stock</Typography>
+                                <Typography variant="h3" classes={{ root: classes.stock }}>
+                                    {stockDisplay}
+                                </Typography>
                             </Grid>
                         </Grid>
                     </Grid>
