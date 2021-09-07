@@ -104,17 +104,17 @@ export const getStockDisplay = (stock, variant) => {
     case undefined:
     case null:
         return "Loading Inventory..."
-        break
+
     case -1:
         return "Error Loading Inventory"
-        break
+
     default:
         if (stock[variant].qty === 0) {
             return "Out of Stock"
         } else {
             return `${stock[variant].qty} Currently in Stock`
         }
-        break
+
     }
 }
 
@@ -240,7 +240,7 @@ export default function ProductInfo({
                     </Grid>
 
                     <Grid item>
-                        <QtyButton />
+                        <QtyButton stock={stock} selectedVariant={selectedVariant}/>
                     </Grid>
 
                 </Grid>
