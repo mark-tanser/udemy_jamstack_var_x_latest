@@ -1,7 +1,10 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import Grid from "@material-ui/core/Grid"
-import { makeStyles } from "@material-ui/core/styles"
 import useMediaQuery from '@material-ui/core/useMediaQuery'
+import { makeStyles } from "@material-ui/core/styles"
+import { useQuery } from "@apollo/client"
+
+import { GET_DETAILS } from '../../apollo/queries'
 
 import ProductFrameGrid from './ProductFrameGrid'
 import ProductFrameList from './ProductFrameList'
@@ -53,6 +56,19 @@ export default function ListOfProducts({ products, content, layout, page, produc
 
         const [selectedSize, setSelectedSize] = useState(null)
         const [selectedColor, setSelectedColor] = useState(null)
+        const [stock, setStock] = useState(null)
+
+        const { leading, error, data } = useQuery(GET_DETAILS, {
+            variables: { id: product.node.strapiId }
+        })
+    
+        useEffect(() => {
+            if (error) { 
+                setStock(-1)
+            } else if (data) {
+                setStock(data.product.variants)
+            }
+        }, [error, data])
 
         const hasStyles = product.node.variants.some(variant => variant.style !== null)
 
@@ -77,6 +93,7 @@ export default function ListOfProducts({ products, content, layout, page, produc
                 setSelectedSize={setSelectedSize} 
                 setSelectedColor={setSelectedColor}
                 hasStyles={hasStyles}
+                stock={stock}
             />)
     }
 

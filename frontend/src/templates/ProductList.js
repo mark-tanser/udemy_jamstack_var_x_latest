@@ -62,13 +62,14 @@ export default function ProductList({
     )
 
     const scrollRef= useRef(null)
-    useEffect(() => {
-        setPage(1)
-    }, [filterOptions, layout]) // useEffects runs {function} when any of the [dependency array] states change
 
     const scroll = () => {
         scrollRef.current.scrollIntoView({ behavior: 'smooth' })
     }
+
+    useEffect(() => {
+        setPage(1)
+    }, [filterOptions, layout]) // useEffects runs {function} when any of the [dependency array] states change
 
     const productsPerPage = layout === "grid" ? 16 : 6  // this should also be adjusted for current page display / screen width (?)
 
