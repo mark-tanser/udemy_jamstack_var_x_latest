@@ -1,6 +1,6 @@
 import React from 'react'
 import { ThemeProvider } from '@material-ui/core/styles'
-import { ApolloWrapper } from '../../apollo?ApolloWrapper'
+import { ApolloWrapper } from '../../apollo/ApolloWrapper'
 import theme from './theme'
 
 const element = ({ element }) => {
