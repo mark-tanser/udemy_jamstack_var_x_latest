@@ -26,6 +26,7 @@ export default function Sizes({ sizes, selectedSize, setSelectedSize }) {
 
     const possibleSizes = ["S","M","L"]
     var actualSizes = []
+    
     if (possibleSizes.every(size => sizes.includes(size))) {
         actualSizes = possibleSizes
     }
@@ -35,11 +36,13 @@ export default function Sizes({ sizes, selectedSize, setSelectedSize }) {
             {actualSizes.map(size => (
                 <Grid item key={size}>
                     <Button 
-                    onClick={() => setSelectedSize(size)} 
-                    classes={{ root: clsx(classes.button,{
-                        [classes.selected]: selectedSize === size
-                    }) }}
-                >
+                        onClick={() => setSelectedSize(size)} 
+                        classes={{ 
+                            root: clsx(classes.button,{
+                                [classes.selected]: selectedSize === size,
+                            }), 
+                        }}
+                    >
                         <Typography variant="h3" classes={{ root: classes.size }}>
                             {size}
                         </Typography>
