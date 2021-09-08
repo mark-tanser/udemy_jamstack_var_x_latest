@@ -26,10 +26,13 @@ export default function Sizes({ sizes, selectedSize, setSelectedSize }) {
 
     const possibleSizes = ["S","M","L"]
     var actualSizes = []
-    
+
     if (possibleSizes.every(size => sizes.includes(size))) {
         actualSizes = possibleSizes
     }
+
+    console.log('sizes:', sizes)
+    console.log('actualSizes:', actualSizes)
 
     return (
         <Grid item container justifyContent="space-between">
