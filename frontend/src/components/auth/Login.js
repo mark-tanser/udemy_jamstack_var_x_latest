@@ -8,6 +8,8 @@ import TextField from "@material-ui/core/TextField"
 import InputAdornment from "@material-ui/core/InputAdornment"
 import { makeStyles } from "@material-ui/core/styles"
 
+import validate from "../ui/validate"
+
 import accountIcon from "../../images/account.svg"
 import EmailAdornment from "../../images/EmailAdornment"
 import passwordAdornment from "../../images/password-adornment.svg"
@@ -15,7 +17,7 @@ import hidePassword from "../../images/hide-password.svg"
 import showPassword from "../../images/show-password.svg"
 import addUserIcon from "../../images/add-user.svg"
 import forgotPasswordIcon from "../../images/forgot.svg"
-import close from "../../images/close.svg"
+import closeIcon from "../../images/close.svg"
 
 
 
@@ -50,6 +52,15 @@ const useStyles = makeStyles(theme => ({
     visibleIcon: {
         padding: 0
     },
+    passwordError: {
+        marginTop: "0rem",
+    },
+    close: {
+        paddingTop: 5
+    },
+    reset: {
+        marginTop: "-4rem"
+    },
     "@global": {
         ".MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before": {
           borderBottom: `2px solid ${theme.palette.secondary.main}`,
@@ -57,92 +68,137 @@ const useStyles = makeStyles(theme => ({
         ".MuiInput-underline:after": {
           borderBottom: `2px solid ${theme.palette.primary.main}`,
         },
-      },
+    },
 }))
 
-export default function Login() {
+export default function Login({ steps, setSelectedStep }) {
     const classes = useStyles()
 
-const [email, setEmail] = useState("")
-const [password, setPassword] = useState("")
-const [visible, setVisible] = useState(false)
+    const [values,setValues] = useState({
+        email: "",
+        password: ""
+    })
+
+    const [errors, setErrors] = useState({})
+    const [visible, setVisible] = useState(false)
+    const [forgot, setForgot] = useState(false)
+
+    const fields = {
+        email: {
+            helperText: "invalid email",
+            placeholder: "Email",
+            type: "text",
+            startAdornment: (
+                <span className={classes.emailAdornment}>
+                    <EmailAdornment />
+                </span>
+            )
+        },
+        password: {
+            helperText: "your password must be at least eight characters and you include one uppercase letter, one number, and one special character",
+            placeholder: "Password",
+            hidden: forgot,
+            type: visible ? "text" : "password",
+            startAdornment: <img src={passwordAdornment} alt="password" />,
+            endAdornment: (
+                <img src={visible ? showPassword : hidePassword} alt={`${visible ? "Show" : "Hide"} Password`} />
+            )
+        }
+    }
+
+    const navigateSignUp = () => {
+        const signUp = steps.find(step => step.label === "Sign Up")
+
+        setSelectedStep(steps.indexOf(signUp))
+    }
 
     return (
         <>
             <Grid item classes={{ root: classes.accountIcon }}>
                 <img src={accountIcon} alt="login page" />
             </Grid>
+            {Object.keys(fields).map(field => {
+                const validateHelper = (event) => {
+                    const valid = validate({ [field]: event.target.value })
+                        setErrors({ ...errors, [field]: !valid[field] })
+                }
+
+                return !fields[field].hidden ? (
+                    <Grid item key={field}>
+                        <TextField 
+                            value={values[field]} 
+                            onChange={e => {
+                                if (errors[field]) {
+                                    validateHelper(e)
+                                }
+                                setValues({...values, [field]: e.target.value })
+                            }}
+                            classes={{root: classes.textField}}
+                            onBlur={e => {validateHelper(e)}}
+                            error={errors[field]}
+                            helperText={errors[field] && fields[field].helperText}
+                            placeholder={fields[field].placeholder} 
+                            type={fields[field].type}
+                            InputProps={{ 
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        {fields[field].startAdornment}
+                                    </InputAdornment>
+                                    
+                                ),
+                                endAdornment: fields[field].endAdornment ? (
+                                    <InputAdornment position="end">
+                                        <IconButton 
+                                            classes={{ root: classes.visibleIcon }} 
+                                            onClick={() => setVisible(!visible)}
+                                        >
+                                            {fields[field].endAdornment}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ) : undefined,
+                                classes: { input: classes.input }
+                            }} 
+                        />
+                    </Grid>
+                ) : null
+            })}
+            
             <Grid item>
-                <TextField 
-                    value={email} 
-                    onChange={e => setEmail(e.target.value)} 
-                    classes={{root: classes.textField}} 
-                    placeholder="Email" 
-                    InputProps={{ 
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <span className={classes.emailAdornment}>
-                                    <EmailAdornment />
-                                </span>
-                            </InputAdornment>
-                        ),
-                        classes: { input: classes.input }
-                    }} 
-                />
-            </Grid>
-            <Grid item>
-                <TextField 
-                    value={password} 
-                    onChange={e => setPassword(e.target.value)} 
-                    classes={{root: classes.textField}} 
-                    placeholder="Password" 
-                    type={visible ? "text" : "password"}
-                    InputProps={{ 
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <img src={passwordAdornment} alt="password" />
-                            </InputAdornment>
-                        ),
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton 
-                                    classes={{ root: classes.visibleIcon }} 
-                                    onClick={() => setVisible(!visible)}
-                                >
-                                    <img 
-                                        src={visible ? showPassword : hidePassword} 
-                                        alt={`${visible ? "Show" : "Hide"} Password`} 
-                                    />
-                                </IconButton>
-                            </InputAdornment>
-                        ),
-                        classes: { input: classes.input }
-                    }} 
-                />
-            </Grid>
-            <Grid item>
-                <Button variant="contained" color="secondary" classes={{ root: classes.login}}>
+                <Button 
+                    variant="contained" 
+                    color="secondary" 
+                    classes={{ root: clsx(classes.login, {[classes.reset]: forgot
+                    }) }}
+                >
                     <Typography variant="h5">
-                        login
+                        {forgot ? "reset password" : "login"}
                     </Typography>
                 </Button>
             </Grid>
-            <Grid item>
-                <Button classes={{ root: classes.facebookButton }}>
-                    <Typography variant="h3" classes={{ root: classes.facebookText }}>
-                        login with Facebook
-                    </Typography>
-                </Button>
-            </Grid>
+
+            {forgot ? null : (
+                <Grid item>
+                    <Button classes={{ root: clsx(classes.facebookButton, {
+                        [classes.passwordError]: errors.password
+                    }) }}>
+                        <Typography variant="h3" classes={{ root: classes.facebookText }}>
+                            login with Facebook
+                        </Typography>
+                    </Button>
+                </Grid>
+            )}
+            
             <Grid item container justifyContent="space-between">
                 <Grid item>
-                    <IconButton>
+                    <IconButton onClick={navigateSignUp}>
                         <img src={addUserIcon} alt="sign up" />
                     </IconButton>
                 </Grid>
-                <Grid item>
-                    <IconButton>
-                        <img src={forgotPasswordIcon} alt="forgot password" />
+                <Grid item classes={{ root: clsx({
+                    [classes.close]: forgot
+                }) }}>
+                    <IconButton onClick={() => setForgot(!forgot)}>
+                        <img src={forgot ? closeIcon : forgotPasswordIcon} alt={forgot ? "back to login" : "forgot password"} />
                     </IconButton>
                 </Grid>
             </Grid>

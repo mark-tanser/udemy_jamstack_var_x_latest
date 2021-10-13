@@ -8,6 +8,7 @@ import IconButton from "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
 
 import Login from "./Login"
+import SignUp from "./SignUp"
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -23,14 +24,25 @@ const useStyles = makeStyles(theme => ({
         height: "40rem",
         width: "100%",
         border: `2rem solid ${theme.palette.primary.main}`
-    }
+    },
+    "@global": {
+        ".MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before": {
+          borderBottom: `2px solid ${theme.palette.secondary.main}`,
+        },
+        ".MuiInput-underline:after": {
+          borderBottom: `2px solid ${theme.palette.primary.main}`,
+        },
+    },
 }))
 
 export default function AuthPortal() {
     const classes = useStyles()
     const [selectedStep, setSelectedStep] = useState(0)
 
-    const steps = [{component: Login, label: "Login"}]
+    const steps = [
+        { component: Login, label: "Login" }, 
+        { component: SignUp, label: "Sign Up" }
+    ]
 
     return (
         <Grid container justify="center" classes={{ root: classes.container }}>
@@ -42,9 +54,15 @@ export default function AuthPortal() {
                         alignItems="center" 
                         classes={{ root: classes.inner }}
                     >
-                        {steps.map((Step, i) => (
-                            selectedStep === i ? <Step.component setSelectedStep={setSelectedStep} steps={steps} key={Step.label}/> : null
-                        ))}
+                        {steps.map((Step, i) => 
+                            selectedStep === i ? (
+                                <Step.component 
+                                    setSelectedStep={setSelectedStep} 
+                                    steps={steps} 
+                                    key={Step.label}
+                                /> 
+                            ) : null
+                        )}
                     </Grid>
                 </Paper>
             </Grid>
