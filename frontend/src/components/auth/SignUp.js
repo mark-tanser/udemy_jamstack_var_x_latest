@@ -8,6 +8,9 @@ import Button from "@material-ui/core/Button"
 import IconButton from "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
 
+import Fields from "./Fields"
+import { EmailPassword } from "./Login"
+
 import addUserIcon from "../../images/add-user.svg"
 import nameAdornment from "../../images/name-adornment.svg"
 import forward from "../../images/forward-outline.svg"
@@ -37,51 +40,79 @@ const useStyles = makeStyles(theme => ({
     navigation: {
         height: "4rem",
         width: "4rem"
+    },
+    visibleIcon: {
+        padding: 0
+    },
+    emailAdornment: {
+        height: 17,
+        width: 22,
+        marginBottom: 10
+    },
+    removeButtonMargin: {
+        marginTop: 0
     }
 }))
 
 export default function SignUp({ steps, setSelectedStep }) {
     const classes = useStyles()
-    const [name, setName] = useState("")
+
+    const [values,setValues] = useState({
+        email: "",
+        password: "",
+        name: ""
+    })
+
+    const [errors, setErrors] = useState({})
+    const [visible, setVisible] = useState(false)
     const [info, setInfo] = useState(false)
 
     const handleNavigate = direction => {
         if (direction === "forward") {
             setInfo(true)
         } else {
-            const login = steps.find(step => step.label === "Login")
-            
-            setSelectedStep(steps.indexOf(login))
+            if (info) { 
+                setInfo(false)
+            } else {
+                const login = steps.find(step => step.label === "Login")
+                
+                setSelectedStep(steps.indexOf(login))
+            }
         }
     }
+    
+    const handleComplete = () => {
+        const complete = steps.find(step => step.label === "Complete")
+
+        setSelectedStep(steps.indexOf(complete))
+    }
+    const nameField = { name: {
+        helperText: "you must enter a name",
+        placeholder: "Name",
+        startAdornment: <img src={nameAdornment} alt="name" />,
+    }}
+
+    const fields = info ? EmailPassword(classes, false, false, visible, setVisible) : nameField
 
     return (
         <>
             <Grid item>
                 <img src={addUserIcon} alt="new user" className={classes.addUserIcon}/>
             </Grid>
+            <Fields fields={fields} errors={errors} setErrors={setErrors} values={values} setValues={setValues} />
             <Grid item>
-                <TextField 
-                    value={name} 
-                    onChange={e => {
-                        setName(e.target.value)
+                <Button 
+                    variant="contained" 
+                    color="secondary" 
+                    onClick={() => info ? handleComplete() : null}
+                    classes={{ 
+                        root: clsx(classes.facebookSignUp, {
+                            [classes.removeButtonMargin]: info
+                        }),
                     }}
-                    classes={{root: classes.textField}}
-                    placeholder="Name"
-                    InputProps={{ 
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <img src={nameAdornment} alt="name" />
-                            </InputAdornment>
-                        ),
-                        classes: { input: classes.input }
-                    }} 
-                />
-            </Grid>
-            <Grid item>
-                <Button variant="contained" color="secondary" classes={{ root: classes.facebookSignUp}}>
+                >
                     <Typography variant="h5" classes={{ root: classes.facebookText }}>
-                        sign up with Facebook
+                        sign up{info ? "" : " with Facebook"}
                     </Typography>
                 </Button>
             </Grid>
@@ -91,11 +122,13 @@ export default function SignUp({ steps, setSelectedStep }) {
                             <img src={backward} alt="back to login" className={classes.navigation}/>
                         </IconButton>
                     </Grid>
-                    <Grid item>
-                        <IconButton onClick={() => handleNavigate("forward")}>
-                            <img src={forward} alt="continue registration" className={classes.navigation}/>
-                        </IconButton>
-                    </Grid>
+                    {info ? null : (
+                        <Grid item>
+                            <IconButton onClick={() => handleNavigate("forward")}>
+                                <img src={forward} alt="continue registration" className={classes.navigation}/>
+                            </IconButton>
+                        </Grid>
+                    )}
             </Grid>
         </>
     )
