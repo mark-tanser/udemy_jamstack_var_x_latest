@@ -1,9 +1,5 @@
-import React, { useState } from "react"
-import clsx from 'clsx'
+import React from "react"
 import Grid from "@material-ui/core/Grid"
-import Typography from "@material-ui/core/Typography"
-import Button from "@material-ui/core/Button"
-import IconButton from "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
 
 import TextField from "@material-ui/core/TextField"
@@ -26,8 +22,7 @@ export default function Fields({ fields, errors, setErrors, values, setValues}) 
     return (
         Object.keys(fields).map(field => {
             const validateHelper = (event) => {
-                const valid = validate({ [field]: event.target.value })
-                    setErrors({ ...errors, [field]: !valid[field] })
+                return validate({ [field]: event.target.value })
             }
 
             return !fields[field].hidden ? (
@@ -35,13 +30,17 @@ export default function Fields({ fields, errors, setErrors, values, setValues}) 
                     <TextField 
                         value={values[field]} 
                         onChange={e => {
-                            if (errors[field]) {
-                                validateHelper(e)
+                            const valid = validateHelper(e)
+                            if (errors[field] || valid[field] === true) {
+                                setErrors({ ...errors, [field]: !valid[field] })
                             }
                             setValues({...values, [field]: e.target.value })
                         }}
                         classes={{root: classes.textField}}
-                        onBlur={e => {validateHelper(e)}}
+                        onBlur={e => {
+                            const valid = validateHelper(e)
+                            setErrors({ ...errors, [field]: !valid[field] })
+                        }}
                         error={errors[field]}
                         helperText={errors[field] && fields[field].helperText}
                         placeholder={fields[field].placeholder} 

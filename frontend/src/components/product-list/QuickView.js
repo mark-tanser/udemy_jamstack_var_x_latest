@@ -125,7 +125,7 @@ export default function QuickView({
                     >
                         <img 
                             src={url} 
-                            alt="product image" 
+                            alt="product" 
                             className={classes.productImage}
                         />
                     </Grid>
