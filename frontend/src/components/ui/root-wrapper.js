@@ -1,18 +1,17 @@
 import React from 'react'
 import { ThemeProvider } from '@material-ui/core/styles'
 import { ApolloWrapper } from '../../apollo/ApolloWrapper'
-//import { UserWrapper } from "../../contexts"
+import { UserWrapper } from "../../contexts/wrappers/UserWrapper"
 import theme from './theme'
 
-const element = ({ element }) => {
+export default ({ element }) => {
     return (
         <ThemeProvider theme={theme}>
             <ApolloWrapper>
-                {element}
+                <UserWrapper>{element}</UserWrapper>
             </ApolloWrapper>       
         </ThemeProvider>
     )
 }
 
-export default element
 
