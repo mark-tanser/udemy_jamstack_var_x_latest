@@ -1,20 +1,24 @@
-import React, { useState } from "react"
-//import { Link } from "gatsby"
-//import { StaticImage } from "gatsby-plugin-image"
+import React, { useState, useContext } from "react"
+import { Button } from "@material-ui/core"
+
+import { UserContext } from "../contexts"
+import { setUser } from "../contexts/actions"
 
 import Layout from "../components/ui/layout"
 import AuthPortal from "../components/auth/AuthPortal"
 
+export default function Account() {
+  const { user, dispatchUser, defaultUser } = useContext(UserContext)
 
-//import Seo from "../components/ui/seo"
+  const handleLogout = () => {
+    dispatchUser(setUser(defaultUser))
+  }
 
-const AccountPage = () => (
-  <Layout>
-
-    <AuthPortal />
-    
-    
-  </Layout>
-)
-
-export default AccountPage
+  return (
+    <Layout>
+      {user.jwt && user.onboarding ? <Button variant="contained" onClick={handleLogout}>
+        logout
+      </Button> : <AuthPortal />}
+    </Layout>
+  )
+}
