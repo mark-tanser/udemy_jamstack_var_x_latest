@@ -3,6 +3,7 @@ import axios from "axios"
 import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
+import { CircularProgress } from "@material-ui/core"
 import Button from "@material-ui/core/Button"
 import IconButton from "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
@@ -66,6 +67,7 @@ export default function SignUp({ steps, setSelectedStep, dispatchUser }) {
     const [errors, setErrors] = useState({})
     const [visible, setVisible] = useState(false)
     const [info, setInfo] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     const handleNavigate = direction => {
         if (direction === "forward") {
@@ -82,21 +84,25 @@ export default function SignUp({ steps, setSelectedStep, dispatchUser }) {
     }
     
     const handleComplete = () => {
-        axios.post(process.env.GATSBY_STRAPI_URL + "/auth/local/register", {
-            username: values.name,
-            email: values.email,
-            password: values.password
-        }).then(response => {
-            dispatchUser(setUser({ ...response.data.user, jwt: response.data.jwt}))
+        setLoading(true)
+        axios
+            .post(process.env.GATSBY_STRAPI_URL + "/auth/local/register", {
+                username: values.name,
+                email: values.email,
+                password: values.password
+            })
+            .then(response => {
+                setLoading(false)
+                dispatchUser(setUser({ ...response.data.user, jwt: response.data.jwt}))
 
-            const complete = steps.find(step => step.label === "Complete")
+                const complete = steps.find(step => step.label === "Complete")
 
-            setSelectedStep(steps.indexOf(complete))
-
-        }).catch(error => {
-            console.error(error)
-        })
-        
+                setSelectedStep(steps.indexOf(complete))
+            })
+            .catch(error => {
+                setLoading(false)
+                console.error(error)
+            })
     }
 
     const nameField = { name: {
@@ -129,9 +135,12 @@ export default function SignUp({ steps, setSelectedStep, dispatchUser }) {
                         }),
                     }}
                 >
-                    <Typography variant="h5" classes={{ root: classes.facebookText }}>
-                        sign up{info ? "" : " with Facebook"}
-                    </Typography>
+                    {loading ? <CircularProgress /> : (
+                        <Typography variant="h5" classes={{ root: classes.facebookText }}>
+                            sign up{info ? "" : " with Facebook"}
+                        </Typography>
+                    )}
+                    
                 </Button>
             </Grid>
             <Grid item container justifyContent="space-between">
