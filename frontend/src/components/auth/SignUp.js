@@ -10,7 +10,7 @@ import { makeStyles } from "@material-ui/core/styles"
 
 import Fields from "./Fields"
 import { EmailPassword } from "./Login"
-import { setUser } from "../../contexts/actions"
+import { setUser, setSnackbar } from "../../contexts/actions"
 
 import addUserIcon from "../../images/add-user.svg"
 import nameAdornment from "../../images/name-adornment.svg"
@@ -55,7 +55,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-export default function SignUp({ steps, setSelectedStep, dispatchUser }) {
+export default function SignUp({ steps, setSelectedStep, dispatchUser, dispatchFeedback }) {
     const classes = useStyles()
 
     const [values,setValues] = useState({
@@ -100,8 +100,10 @@ export default function SignUp({ steps, setSelectedStep, dispatchUser }) {
                 setSelectedStep(steps.indexOf(complete))
             })
             .catch(error => {
+                const { message } = error.response.data.message[0].messages[0]
                 setLoading(false)
                 console.error(error)
+                dispatchFeedback(setSnackbar({ status: "error", message }))
             })
     }
 
@@ -127,7 +129,7 @@ export default function SignUp({ steps, setSelectedStep, dispatchUser }) {
                 <Button 
                     variant="contained" 
                     color="secondary" 
-                    disabled={info && disabled}
+                    disabled={loading || info && disabled}
                     onClick={() => info ? handleComplete() : null}
                     classes={{ 
                         root: clsx(classes.facebookSignUp, {
