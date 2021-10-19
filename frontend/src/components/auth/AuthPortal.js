@@ -38,8 +38,6 @@ export default function AuthPortal() {
     const [selectedStep, setSelectedStep] = useState(0)
     const { user, dispatchUser } = useContext(UserContext)
 
-    console.log(user)
-
     const steps = [
         { component: Login, label: "Login" }, 
         { component: SignUp, label: "Sign Up" },
@@ -61,6 +59,8 @@ export default function AuthPortal() {
                                 <Step.component 
                                     setSelectedStep={setSelectedStep} 
                                     steps={steps}
+                                    user={user}
+                                    dispatchUser={dispatchUser}
                                     key={Step.label}
                                 /> 
                             ) : null

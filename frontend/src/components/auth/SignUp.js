@@ -9,6 +9,7 @@ import { makeStyles } from "@material-ui/core/styles"
 
 import Fields from "./Fields"
 import { EmailPassword } from "./Login"
+import { setUser } from "../../contexts/actions"
 
 import addUserIcon from "../../images/add-user.svg"
 import nameAdornment from "../../images/name-adornment.svg"
@@ -53,7 +54,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-export default function SignUp({ steps, setSelectedStep }) {
+export default function SignUp({ steps, setSelectedStep, dispatchUser }) {
     const classes = useStyles()
 
     const [values,setValues] = useState({
@@ -81,13 +82,12 @@ export default function SignUp({ steps, setSelectedStep }) {
     }
     
     const handleComplete = () => {
-        axios.post(process.env.GATSBY_STRAPI_URL + '/auth/local/register', {
+        axios.post(process.env.GATSBY_STRAPI_URL + "/auth/local/register", {
             username: values.name,
             email: values.email,
             password: values.password
         }).then(response => {
-            console.log("UserProfile", response.data.user)
-            console.log("JWT", response.data.jwt)
+            dispatchUser(setUser({ ...response.data.user, jwt: response.data.jwt}))
 
             const complete = steps.find(step => step.label === "Complete")
 

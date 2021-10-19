@@ -10,6 +10,7 @@ import IconButton from "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
 
 import Fields from "./Fields"
+import { setUser } from "../../contexts/actions"
 
 import accountIcon from "../../images/account.svg"
 import EmailAdornment from "../../images/EmailAdornment"
@@ -93,7 +94,7 @@ export const EmailPassword = (classes, hideEmail, hidePassword, visible, setVisi
     }
 )
 
-export default function Login({ steps, setSelectedStep}) {
+export default function Login({ steps, setSelectedStep, user, dispatchUser}) {
     const classes = useStyles()
 
     const [values,setValues] = useState({
@@ -115,16 +116,17 @@ export default function Login({ steps, setSelectedStep}) {
 
     const handleLogin = () => {
 
-        axios.post(process.env.GATSBY_STRAPI_URL + '/auth/local', {
+        axios.post(process.env.GATSBY_STRAPI_URL + "/auth/local", {
             identifier: values.email, 
             password: values.password
         }).then(response => {
-            console.log("User Profile", response.data.user)
-            console.log("JWT", response.data.jwt)
+            dispatchUser(setUser({ ...response.data.user, jwt: response.data.jwt}))
         }).catch(error => {
             console.error(error)
         })
     }
+
+    console.log("login", user)
 
     const disabled = Object.keys(errors).some(error => errors[error] === true) || 
         Object.keys(errors).length !== Object.keys(values).length
