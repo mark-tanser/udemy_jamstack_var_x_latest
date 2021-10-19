@@ -3,6 +3,7 @@ import axios from "axios"
 import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
+
 import Button from "@material-ui/core/Button"
 import IconButton from "@material-ui/core/IconButton"
 
@@ -18,7 +19,6 @@ import showPasswordIcon from "../../images/show-password.svg"
 import addUserIcon from "../../images/add-user.svg"
 import forgotPasswordIcon from "../../images/forgot.svg"
 import closeIcon from "../../images/close.svg"
-
 
 
 const useStyles = makeStyles(theme => ({
@@ -93,7 +93,7 @@ export const EmailPassword = (classes, hideEmail, hidePassword, visible, setVisi
     }
 )
 
-export default function Login({ steps, setSelectedStep }) {
+export default function Login({ steps, setSelectedStep}) {
     const classes = useStyles()
 
     const [values,setValues] = useState({
@@ -114,6 +114,7 @@ export default function Login({ steps, setSelectedStep }) {
     }
 
     const handleLogin = () => {
+
         axios.post(process.env.GATSBY_STRAPI_URL + '/auth/local', {
             identifier: values.email, 
             password: values.password
@@ -140,13 +141,14 @@ export default function Login({ steps, setSelectedStep }) {
                     variant="contained" 
                     color="secondary" 
                     disabled={!forgot && disabled}
-                    onClick={() => forgot ? null : handleLogin}
+                    onClick={() => forgot ? null : handleLogin()}
                     classes={{ root: clsx(classes.login, {[classes.reset]: forgot
                     }) }}
                 >
                     <Typography variant="h5">
                         {forgot ? "reset password" : "login"}
                     </Typography>
+                    
                 </Button>
             </Grid>
 

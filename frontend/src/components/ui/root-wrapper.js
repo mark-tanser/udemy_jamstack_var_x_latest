@@ -1,7 +1,7 @@
 import React from 'react'
 import { ThemeProvider } from '@material-ui/core/styles'
 import { ApolloWrapper } from '../../apollo/ApolloWrapper'
-import { UserWrapper } from "../../contexts/wrappers/UserWrapper"
+import { UserWrapper } from "../../contexts"
 import theme from './theme'
 
 export default ({ element }) => {
