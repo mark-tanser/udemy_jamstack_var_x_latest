@@ -37,9 +37,12 @@ export default function AuthPortal() {
     const classes = useStyles()
     const [selectedStep, setSelectedStep] = useState(0)
     const { user, dispatchUser } = useContext(UserContext)
+<<<<<<< HEAD
 
     console.log(user)
 
+=======
+>>>>>>> afa4a13da444162954a3aafdc55d3ec62118da9b
     console.log(user)
 
     const steps = [
