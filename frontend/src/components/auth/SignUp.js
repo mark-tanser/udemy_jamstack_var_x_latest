@@ -85,7 +85,7 @@ export default function SignUp({ steps, setSelectedStep, dispatchUser, dispatchF
     
     const handleComplete = () => {
         setLoading(true)
-        
+
         axios
             .post(process.env.GATSBY_STRAPI_URL + "/auth/local/register", {
                 username: values.name,
@@ -130,6 +130,8 @@ export default function SignUp({ steps, setSelectedStep, dispatchUser, dispatchF
                 <Button 
                     variant="contained" 
                     color="secondary" 
+                    component={!info && "a"}
+                    href={!info && `${process.env.GATSBY_STRAPI_URL}/connect/facebook`}
                     disabled={loading || info && disabled}
                     onClick={() => info ? handleComplete() : null}
                     classes={{ 

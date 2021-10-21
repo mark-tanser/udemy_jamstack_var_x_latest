@@ -208,9 +208,15 @@ export default function Login({
 
             {forgot ? null : (
                 <Grid item>
-                    <Button classes={{ root: clsx(classes.facebookButton, {
-                        [classes.passwordError]: errors.password
-                    }) }}>
+                    <Button 
+                        component={"a"}
+                        href={`${process.env.GATSBY_STRAPI_URL}/connect/facebook`}
+                        classes={{ 
+                            root: clsx(classes.facebookButton, {
+                                [classes.passwordError]: errors.password
+                            }) 
+                        }}
+                    >
                         <Typography variant="h3" classes={{ root: classes.facebookText }}>
                             login with Facebook
                         </Typography>
