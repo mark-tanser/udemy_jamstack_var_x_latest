@@ -31,11 +31,13 @@ const useStyles = makeStyles(theme => ({
     accountIcon: {
         marginTop: "2rem"
     },
-    
     login: {
         width: "20rem",
         borderRadius: 50,
-        textTransform: "none"
+        textTransform: "none",
+        [theme.breakpoints.down("xs")]: {
+            width: "15rem",
+        },
     },
     facebookButton: {
         marginTop: "-1rem",
@@ -57,6 +59,11 @@ const useStyles = makeStyles(theme => ({
     reset: {
         marginTop: "-4rem"
     },
+    buttonText: {
+        [theme.breakpoints.down("xs")]: {
+            fontSize: "1.5rem",
+        },
+    }
 }))
 
 export const EmailPassword = (classes, hideEmail, hidePassword, visible, setVisible) => (
@@ -197,9 +204,9 @@ export default function Login({
                     classes={{ root: clsx(classes.login, {[classes.reset]: forgot
                     }) }}
                 >
-                    {loading ? <CircularProgress /> : (
-                        <Typography variant="h5">
-                            {forgot ? "reset password" : "login"}
+                    {loading ? (<CircularProgress />) : (
+                        <Typography variant="h5" classes={{ root: classes.buttonText}}>
+                            {forgot ? "forgot password" : "login"}
                         </Typography>
                     )}
                     
