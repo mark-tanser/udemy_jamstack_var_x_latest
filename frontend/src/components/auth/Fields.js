@@ -15,12 +15,12 @@ const useStyles = makeStyles(theme => ({
         }
     },
     input: {
-        color: theme.palette.secondary.main,
+        color: ({ isWhite }) => (isWhite ? "#fff" : theme.palette.secondary.main),
     },
 }))
 
-export default function Fields({ fields, errors, setErrors, values, setValues}) {
-    const classes = useStyles()
+export default function Fields({ fields, errors, setErrors, values, setValues, isWhite}) {
+    const classes = useStyles({ isWhite })
 
     return (
         Object.keys(fields).map(field => {
