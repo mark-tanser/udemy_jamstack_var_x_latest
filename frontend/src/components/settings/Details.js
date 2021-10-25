@@ -36,6 +36,13 @@ const useStyles = makeStyles(theme => ({
             marginLeft: "5rem"
         }
     },
+    slotContainer: {
+        position: "absolute",
+        bottom: 0
+    }, 
+    detailContainer: {
+        position: "relative"
+    },
     "@global": {
         ".MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before": {
           borderBottom: '2px solid #fff',
@@ -73,7 +80,7 @@ export default function Details() {
     const fields = [name_phone, email_password]
 
     return (
-        <Grid item container direction="column" xs={6} alignItems="center">
+        <Grid item container direction="column" xs={6} alignItems="center" justifyContent="center" classes={{ root: classes.detailContainer }}>
             <Grid item>
                 <img src={fingerprint} alt="details settings" className={classes.icon}/>
             </Grid>
@@ -89,7 +96,7 @@ export default function Details() {
                     />
                 </Grid>
             ))}
-            <Grid container>
+            <Grid item container classes={{root: classes.slotContainer}}>
                 <Slots />
             </Grid>
         </Grid>
