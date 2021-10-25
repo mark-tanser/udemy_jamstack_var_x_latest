@@ -7,6 +7,7 @@ import IconButton from "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
 
 import Fields from "../auth/Fields"
+import Slots from "./Slots"
 import { EmailPassword } from "../auth/Login"
 
 import fingerprint from "../../images/fingerprint.svg"
@@ -33,27 +34,6 @@ const useStyles = makeStyles(theme => ({
         marginBottom: "3rem",
         "& > :not(:first-child)": {
             marginLeft: "5rem"
-        }
-    },
-    slot: {
-        backgroundColor: "#fff",
-        borderRadius: 25,
-        width: "2.5rem",
-        height: "2.5rem",
-        minWidth: 0,
-        border: `0.15rem solid ${theme.palette.secondary.main}`,
-        "&:hover": {
-            backgroundColor: "#fff"
-        }
-    },
-    slotText: {
-        color: theme.palette.secondary.main,
-        marginLeft: "-0.25rem"
-    },
-    slotWrapper: {
-        marginLeft: "3rem",
-        "& > :not(:first-child)": {
-            marginLeft: "-0.5rem"
         }
     },
     "@global": {
@@ -110,15 +90,7 @@ export default function Details() {
                 </Grid>
             ))}
             <Grid container>
-                <Grid item classes={{ root: classes.slotWrapper }}>
-                    {[1,2,3].map(slot => (
-                        <Button key={slot} classes={{ root: classes.slot }}>
-                            <Typography variant="h5" classes={{ root: classes.slotText }}>
-                                {slot}
-                            </Typography>
-                        </Button>
-                    ))}
-                </Grid>
+                <Slots />
             </Grid>
         </Grid>
     )
