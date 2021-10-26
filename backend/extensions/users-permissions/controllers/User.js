@@ -2,7 +2,7 @@ const { sanitizeEntity } = require("strapi-utils");
 
 const sanitizeUser = user =>
     sanitizeEntity(user, {
-        model: SVGAnimatedPreserveAspectRatio.query("user", "users-permissions").model,
+        model: strapi.query("user", "users-permissions").model,
     });
 
     module.exports = {
