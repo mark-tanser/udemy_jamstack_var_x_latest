@@ -27,6 +27,10 @@ export default function Settings({ setSelectedSetting }) {
     const { user } = useContext(UserContext)
     const [edit, setEdit]  = useState(false)
     const [changesMade, setChangesMade] = useState(false)
+    const [detailsValues, setDetailsValues] = useState({name: "", phone: "", email: "", password: "********"})
+    const [locationValues, locationSetValues] = useState({street: "", zip: "", city: "", state: ""})
+    const [locationSlot, setLocationSlot] = useState(0)
+    const [detailsSlot, setDetailsSlot] = useState(0)
 
     return (
        <>
@@ -35,6 +39,10 @@ export default function Settings({ setSelectedSetting }) {
                     user={user} 
                     edit={edit} 
                     setChangesMade={setChangesMade}
+                    values={detailsValues}
+                    setValues={setDetailsValues}
+                    slot={detailsSlot}
+                    setSlot={setDetailsSlot}
                 />
                 <Payments 
                     user={user} 
@@ -49,13 +57,21 @@ export default function Settings({ setSelectedSetting }) {
                     user={user} 
                     edit={edit}
                     setChangesMade={setChangesMade}
+                    values={locationValues}
+                    setValues={locationSetValues}
+                    slot={locationSlot}
+                    setSlot={setLocationSlot}
                 />
                 <Edit 
                     user={user} 
-                    edit={edit} s
+                    edit={edit}
                     setEdit={setEdit} 
                     setSelectedSetting={setSelectedSetting}
                     changesMade={changesMade}
+                    details={detailsValues}
+                    locations={locationValues}
+                    detailsSlot={detailsSlot}
+                    locationSlot={locationSlot}
                 />
             </Grid>
        </>
