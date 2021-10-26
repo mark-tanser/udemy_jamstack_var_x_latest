@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
@@ -53,11 +53,25 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-export default function Details() {
+export default function Details({ user, edit, setChangesMade }) {
     const classes = useStyles()
     const [visible, setVisible] = useState(false)
-    const [values, setValues] = useState({name: "", phone: "", email: "", password: ""})
+    const [values, setValues] = useState({name: "", phone: "", email: "", password: "********"})
     const [errors, setErrors] = useState({})
+    const [slot, setSlot] = useState(0)
+
+    useEffect(() => {
+        setValues({ ...user.contactInfo[slot], password: "********"})
+    }, [slot])
+        
+    useEffect(() => {
+        const changed = Object
+            .keys(user.contactInfo[slot])
+            .some(field => values[field] !== user.contactInfo[slot][field])
+
+        setChangesMade(changed)
+
+    }, [values])
 
     const email_password = EmailPassword(classes, false, false, visible, setVisible, true)
     const name_phone = {
@@ -80,7 +94,15 @@ export default function Details() {
     const fields = [name_phone, email_password]
 
     return (
-        <Grid item container direction="column" xs={6} alignItems="center" justifyContent="center" classes={{ root: classes.detailContainer }}>
+        <Grid 
+            item 
+            container 
+            direction="column" 
+            xs={6} 
+            alignItems="center" 
+            justifyContent="center" 
+            classes={{ root: classes.detailContainer }}
+        >
             <Grid item>
                 <img src={fingerprint} alt="details settings" className={classes.icon}/>
             </Grid>
@@ -93,11 +115,15 @@ export default function Details() {
                         errors={errors}
                         setErrors={setErrors}
                         isWhite
+                        disabled={!edit}
                     />
                 </Grid>
             ))}
-            <Grid item container classes={{root: classes.slotContainer}}>
-                <Slots />
+            <Grid 
+                item container 
+                classes={{root: classes.slotContainer}}
+            >
+                <Slots slot={slot} setSlot={setSlot}/>
             </Grid>
         </Grid>
     )

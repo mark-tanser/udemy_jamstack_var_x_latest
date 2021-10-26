@@ -46,6 +46,9 @@ const useStyles = makeStyles(theme => ({
             cursor: "pointer",
             backgroundColor: theme.palette.secondary.main
         }
+    },
+    logout: {
+        color: theme.palette.error.main
     }
 }))
 
@@ -54,7 +57,7 @@ const AnimatedGrid = animated(Grid)
 
 export default function SettingsPortal() {
 
-    const { user } = useContext(UserContext)
+    const { user, dispatchUser, defaultUser } = useContext(UserContext)
     const [selectedSetting, setSelectedSetting] = useState(null)
     const [resizeListener, sizes] = useResizeAware()
     const [showComponent, setShowComponent] = useState(false)
@@ -112,6 +115,10 @@ export default function SettingsPortal() {
         delay: selectedSetting === null || showComponent ? 0 : 1350
     })
 
+    const handleLogout = () => {
+        dispatchUser(setUser(defaultUser))
+    }
+
     useEffect(() => {
         if (selectedSetting === null) {
             setShowComponent(false)
@@ -132,6 +139,11 @@ export default function SettingsPortal() {
             <Grid item>
                 <Typography variant="h4" classes={{ root: classes.name }}>
                     Welcome back, {user.username}
+                </Typography>
+            </Grid>
+            <Grid item>
+                <Typography onClick={handleLogout} variant="h5" classes={{ root: classes.logout }}>
+                    logout
                 </Typography>
             </Grid>
             <Grid 

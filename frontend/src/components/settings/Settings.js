@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
 import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
@@ -11,6 +11,8 @@ import Payments from "./Payments"
 import Location from "./Location"
 import Edit from "./Edit"
 
+import { UserContext } from "../../contexts"
+
 const useStyles = makeStyles(theme => ({
     bottomRow: {
         borderTop: "4px solid #FFF"
@@ -22,16 +24,39 @@ const useStyles = makeStyles(theme => ({
 
 export default function Settings({ setSelectedSetting }) {
     const classes = useStyles()
+    const { user } = useContext(UserContext)
+    const [edit, setEdit]  = useState(false)
+    const [changesMade, setChangesMade] = useState(false)
 
     return (
        <>
             <Grid container classes={{ root: classes.sectionContainer }}>
-                <Details />
-                <Payments />
+                <Details 
+                    user={user} 
+                    edit={edit} 
+                    setChangesMade={setChangesMade}
+                />
+                <Payments 
+                    user={user} 
+                    edit={edit}
+                />
             </Grid>
-            <Grid container classes={{ root: clsx(classes.bottomRow, classes.sectionContainer) }}>
-                <Location />
-                <Edit setSelectedSetting={setSelectedSetting}/>
+            <Grid 
+                container 
+                classes={{ root: clsx(classes.bottomRow, classes.sectionContainer) }}
+            >
+                <Location 
+                    user={user} 
+                    edit={edit}
+                    setChangesMade={setChangesMade}
+                />
+                <Edit 
+                    user={user} 
+                    edit={edit} s
+                    setEdit={setEdit} 
+                    setSelectedSetting={setSelectedSetting}
+                    changesMade={changesMade}
+                />
             </Grid>
        </>
     )

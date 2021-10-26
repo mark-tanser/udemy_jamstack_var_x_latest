@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-export default function Fields({ fields, errors, setErrors, values, setValues, isWhite}) {
+export default function Fields({ fields, errors, setErrors, values, setValues, isWhite, disabled}) {
     const classes = useStyles({ isWhite })
 
     return (
@@ -48,6 +48,7 @@ export default function Fields({ fields, errors, setErrors, values, setValues, i
                         helperText={errors[field] && fields[field].helperText}
                         placeholder={fields[field].placeholder} 
                         type={fields[field].type}
+                        disabled={disabled}
                         InputProps={{ 
                             startAdornment: (
                                 <InputAdornment position="start">
