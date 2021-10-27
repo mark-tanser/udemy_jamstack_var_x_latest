@@ -24,11 +24,11 @@ const useStyles = makeStyles(theme => ({
 
 export default function Settings({ setSelectedSetting }) {
     const classes = useStyles()
-    const { user } = useContext(UserContext)
+    const { user, dispatchUser } = useContext(UserContext)
     const [edit, setEdit]  = useState(false)
     const [changesMade, setChangesMade] = useState(false)
     const [detailsValues, setDetailsValues] = useState({name: "", phone: "", email: "", password: "********"})
-    const [locationValues, locationSetValues] = useState({street: "", zip: "", city: "", state: ""})
+    const [locationValues, setLocationValues] = useState({street: "", zip: "", city: "", state: ""})
     const [locationSlot, setLocationSlot] = useState(0)
     const [detailsSlot, setDetailsSlot] = useState(0)
 
@@ -58,12 +58,13 @@ export default function Settings({ setSelectedSetting }) {
                     edit={edit}
                     setChangesMade={setChangesMade}
                     values={locationValues}
-                    setValues={locationSetValues}
+                    setValues={setLocationValues}
                     slot={locationSlot}
                     setSlot={setLocationSlot}
                 />
                 <Edit 
                     user={user} 
+                    dispatchUser={dispatchUser}
                     edit={edit}
                     setEdit={setEdit} 
                     setSelectedSetting={setSelectedSetting}

@@ -15,9 +15,9 @@ module.exports = {
             {name: "", email: "", phone: ""}
         ]
         data.locations = [
-            {street: "", zip: "", city: ""},
-            {street: "", zip: "", city: ""},
-            {street: "", zip: "", city: ""}
+            {street: "", zip: "", city: "", state: ""},
+            {street: "", zip: "", city: "", state: ""},
+            {street: "", zip: "", city: "", state: ""}
         ]
       },
     },

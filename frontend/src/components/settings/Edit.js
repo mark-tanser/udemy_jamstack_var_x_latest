@@ -9,7 +9,7 @@ import { CircularProgress } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
 import { FeedbackContext } from "../../contexts"
-import { setSnackbar } from "../../contexts/actions"
+import { setSnackbar, setUser } from "../../contexts/actions"
 
 import BackwardsIcon from "../../images/BackwardsOutline"
 import editIcon from "../../images/edit.svg"
@@ -25,34 +25,94 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-export default function Edit({ setSelectedSetting, edit, setEdit, details, locations, detailsSlot, locationSlot, changesMade }) {
+export default function Edit({ 
+    setSelectedSetting, 
+    edit, 
+    setEdit, 
+    details, 
+    locations, 
+    detailsSlot, 
+    locationSlot, 
+    changesMade,
+    user,
+    dispatchUser
+}) {
     const classes = useStyles()
     const { dispatchFeedback } = useContext(FeedbackContext)
     const [loading, setLoading] = useState(false)
+
+    console.log("Edit.js  locationSlot: ", locationSlot)
 
     const handleEdit = () => {
         setEdit(!edit)
 
         if (edit && changesMade) {
             setLoading(true)
+
+            const { password, ...newDetails} = details
+
+            axios
+                .post(
+                    process.env.GATSBY_STRAPI_URL + "/users-permissions/set-settings",
+                    { details: newDetails, detailsSlot, location: locations, locationSlot },
+                    { headers: { Authorization: `Bearer ${user.jwt}` } }
+                )
+                .then(
+                    response => {
+                        setLoading(false)
+                        dispatchFeedback(
+                            setSnackbar(
+                                {status: "success", message: "Settings Saved Successfully"}
+                            )
+                        )
+                        dispatchUser(
+                            setUser(
+                                { ...response.data, jwt: user.jwt, onboarding: true }
+                            )
+                        )
+                    }
+                )
+                .catch(error => {
+                    setLoading(false)
+                    console.error(error)
+                    dispatchFeedback(
+                        setSnackbar(
+                            {status: "error", message: "There was a problem saving your settings, please try again"}
+                        )
+                    )
+                })
         }
     }
 
-    console.log("OUTSIDE FUNCTION", edit)
-
     return (
-        <Grid item container xs={6} justifyContent="space-evenly" alignItems="center" classes={{ root: classes.editContainer}}>
+        <Grid 
+            item container 
+            xs={6} 
+            justifyContent="space-evenly" 
+            alignItems="center" 
+            classes={{ root: classes.editContainer}}
+        >
             <Grid item>
                 <IconButton onClick={() => setSelectedSetting(null)}>
                     <span className={classes.icon} >
                         <BackwardsIcon color="#FFF"/>
                     </span>
                 </IconButton>
+                
             </Grid>
             <Grid item>
-                <IconButton onClick={handleEdit}>
-                    <img src={edit ? saveIcon : editIcon} alt={`${edit ? "save" : "edit"} settings`} className={classes.icon} />
-                </IconButton>
+                {loading 
+                    ? <CircularProgress color="secondary" size="8rem"/> 
+                    : (
+                        <IconButton disabled={loading} onClick={handleEdit}>
+                            <img 
+                                src={edit ? saveIcon : editIcon} 
+                                alt={`${edit ? "save" : "edit"} settings`} 
+                                className={classes.icon} 
+                            />
+                        </IconButton>
+                    )
+                }
             </Grid>
         </Grid>
     )

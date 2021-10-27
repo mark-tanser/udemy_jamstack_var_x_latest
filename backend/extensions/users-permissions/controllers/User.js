@@ -18,10 +18,12 @@ const sanitizeUser = user =>
             }
 
             if (typeof location !== "undefined" && typeof locationSlot !== "undefined") {
-                newInfo[locationSlot] = location
+                newLocations[locationSlot] = location
             }
 
-            let newUser = await strapi.plugins["users-permissions"].services.user.edit({ id }, { contactInfo:newInfo, locations: newLocations })
+            let newUser = await strapi.plugins["users-permissions"].services.user.edit(
+                { id }, 
+                { contactInfo: newInfo, locations: newLocations })
 
             newUser = sanitizeUser(newUser)
 

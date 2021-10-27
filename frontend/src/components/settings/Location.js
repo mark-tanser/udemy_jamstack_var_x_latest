@@ -36,11 +36,11 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-export default function Location({ user, edit, setChangesMade, values, setValues }) {
+export default function Location({ user, edit, setChangesMade, values, setValues, slot, setSlot }) {
     const classes = useStyles()
     
     const [errors, setErrors] = useState({})
-    const [slot, setSlot] = useState(0)
+    
 
     useEffect(() => {
         setValues(user.locations[slot])
@@ -54,6 +54,8 @@ export default function Location({ user, edit, setChangesMade, values, setValues
         setChangesMade(changed)
 
     }, [values])
+
+    console.log("Location.js  slot: ", slot)
 
     const fields = {
         street: {
