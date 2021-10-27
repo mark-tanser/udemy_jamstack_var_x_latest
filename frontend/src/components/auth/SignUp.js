@@ -114,7 +114,7 @@ export default function SignUp({ steps, setSelectedStep, dispatchUser, dispatchF
         startAdornment: <img src={nameAdornment} alt="name" />,
     }}
 
-    const fields = info ? EmailPassword(classes, false, false, visible, setVisible) : nameField
+    const fields = info ? EmailPassword(false, false, visible, setVisible) : nameField
 
     const disabled = Object.keys(errors).some(error => errors[error] === true) || 
         Object.keys(errors).length !== Object.keys(values).length

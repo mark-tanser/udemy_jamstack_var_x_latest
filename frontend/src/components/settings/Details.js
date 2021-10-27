@@ -71,7 +71,7 @@ export default function Details({ user, edit, setChangesMade, values, setValues,
 
     }, [values])
 
-    const email_password = EmailPassword(classes, false, false, visible, setVisible, true)
+    const email_password = EmailPassword(false, false, visible, setVisible, true)
     const name_phone = {
         name: {
             helperText: "you must enter a name",

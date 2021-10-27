@@ -8,6 +8,8 @@ import IconButton from "@material-ui/core/IconButton"
 import { CircularProgress } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
+import Confirmation from "./Confirmation"
+
 import { FeedbackContext } from "../../contexts"
 import { setSnackbar, setUser } from "../../contexts/actions"
 
@@ -22,7 +24,8 @@ const useStyles = makeStyles(theme => ({
     },
     editContainer: {
         borderLeft: "4px solid #FFF"
-    }
+    },
+
 }))
 
 export default function Edit({ 
@@ -40,16 +43,21 @@ export default function Edit({
     const classes = useStyles()
     const { dispatchFeedback } = useContext(FeedbackContext)
     const [loading, setLoading] = useState(false)
+    const [dialogOpen, setDialogOpen] = useState(true)
 
     console.log("Edit.js  locationSlot: ", locationSlot)
 
     const handleEdit = () => {
         setEdit(!edit)
 
+        const { password, ...newDetails} = details
+
+        if (password !== "********") {
+            setDialogOpen(true)
+        }
+
         if (edit && changesMade) {
             setLoading(true)
-
-            const { password, ...newDetails} = details
 
             axios
                 .post(
@@ -114,6 +122,7 @@ export default function Edit({
                     )
                 }
             </Grid>
+            <Confirmation dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} user={user} dispatchFeedback={dispatchFeedback} setSnackbar={setSnackbar}/>
         </Grid>
     )
 }

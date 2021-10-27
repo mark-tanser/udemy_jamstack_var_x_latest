@@ -23,11 +23,6 @@ import closeIcon from "../../images/close.svg"
 
 
 const useStyles = makeStyles(theme => ({
-    emailAdornment: {
-        height: 17,
-        width: 22,
-        marginBottom: 10
-    },
     accountIcon: {
         marginTop: "2rem"
     },
@@ -47,9 +42,6 @@ const useStyles = makeStyles(theme => ({
         fontWeight: 600,
         textTransform: "None"
     },
-    visibleIcon: {
-        padding: 0
-    },
     passwordError: {
         marginTop: "0rem",
     },
@@ -66,7 +58,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-export const EmailPassword = (classes, hideEmail, hidePassword, visible, setVisible, isWhite) => (
+export const EmailPassword = (hideEmail, hidePassword, visible, setVisible, isWhite) => (
     {
         email: {
             helperText: "invalid email",
@@ -74,7 +66,7 @@ export const EmailPassword = (classes, hideEmail, hidePassword, visible, setVisi
             type: "text",
             hidden: hideEmail,
             startAdornment: (
-                <span className={classes.emailAdornment}>
+                <span style={{height: 17, width: 22, marginBottom: 10}}>
                     <EmailAdornment color={isWhite ? "#fff" : null} />
                 </span>
             )
@@ -87,7 +79,7 @@ export const EmailPassword = (classes, hideEmail, hidePassword, visible, setVisi
             startAdornment: <PasswordAdornment color={isWhite ? "#fff" : null}/>,
             endAdornment: (
                 <IconButton 
-                    classes={{ root: classes.visibleIcon }} 
+                    style={{ padding: 0 }} 
                     onClick={() => setVisible(!visible)}
                 >
                     {
@@ -122,7 +114,7 @@ export default function Login({
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
 
-    const fields = EmailPassword(classes, false, forgot, visible, setVisible)
+    const fields = EmailPassword(false, forgot, visible, setVisible)
 
     const navigateSignUp = () => {
         const signUp = steps.find(step => step.label === "Sign Up")
