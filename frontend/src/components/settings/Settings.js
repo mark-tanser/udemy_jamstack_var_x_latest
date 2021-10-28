@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"
+import React, { useState, useContext, useEffect } from "react"
 import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
@@ -28,10 +28,23 @@ export default function Settings({ setSelectedSetting }) {
     const [edit, setEdit]  = useState(false)
     const [changesMade, setChangesMade] = useState(false)
     const [detailsValues, setDetailsValues] = useState({name: "", phone: "", email: "", password: "********"})
+    const [detailsSlot, setDetailsSlot] = useState(0)
+    const [detailsErrors, setDetailsErrors] = useState({})
     const [locationValues, setLocationValues] = useState({street: "", zip: "", city: "", state: ""})
     const [locationSlot, setLocationSlot] = useState(0)
-    const [detailsSlot, setDetailsSlot] = useState(0)
+    const [locationErrors, setLocationErrors] = useState({})
 
+    const allErrors = { ...detailsErrors, ...locationErrors}
+    const isError = Object.keys(allErrors).some(error => allErrors[error] === true)
+
+    useEffect(() => {
+        setDetailsErrors({})
+    }, [detailsSlot])
+        
+    useEffect(() => {
+        setLocationErrors({})
+    }, [locationSlot])
+    
     return (
        <>
             <Grid container classes={{ root: classes.sectionContainer }}>
@@ -43,6 +56,8 @@ export default function Settings({ setSelectedSetting }) {
                     setValues={setDetailsValues}
                     slot={detailsSlot}
                     setSlot={setDetailsSlot}
+                    errors={detailsErrors}
+                    setErrors={setDetailsErrors}
                 />
                 <Payments 
                     user={user} 
@@ -61,6 +76,8 @@ export default function Settings({ setSelectedSetting }) {
                     setValues={setLocationValues}
                     slot={locationSlot}
                     setSlot={setLocationSlot}
+                    errors={locationErrors}
+                    setErrors={setLocationErrors}
                 />
                 <Edit 
                     user={user} 
@@ -73,6 +90,7 @@ export default function Settings({ setSelectedSetting }) {
                     locations={locationValues}
                     detailsSlot={detailsSlot}
                     locationSlot={locationSlot}
+                    isError={isError}
                 />
             </Grid>
        </>

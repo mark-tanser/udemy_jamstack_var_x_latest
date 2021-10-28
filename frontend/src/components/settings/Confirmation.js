@@ -34,6 +34,8 @@ export default function Confirmation({ dialogOpen, setDialogOpen,user, dispatchF
         password: { ...password, placeholder: "Old Password"},
         confirmation: { ...password, placeholder: "New Password"}
     }
+    const disabled = Object.keys(errors).some(error => errors[error] === true) 
+        || Object.keys(errors).length !== Object.keys(values).length
 
     const handleConfirm = () => {
         setLoading(true)
@@ -70,7 +72,6 @@ export default function Confirmation({ dialogOpen, setDialogOpen,user, dispatchF
                             error => {
                                 setLoading(false)
                                 console.error(error)
-                                console.log("Inner Catch Was Triggered!")
                                 dispatchFeedback(
                                     setSnackbar(
                                         {
@@ -87,7 +88,6 @@ export default function Confirmation({ dialogOpen, setDialogOpen,user, dispatchF
                 error => {
                     setLoading(false)
                     console.error(error)
-                    console.log("Outer Catch was Triggered!")
                     dispatchFeedback(
                         setSnackbar(
                             {status: "error", message: "Old Password invalid."}
@@ -95,6 +95,15 @@ export default function Confirmation({ dialogOpen, setDialogOpen,user, dispatchF
                     )
                 }
             )
+    }
+
+    const handleCancel = () => {
+        setDialogOpen(false)
+        dispatchFeedback(
+            setSnackbar(
+                {status: "error", message: "Your password has NOT been changed."}
+            )
+        )
     }
 
     return (
@@ -119,7 +128,7 @@ export default function Confirmation({ dialogOpen, setDialogOpen,user, dispatchF
             </DialogContent>
             <DialogActions>
                 <Button 
-                    onClick={() => setDialogOpen(false)} 
+                    onClick={handleCancel} 
                     disabled={loading} 
                     color="primary" 
                     classes={{ root: classes.button }}
@@ -128,7 +137,7 @@ export default function Confirmation({ dialogOpen, setDialogOpen,user, dispatchF
                 </Button>
                 <Button 
                     onClick={handleConfirm} 
-                    disabled={loading} 
+                    disabled={loading || disabled} 
                     color="secondary" 
                     classes={{ root: classes.button }}
                 >

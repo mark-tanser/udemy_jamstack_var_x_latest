@@ -38,16 +38,25 @@ export default function Edit({
     locationSlot, 
     changesMade,
     user,
-    dispatchUser
+    dispatchUser,
+    isError
 }) {
     const classes = useStyles()
     const { dispatchFeedback } = useContext(FeedbackContext)
     const [loading, setLoading] = useState(false)
-    const [dialogOpen, setDialogOpen] = useState(true)
-
-    console.log("Edit.js  locationSlot: ", locationSlot)
+    const [dialogOpen, setDialogOpen] = useState(false)
 
     const handleEdit = () => {
+
+        if (edit & isError) {
+            dispatchFeedback(
+                setSnackbar(
+                    { status: "error", message: "All fields must be valid before saving." }
+                )
+            )
+            return
+        }
+
         setEdit(!edit)
 
         const { password, ...newDetails} = details
