@@ -23,10 +23,23 @@ const sanitizeUser = user =>
 
             let newUser = await strapi.plugins["users-permissions"].services.user.edit(
                 { id }, 
-                { contactInfo: newInfo, locations: newLocations })
+                { contactInfo: newInfo, locations: newLocations }
+            )
 
             newUser = sanitizeUser(newUser)
 
             ctx.send(newUser, 200)
+        },
+
+        async changePassword(ctx) {
+            const { id } = ctx.state.user
+            const { password } = ctx.request.body
+
+            await strapi.plugins["users-permissions"].services.user.edit(
+                { id }, 
+                { password } 
+            )
+
+            ctx.send("Passowrd Changed Succesfully", 200)
         }
     }

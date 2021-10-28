@@ -140,7 +140,6 @@ export default function Login({
             })
             .catch(error => {
                 const { message } = error.response.data.message[0].messages[0]
-                console.log("ERROR MESSAGE: ", message)
                 setLoading(false)
                 console.error(error)
                 dispatchFeedback(setSnackbar({ status: "error", message }))
@@ -161,7 +160,6 @@ export default function Login({
             })
             .catch(error => {
                 const { message } = error.response.data.message[0].messages[0]
-                console.log("ERROR MESSAGE: ", message)
                 setLoading(false)
                 console.error(error)
                 dispatchFeedback(setSnackbar({ status: "error", message }))

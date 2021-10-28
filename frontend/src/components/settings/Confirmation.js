@@ -10,6 +10,7 @@ import { makeStyles } from "@material-ui/core/styles"
 
 import Fields from "../auth/Fields"
 import { EmailPassword } from "../auth/Login"
+import { setSnackbar, setUser } from "../../contexts/actions"
 
 const useStyles = makeStyles(theme => ({
     title: {
@@ -19,11 +20,6 @@ const useStyles = makeStyles(theme => ({
         fontFamily: "Montserrat"
     }
 }))
-
-const handleConfirm = () => {
-
-}
-
 
 export default function Confirmation({ dialogOpen, setDialogOpen,user, dispatchFeedback }) {
     const classes = useStyles()
@@ -37,6 +33,68 @@ export default function Confirmation({ dialogOpen, setDialogOpen,user, dispatchF
     const fields = {
         password: { ...password, placeholder: "Old Password"},
         confirmation: { ...password, placeholder: "New Password"}
+    }
+
+    const handleConfirm = () => {
+        setLoading(true)
+
+        axios
+            .post(
+                process.env.GATSBY_STRAPI_URL + "/auth/local", 
+                {
+                    identifier: user.email,
+                    password: values.password
+                }
+            )
+            .then(
+                response => {
+                    axios
+                        .post(
+                            process.env.GATSBY_STRAPI_URL + "/users-permissions/change-password", 
+                            { password: values.confirmation }, 
+                            { headers: { Authorization: `Bearer ${user.jwt}` } }
+                        )
+                        .then(
+                            response => {
+                                setLoading(false)
+                                setDialogOpen(false)
+                                dispatchFeedback(
+                                    setSnackbar(
+                                        {status: "success", message: "Password Changed Successfully"}
+                                    )
+                                )
+                                setValues({ password: "", confirmation: "" })
+                            }
+                        )
+                        .catch(
+                            error => {
+                                setLoading(false)
+                                console.error(error)
+                                console.log("Inner Catch Was Triggered!")
+                                dispatchFeedback(
+                                    setSnackbar(
+                                        {
+                                            status: "error", 
+                                            message: "There was an error changing your password. Please try again."
+                                        }
+                                    )
+                                )
+                            }
+                        )
+                }
+            )
+            .catch( 
+                error => {
+                    setLoading(false)
+                    console.error(error)
+                    console.log("Outer Catch was Triggered!")
+                    dispatchFeedback(
+                        setSnackbar(
+                            {status: "error", message: "Old Password invalid."}
+                        )
+                    )
+                }
+            )
     }
 
     return (
@@ -60,14 +118,23 @@ export default function Confirmation({ dialogOpen, setDialogOpen,user, dispatchF
                 />
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => setDialogOpen(false)} color="primary" classes={{ root: classes.button }}>
+                <Button 
+                    onClick={() => setDialogOpen(false)} 
+                    disabled={loading} 
+                    color="primary" 
+                    classes={{ root: classes.button }}
+                >
                     Do Not Change Password
                 </Button>
-                <Button onClick={handleConfirm()} color="secondary" classes={{ root: classes.button }}>
-                    Yes, Change My Password
+                <Button 
+                    onClick={handleConfirm} 
+                    disabled={loading} 
+                    color="secondary" 
+                    classes={{ root: classes.button }}
+                >
+                    {loading ? <CircularProgress /> : "Yes, Change My Password"}
                 </Button>
             </DialogActions>
-            
         </Dialog>
     )
 }
