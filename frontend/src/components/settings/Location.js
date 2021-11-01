@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
+import { CircularProgress } from "@material-ui/core"
 import { Chip } from "@material-ui/core"
 import Button from "@material-ui/core/Button"
 import IconButton from "@material-ui/core/IconButton"
@@ -10,9 +11,13 @@ import { makeStyles } from "@material-ui/core/styles"
 import Fields from "../auth/Fields"
 import Slots from "./Slots"
 
+import { FeedbackContext } from "../../contexts"
+import { setSnackbar } from "../../contexts/actions"
+
 import locationIcon from "../../images/location.svg"
 import streetAdornment from "../../images//street-adornment.svg"
 import zipAdornment from "../../images/zip-adornment.svg"
+import axios from "axios"
 
 const useStyles = makeStyles(theme => ({
     icon: {
@@ -38,6 +43,32 @@ const useStyles = makeStyles(theme => ({
 
 export default function Location({ user, edit, setChangesMade, values, setValues, slot, setSlot, errors, setErrors }) {
     const classes = useStyles()
+    const [loading, setLoading] = useState(false)
+    const { dispatchFeedback } = useContext(FeedbackContext)
+    
+    const getLocation = () => {
+        setLoading(true)
+
+        axios
+            .get(
+                `https://data.opendatasoft.com/api/records/1.0/search/?dataset=geonames-postal-code%40public&q=&rows=1&facet=country_code&facet=admin_name1&facet=place_name&facet=postal_code&refine.country_code=US&refine.postal_code=${values.zip}`
+                )
+            .then(response => {
+                setLoading(false)
+                console.log(response)
+
+                const { place_name, admin_name1 } = response.data.records[0].fields
+
+                setValues({ ...values, city: place_name, state: admin_name1 })
+            })
+            .catch(error => {
+                setLoading(false)
+                console.error(error)
+                dispatchFeedback(setSnackbar(
+                    {status: "error", message: "There was a problem with your zip code. Please try again"}
+                ))
+            })
+    }
     
     useEffect(() => {
         setValues(user.locations[slot])
@@ -49,6 +80,14 @@ export default function Location({ user, edit, setChangesMade, values, setValues
             .some(field => values[field] !== user.locations[slot][field])
 
         setChangesMade(changed)
+
+        if (values.zip.length === 5) {
+            if (values.city) return
+
+            getLocation()
+        } else if (values.zip.length < 5 && values.city) {
+            setValues({ ...values, city: "", state: "" })
+        }
 
     }, [values])
 
@@ -89,7 +128,11 @@ export default function Location({ user, edit, setChangesMade, values, setValues
                     disabled={!edit} />
             </Grid>
             <Grid item classes={{ root: classes.chipWrapper }}>
-                <Chip label={values.city ? `${values.city}, ${values.state}`:  "City, State"} />
+                {
+                    loading 
+                        ? <CircularProgress color="secondary" />
+                        : <Chip label={values.city ? `${values.city}, ${values.state}`:  "City, State"} />
+                }
             </Grid> 
             <Grid item container classes={{root: classes.slotContainer}}>
                 <Slots slot={slot} setSlot={setSlot}/>
