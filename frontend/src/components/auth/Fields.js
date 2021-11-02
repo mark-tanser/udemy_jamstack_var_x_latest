@@ -9,9 +9,9 @@ import validate from "../ui/validate"
 
 const useStyles = makeStyles(theme => ({
     textField: {
-        width: ({ fullWidth }) => fullWidth ? undefined : "20rem",
+        width: ({ fullWidth, settings }) => (fullWidth ? undefined : settings ? "15rem" : "20rem"),
         [theme.breakpoints.down("xs")]: {
-            width: ({ fullWidth }) => fullWidth ? undefined : "15rem",
+            width: ({ fullWidth }) => (fullWidth ? undefined : "15rem"),
         }
     },
     input: {
@@ -19,8 +19,18 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-export default function Fields({ fields, errors, setErrors, values, setValues, isWhite, disabled, fullWidth}) {
-    const classes = useStyles({ isWhite, fullWidth })
+export default function Fields({ 
+    fields, 
+    errors, 
+    setErrors, 
+    values, 
+    setValues, 
+    isWhite, 
+    disabled, 
+    fullWidth,
+    settings
+}) {
+    const classes = useStyles({ isWhite, fullWidth, settings })
 
     return (
         Object.keys(fields).map(field => {

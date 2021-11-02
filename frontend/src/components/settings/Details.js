@@ -3,6 +3,7 @@ import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
+import { useMediaQuery } from "@material-ui/core"
 import IconButton from "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
 
@@ -28,12 +29,22 @@ const useStyles = makeStyles(theme => ({
         marginBottom:10
     },
     icon: {
-        marginBottom: "3rem"
+        marginBottom: "3rem",
+        [theme.breakpoints.down("xs")]: {
+            marginBottom: "1rem"
+        },
     },
     fieldContainer: {
         marginBottom: "2rem",
         "& > :not(:first-child)": {
             marginLeft: "5rem"
+        },
+        [theme.breakpoints.down("xs")]: {
+            marginBottom: "1rem",
+            "& > :not(:first-child)": {
+                marginLeft: 0,
+                marginTop: "1rem"
+            }
         }
     },
     slotContainer: {
@@ -41,7 +52,11 @@ const useStyles = makeStyles(theme => ({
         bottom: 0
     }, 
     detailContainer: {
-        position: "relative"
+        position: "relative",
+        [theme.breakpoints.down("md")]: {
+            borderBottom: "4px solid #fff",
+            height: "30rem"
+        }
     },
     "@global": {
         ".MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before": {
@@ -56,6 +71,7 @@ const useStyles = makeStyles(theme => ({
 export default function Details({ user, edit, setChangesMade, values, setValues, slot, setSlot, errors, setErrors }) {
     const classes = useStyles()
     const [visible, setVisible] = useState(false)
+    const matchesXS = useMediaQuery(theme => theme.breakpoints.down("xs"))
 
 
     useEffect(() => {
@@ -96,7 +112,8 @@ export default function Details({ user, edit, setChangesMade, values, setValues,
             item 
             container 
             direction="column" 
-            xs={6} 
+            lg={6}
+            xs={12}  
             alignItems="center" 
             justifyContent="center" 
             classes={{ root: classes.detailContainer }}
@@ -105,7 +122,14 @@ export default function Details({ user, edit, setChangesMade, values, setValues,
                 <img src={fingerprint} alt="details settings" className={classes.icon}/>
             </Grid>
             {fields.map((pair, i) => (
-                <Grid container justifyContent="center" key={i} classes={{ root: classes.fieldContainer }}>
+                <Grid 
+                    container 
+                    justifyContent="center" 
+                    alignItems={matchesXS ? "center" : undefined}
+                    key={i} 
+                    classes={{ root: classes.fieldContainer }} 
+                    direction={matchesXS ? "column" : "row" }
+                >
                     <Fields 
                         fields={pair}
                         values={values}
@@ -114,6 +138,7 @@ export default function Details({ user, edit, setChangesMade, values, setValues,
                         setErrors={setErrors}
                         isWhite
                         disabled={!edit}
+                        settings
                     />
                 </Grid>
             ))}
