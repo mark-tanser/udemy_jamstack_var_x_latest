@@ -11,20 +11,21 @@ export default function cartReducer(state, action) {
 
     const saveData = cart => {
         localStorage.setItem("cart", JSON.stringify(cart))
-
-        if (newQty > action.payload.stock) {
-            newQty = action.payload.stock
-        }
-
-        newCart[existingIndex] = { ...newCart[existingIndex], qty: newQty }
     }
 
     switch (action.type) {
         case ADD_TO_CART:
             if (existingIndex !== -1) {
                 let newQty = newCart[existingIndex].qty + action.payload.qty
+
+                if (newQty > action.payload.stock) {
+                    newQty = action.payload.stock
+                }
+        
+                newCart[existingIndex] = { ...newCart[existingIndex], qty: newQty }
+
             } else {
-                newCart(push(action.payload))
+                newCart.push(action.payload)
             }
 
             saveData(newCart)
@@ -36,7 +37,7 @@ export default function cartReducer(state, action) {
             if (newQty <= 0 ) {
                 newCart = newCart.filter(item => item.variant !== action.payload.variant)
             } else {
-                newCart(existingIndex) = { ...newCart[existingIndex], qty: newQty}
+                newCart[existingIndex] = { ...newCart[existingIndex], qty: newQty}
             }
 
             saveData(newCart)

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
@@ -8,14 +8,17 @@ import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
+import Badge from '@material-ui/core/Badge'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link/*, navigate*/ } from 'gatsby'
 
+import { CartContext } from '../../contexts'
+
 import search from '../../images/search.svg'
-import cart from '../../images/cart.svg'
+import cartIcon from '../../images/cart.svg'
 import account from '../../images/account-header.svg'
 import menu from '../../images/menu.svg'
 
@@ -51,19 +54,31 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('xs')]: {
       height: '2rem',
       width: '2rem',
-  },
+    }
   },
   drawer: {
     backgroundColor: theme.palette.primary.main,
   },
   listItemText: {
     color: "#fff",
+  },
+  badge: {
+    fontSize: "1rem",
+    color: "#fff",
+    backgroundColor: theme.palette.secondary.main,
+    [theme.breakpoints.down("xs")]: {
+      fontSize: "0.75rem",
+      height: "1.1rem",
+      width: "1.1rem",
+      minWidth: 0
+    }
   }
 }))
 
 
 export default function Header({ categories }) {
   const classes = useStyles()
+  const { cart } = useContext(CartContext)
   const matchesMD = useMediaQuery((theme) => theme.breakpoints.down('md')) // returns true if viewport is below breakpoint
 
   const [drawerOpen, setDrawerOpen] = useState(false) // state with function to set state and default (closed)
@@ -128,7 +143,7 @@ export default function Header({ categories }) {
 
   const actions = [
     {icon: search, alt: 'search', visible: true, onClick: () => console.log("SEARCH ICON was clicked") },
-    {icon: cart, alt: 'cart', visible: true, link: '/cart'},
+    {icon: cartIcon, alt: 'cart', visible: true, link: '/cart'},
     {icon: account, alt: 'account', visible: !matchesMD, link: '/account'},
     {icon: menu, alt: 'menu', visible: matchesMD, onClick: () => setDrawerOpen(true)}
   ]
@@ -141,10 +156,26 @@ export default function Header({ categories }) {
           to="/"
           classes={{root: classes.logoContainer}}
         >
-          <Typography variant="h1" classes={{ root: classes.logo }}><span className={classes.logoText}>Var</span> X</Typography>
+          <Typography 
+            variant="h1" 
+            classes={{ root: classes.logo }}
+          >
+            <span className={classes.logoText}>
+              Var
+            </span>
+              X
+          </Typography>
         </Button>
         {matchesMD ? drawer : tabs}
         {actions.map(action => {
+          const image = (
+            <img 
+              className={classes.icon} 
+              src={action.icon} 
+              alt={action.alt} 
+            />
+          )
+
           if (action.visible) {
             return (
               <IconButton 
@@ -153,7 +184,15 @@ export default function Header({ categories }) {
                 component={action.onClick ? undefined : Link} 
                 to={action.onClick ? undefined : action.link}
               >
-                <img className={classes.icon} src={action.icon} alt={action.alt} />
+                {action.alt === "cart" 
+                  ? (
+                    <Badge overlap="circle" badgeContent={cart.length} classes={{ badge: classes.badge }}>
+                      {image}
+                    </Badge>
+                  ) 
+                  : image
+                }
+                
               </IconButton>
             )
           } else { return null }

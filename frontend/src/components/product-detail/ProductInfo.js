@@ -246,7 +246,10 @@ export default function ProductInfo({
                                 <Swatches colors={colors} selectedColor={selectedColor} setSelectedColor={setSelectedColor}/>
                             </Grid>
                             <Grid item>
-                                <Typography variant="h3" classes={{ root: classes.stock }}>
+                                <Typography 
+                                    variant="h3" 
+                                    classes={{ root: classes.stock }}
+                                >
                                     {stockDisplay}
                                 </Typography>
                             </Grid>
@@ -254,7 +257,11 @@ export default function ProductInfo({
                     </Grid>
 
                     <Grid item>
-                        <QtyButton stock={stock} selectedVariant={selectedVariant}/>
+                        <QtyButton 
+                            name={name}
+                            variants={variants}
+                            stock={stock} 
+                            selectedVariant={selectedVariant}/>
                     </Grid>
 
                 </Grid>

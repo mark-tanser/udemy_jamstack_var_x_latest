@@ -146,7 +146,12 @@ export default function ProductFrameList({
                     <Swatches colors={colors} selectedColor={selectedColor} setSelectedColor={setSelectedColor}/>
                 </Grid>
             
-                <QtyButton stock={stock} selectedVariant={selectedVariant}/>
+                <QtyButton
+                    name={product.node.name.split(" ")[0]}
+                    variants={product.node.variants}
+                    stock={stock} 
+                    selectedVariant={selectedVariant}
+                />
 
             </Grid>
         </Grid>
