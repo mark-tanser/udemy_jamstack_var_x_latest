@@ -22,16 +22,20 @@ export default function Cart() {
 
     return (
         <Layout>
-          <Grid container direction="column" alignItems="center">
+          <Grid 
+            container 
+            direction="column" 
+            alignItems="center"
+          >
             <Grid item>
               <Typography variant="h1">
                 {user.username}'s Cart
               </Typography>
-              <Grid item container>
-                <CartItems />
-                <CheckoutPortal />
-              </Grid>  
-            </Grid>
+            </Grid>  
+            <Grid item container>
+              <CartItems />
+              <CheckoutPortal />
+            </Grid>  
           </Grid>
         </Layout>
     )
