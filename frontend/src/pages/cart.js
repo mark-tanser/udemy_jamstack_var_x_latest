@@ -13,7 +13,9 @@ import CheckoutPortal from "../components/cart/CheckoutPortal"
 import CartItems from "../components/cart/CartItems"
 
 const useStyles = makeStyles(theme => ({
-
+  cartContainer: {
+    minHeight: "70vh"
+  }
 }))
 
 export default function Cart() {
@@ -26,6 +28,7 @@ export default function Cart() {
             container 
             direction="column" 
             alignItems="center"
+            classes={{ root: classes.cartContainer }}
           >
             <Grid item>
               <Typography variant="h1">
