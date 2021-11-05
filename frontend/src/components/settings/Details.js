@@ -3,6 +3,7 @@ import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
+import { FormControlLabel, Switch } from "@material-ui/core"
 import { useMediaQuery } from "@material-ui/core"
 import IconButton from "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
@@ -29,7 +30,8 @@ const useStyles = makeStyles(theme => ({
         marginBottom:10
     },
     icon: {
-        marginBottom: "3rem",
+        marginTop: ({ checkout }) => (checkout ? "-2rem" : undefined),
+        marginBottom: ({ checkout }) => (checkout ? "1rem" : "3rem"),
         [theme.breakpoints.down("xs")]: {
             marginBottom: "1rem"
         },
@@ -45,18 +47,30 @@ const useStyles = makeStyles(theme => ({
                 marginLeft: 0,
                 marginTop: "1rem"
             }
+        },
+    },
+    fieldContainerCart: {
+        "& > *": {
+            marginBottom: "1rem"
         }
     },
     slotContainer: {
         position: "absolute",
-        bottom: 0
+        bottom: ({ checkout }) => (checkout ? -8 : 0)
     }, 
-    detailContainer: {
+    detailsContainer: {
         position: "relative",
         [theme.breakpoints.down("md")]: {
             borderBottom: "4px solid #fff",
-            height: "30rem"
+            height: ({ checkout }) => (!checkout ? "30rem" : "100%")
         }
+    },
+    switchWrapper: {
+        marginRight: 4
+    },
+    switchLabel: {
+        color: "#fff",
+        fontWeight: 600
     },
     "@global": {
         ".MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before": {
@@ -68,17 +82,37 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-export default function Details({ user, edit, setChangesMade, values, setValues, slot, setSlot, errors, setErrors }) {
-    const classes = useStyles()
+export default function Details({ 
+        user, 
+        edit, 
+        setChangesMade, 
+        values, 
+        setValues, 
+        slot, 
+        setSlot, 
+        errors, 
+        setErrors, 
+        checkout,
+        billing,
+        setBilling
+    }) {
+    const classes = useStyles({ checkout })
     const [visible, setVisible] = useState(false)
     const matchesXS = useMediaQuery(theme => theme.breakpoints.down("xs"))
 
+    
 
     useEffect(() => {
-        setValues({ ...user.contactInfo[slot], password: "********"})
+        if (checkout) {
+            setValues(user.contactInfo[slot])
+        } else {
+            setValues({ ...user.contactInfo[slot], password: "********"})
+        }
     }, [slot])
         
     useEffect(() => {
+        if (checkout) return
+
         const changed = Object
             .keys(user.contactInfo[slot])
             .some(field => values[field] !== user.contactInfo[slot][field])
@@ -105,18 +139,28 @@ export default function Details({ user, edit, setChangesMade, values, setValues,
         }
     }
 
-    const fields = [name_phone, email_password]
+    let fields = [name_phone, email_password]
+
+    if (checkout) {
+        fields = [
+            {
+                name: name_phone.name,
+                email: email_password.email,
+                phone: name_phone.phone
+            }
+        ]
+    }
 
     return (
         <Grid 
             item 
             container 
             direction="column" 
-            lg={6}
+            lg={checkout ? 12 : 6}
             xs={12}  
             alignItems="center" 
             justifyContent="center" 
-            classes={{ root: classes.detailContainer }}
+            classes={{ root: classes.detailsContainer }}
         >
             <Grid item>
                 <img src={fingerprint} alt="details settings" className={classes.icon}/>
@@ -125,10 +169,15 @@ export default function Details({ user, edit, setChangesMade, values, setValues,
                 <Grid 
                     container 
                     justifyContent="center" 
-                    alignItems={matchesXS ? "center" : undefined}
+                    alignItems={matchesXS || checkout ? "center" : undefined}
                     key={i} 
-                    classes={{ root: classes.fieldContainer }} 
-                    direction={matchesXS ? "column" : "row" }
+                    classes={{ 
+                        root: clsx({
+                            [classes.fieldContainerCart]: checkout,
+                            [classes.fieldContainer]: !checkout
+                        }) 
+                    }} 
+                    direction={matchesXS || checkout ? "column" : "row" }
                 >
                     <Fields 
                         fields={pair}
@@ -137,16 +186,34 @@ export default function Details({ user, edit, setChangesMade, values, setValues,
                         errors={errors}
                         setErrors={setErrors}
                         isWhite
-                        disabled={!edit}
-                        settings
+                        disabled={checkout ? false : !edit}
+                        settings={!checkout}
                     />
                 </Grid>
             ))}
             <Grid 
-                item container 
+                item 
+                container 
+                justifyContent={checkout ? "space-between" : undefined}
                 classes={{root: classes.slotContainer}}
             >
-                <Slots slot={slot} setSlot={setSlot}/>
+                <Slots slot={slot} setSlot={setSlot} checkout={checkout}/>
+                {checkout && (
+                    <Grid item>
+                        <FormControlLabel
+                            classes={{ root: classes.switchWrapper, label: classes.switchLabel }}
+                            label="Billing"
+                            labelPlacement="start"
+                            control={
+                                <Switch 
+                                    checked={billing} 
+                                    onChange={() => setBilling(!billing)}
+                                    color="secondary"
+                                />
+                            } 
+                        />
+                    </Grid>
+                )}
             </Grid>
         </Grid>
     )
