@@ -11,15 +11,39 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: theme.palette.secondary.main,
         width: "40rem",
         height: "5rem"
+    },
+    back: {
+        visibility: ({ selectedStep }) => selectedStep === 0 ? "hidden" : "visible"
+    },
+    forward: {
+        visibility: ({ selectedStep, steps }) => selectedStep >= steps.length - 2 ? "hidden" : "visible"
     }
 }))
 
-export default function CheckoutNavigation() {
-    const classes = useStyles()
+export default function CheckoutNavigation({ steps, selectedStep, setSelectedStep }) {
+    const classes = useStyles({ selectedStep, steps })
 
     return (
-        <Grid item container classes={{ root: classes.navbar}} >
-            
+        <Grid item container justifyContent="center" alignItems="center" classes={{ root: classes.navbar}} >
+            <Grid item classes={{ root: classes.back }}>
+                <Button onClick={() => setSelectedStep(selectedStep - 1)} >
+                    <Typography variant="h5">
+                        {"<"}
+                    </Typography>
+                </Button>
+            </Grid>
+            <Grid item>
+                <Typography variant="h5">
+                    {steps[selectedStep].title.toUpperCase()}
+                </Typography>
+            </Grid>
+            <Grid item classes={{ root: classes.forward }}>
+               <Button onClick={() => setSelectedStep(selectedStep + 1)}>
+                    <Typography variant="h5">
+                        {">"}
+                    </Typography>
+               </Button>
+            </Grid>
         </Grid>
     )
 }
