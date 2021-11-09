@@ -10,6 +10,7 @@ import CheckoutNavigation from "./CheckoutNavigation"
 import Details from "../settings/Details"
 import Location from "../settings/Location"
 import Shipping from "./Shipping"
+import Payments from "../settings/Payments"
 
 const useStyles = makeStyles(theme => ({
     stepContainer: {
@@ -36,6 +37,8 @@ export default function CheckoutPortal({ user }) {
     const [locationValues, setLocationValues] = useState({street: "", zip: "", city: "", state: ""})
     const [locationSlot, setLocationSlot] = useState(0)
     const [locationBilling, setLocationBilling] = useState(false)
+    const [billingSlot, setBillingSlot] = useState(0)
+    const [saveCard, setSaveCard] = useState(false)
 
 
     const [errors, setErrors] = useState({})
@@ -92,7 +95,19 @@ export default function CheckoutPortal({ user }) {
                 />
             )
         },
-        {title: "Payment"},
+        {
+            title: "Payment",
+            component: (
+                <Payments 
+                    slot={billingSlot}
+                    setSlot={setBillingSlot}
+                    user={user}
+                    saveCard={saveCard}
+                    setSaveCard={setSaveCard}
+                    checkout
+                />
+            )
+        },
         {title: "Confirmation"},
         {title: `Thanks ${user.username}!`},
     ]
