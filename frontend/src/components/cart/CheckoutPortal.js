@@ -7,14 +7,23 @@ import IconButton from "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
 
 import CheckoutNavigation from "./CheckoutNavigation"
-import Details from "../settings/details"
-
+import Details from "../settings/Details"
+import Location from "../settings/Location"
+import Shipping from "./Shipping"
 
 const useStyles = makeStyles(theme => ({
     stepContainer: {
         width: "40rem",
         height: "25rem",
         backgroundColor: theme.palette.primary.main
+    },
+    "@global": {
+        ".MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before": {
+          borderBottom: '2px solid #fff',
+        },
+        ".MuiInput-underline:after": {
+          borderBottom: `2px solid ${theme.palette.secondary.main}`,
+        },
     }
 }))
 
@@ -24,7 +33,19 @@ export default function CheckoutPortal({ user }) {
     const [detailsValues, setDetailsValues] = useState({name: "", email: "", phone: ""})
     const [detailsSlot, setDetailsSlot] = useState(0)
     const [detailsBilling, setDetailsBilling] = useState(false)
+    const [locationValues, setLocationValues] = useState({street: "", zip: "", city: "", state: ""})
+    const [locationSlot, setLocationSlot] = useState(0)
+    const [locationBilling, setLocationBilling] = useState(false)
+
+
     const [errors, setErrors] = useState({})
+
+    const [selectedShipping, setSelectedShipping] = useState(null)
+    const shippingOptions = [ 
+        { label: "FREE SHIPPING", price: 0 }, 
+        { label: "2-DAY SHIPPING", price: 9.99 }, 
+        { label: "OVERNIGHT SHIPPING", price: 29.99 }
+    ]
 
     const steps = [
         {
@@ -44,8 +65,33 @@ export default function CheckoutPortal({ user }) {
                 />
             ) 
         },
-        {title: "Address"},
-        {title: "Shipping"},
+        {
+            title: "Address",
+            component: (
+                <Location
+                    user={user}
+                    values={locationValues}
+                    setValues={setLocationValues}
+                    slot={locationSlot}
+                    setSlot={setLocationSlot}
+                    billing={locationBilling}
+                    setBilling={setLocationBilling}
+                    errors={errors}
+                    setErrors={setErrors}
+                    checkout
+                 />
+            )
+        },
+        {
+            title: "Shipping",
+            component: (
+                <Shipping 
+                    shippingOptions={shippingOptions}
+                    selectedShipping={selectedShipping}
+                    setSelectedShipping={setSelectedShipping}
+                />
+            )
+        },
         {title: "Payment"},
         {title: "Confirmation"},
         {title: `Thanks ${user.username}!`},
