@@ -61,10 +61,7 @@ const useStyles = makeStyles(theme => ({
 export default function Payments({ user, slot, setSlot, saveCard, setSaveCard, checkout }) {
     const classes = useStyles({ checkout })
     
-
     const card = user.paymentMethods[slot]
-
-    console.log("PAYMENTS IS RENDERING")
 
     return (
         <Grid 

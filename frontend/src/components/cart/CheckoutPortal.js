@@ -11,6 +11,7 @@ import Details from "../settings/Details"
 import Location from "../settings/Location"
 import Shipping from "./Shipping"
 import Payments from "../settings/Payments"
+import Confirmation from "./Confirmation"
 
 const useStyles = makeStyles(theme => ({
     stepContainer: {
@@ -108,7 +109,10 @@ export default function CheckoutPortal({ user }) {
                 />
             )
         },
-        {title: "Confirmation"},
+        {
+            title: "Confirmation",
+            component: <Confirmation />
+        },
         {title: `Thanks ${user.username}!`},
     ]
 
