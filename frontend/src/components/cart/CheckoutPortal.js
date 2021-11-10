@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
@@ -12,6 +12,7 @@ import Location from "../settings/Location"
 import Shipping from "./Shipping"
 import Payments from "../settings/Payments"
 import Confirmation from "./Confirmation"
+import validate from "../ui/validate"
 
 const useStyles = makeStyles(theme => ({
     stepContainer: {
@@ -51,6 +52,12 @@ export default function CheckoutPortal({ user }) {
         { label: "OVERNIGHT SHIPPING", price: 29.99 }
     ]
 
+    const errorHelper = values => {
+        const valid = validate(values)
+
+        return Object.keys(valid).some(value => !valid[value])
+    }
+
     const steps = [
         {
             title: "Contact Info", 
@@ -67,7 +74,8 @@ export default function CheckoutPortal({ user }) {
                     billing={detailsBilling}
                     setBilling={setDetailsBilling}
                 />
-            ) 
+            ),
+            error: errorHelper(detailsValues)
         },
         {
             title: "Address",
@@ -84,7 +92,8 @@ export default function CheckoutPortal({ user }) {
                     setErrors={setErrors}
                     checkout
                  />
-            )
+            ),
+            error: errorHelper(locationValues)
         },
         {
             title: "Shipping",
@@ -94,7 +103,8 @@ export default function CheckoutPortal({ user }) {
                     selectedShipping={selectedShipping}
                     setSelectedShipping={setSelectedShipping}
                 />
-            )
+            ),
+            error: selectedShipping === null
         },
         {
             title: "Payment",
@@ -107,7 +117,8 @@ export default function CheckoutPortal({ user }) {
                     setSaveCard={setSaveCard}
                     checkout
                 />
-            )
+            ),
+            error: false
         },
         {
             title: "Confirmation",
@@ -115,6 +126,10 @@ export default function CheckoutPortal({ user }) {
         },
         {title: `Thanks ${user.username}!`},
     ]
+
+    useEffect(() => {
+        setErrors({})
+    }, [detailsSlot, locationSlot])
 
     return (
         <Grid 
