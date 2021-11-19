@@ -44,7 +44,7 @@ export default function CheckoutNavigation({ steps, selectedStep, setSelectedSte
                 <Button 
                     disabled={steps[selectedStep].error} 
                     onClick={() => setSelectedStep(selectedStep + 1)} 
-                    classes={{root: classes.disabled}}
+                    classes={{disabled: classes.disabled}}
                 >
                     <Typography variant="h5">
                         {">"}

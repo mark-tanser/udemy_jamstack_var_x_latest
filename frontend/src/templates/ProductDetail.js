@@ -31,8 +31,6 @@ export default function ProductDetail({ pageContext: { name, id, category, descr
         }
     }, [error, data])
 
-    console.log(stock)
-
     useEffect(() => {
         
         const styledVariant = variants.filter(variant => variant.style === params.get("style"))[0]

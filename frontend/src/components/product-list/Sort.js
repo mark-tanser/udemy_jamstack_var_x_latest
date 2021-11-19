@@ -27,8 +27,6 @@ export default function Sort({ setOption, sortOptions, setSortOptions }) {
 
     const matchesXS = useMediaQuery(theme => theme.breakpoints.down('xs'))
 
-    console.log('matchesXS?:', matchesXS)
-
     const handleSort = i => {
         const newOptions = [...sortOptions]
 

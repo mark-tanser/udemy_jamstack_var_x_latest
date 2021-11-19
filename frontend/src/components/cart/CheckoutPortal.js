@@ -58,6 +58,8 @@ export default function CheckoutPortal({ user }) {
         return Object.keys(valid).some(value => !valid[value])
     }
 
+    console.log(errorHelper(detailsValues))
+
     const steps = [
         {
             title: "Contact Info", 

@@ -145,8 +145,6 @@ export default function PromotionalProducts() {
         })
     )
 
-    console.log(process.env.GATSBY_STRAPI_URL)
-
     return (
         <Grid 
             container 
