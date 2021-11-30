@@ -136,7 +136,7 @@ export default function CheckoutPortal({ user }) {
                     checkout
                  />
             ),
-            error: errorHelper(locationValues, detailsForBilling, billingDetails, detailsSlot)
+            error: errorHelper(locationValues, locationForBilling, billingLocation, locationSlot)
         },
         {
             title: "Billing Address",

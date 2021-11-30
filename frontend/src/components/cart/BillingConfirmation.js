@@ -13,6 +13,9 @@ const useStyles = makeStyles(theme => ({
     },
     values: {
         fontSize: "1.25rem"
+    },
+    wrapper: {
+        margin: "1rem 2rem"
     }
 }))
 
@@ -21,7 +24,7 @@ export default function BillingConfirmation({
     billingDetails: { name, email, phone },
     detailsSlot,
     locationForBilling,
-    billinglocation: { street, zip, city, state },
+    billingLocation: { street, zip, city, state },
     locationSlot
 }) {
     const classes = useStyles()
@@ -40,9 +43,9 @@ export default function BillingConfirmation({
     ]
 
     return (
-        <Grid item container>
+        <Grid item container justify="flex-end">
             {fields.map(field => field.hidden ? null : (
-                <Grid item key={field.title}>
+                <Grid item key={field.title} classes={{ root: classes.wrapper }}>
                     <Typography variant="h4" classes={{ root: classes.heading }}>
                         {field.title}
                     </Typography>
