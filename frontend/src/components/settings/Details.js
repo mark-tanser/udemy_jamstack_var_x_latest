@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
@@ -94,15 +94,20 @@ export default function Details({
         setErrors, 
         checkout,
         billing,
-        setBilling
+        setBilling,
+        billingValues,
+        setBillingValues,
+        noSlots
     }) {
     const classes = useStyles({ checkout })
+    const isMounted = useRef(false)
     const [visible, setVisible] = useState(false)
     const matchesXS = useMediaQuery(theme => theme.breakpoints.down("xs"))
 
     
 
     useEffect(() => {
+        if (noSlots) return
         if (checkout) {
             setValues(user.contactInfo[slot])
         } else {
@@ -120,6 +125,18 @@ export default function Details({
         setChangesMade(changed)
 
     }, [values])
+
+    useEffect(() => {
+        if (isMounted.current === false) {
+            isMounted.current = true
+            return
+        }
+        if (billing === false && isMounted.current) {
+            setValues(billingValues)
+        } else {
+            setBillingValues(values)
+        }
+    }, [billing])
 
     const email_password = EmailPassword(false, false, visible, setVisible, true)
     const name_phone = {
@@ -151,6 +168,8 @@ export default function Details({
         ]
     }
 
+    
+
     return (
         <Grid 
             item 
@@ -181,8 +200,8 @@ export default function Details({
                 >
                     <Fields 
                         fields={pair}
-                        values={values}
-                        setValues={setValues}
+                        values={billing === slot ? billingValues : values}
+                        setValues={billing === slot ? setBillingValues : setValues}
                         errors={errors}
                         setErrors={setErrors}
                         isWhite
@@ -191,30 +210,35 @@ export default function Details({
                     />
                 </Grid>
             ))}
-            <Grid 
-                item 
-                container 
-                justifyContent={checkout ? "space-between" : undefined}
-                classes={{root: classes.slotContainer}}
-            >
-                <Slots slot={slot} setSlot={setSlot} checkout={checkout}/>
-                {checkout && (
-                    <Grid item>
-                        <FormControlLabel
-                            classes={{ root: classes.switchWrapper, label: classes.switchLabel }}
-                            label="Billing"
-                            labelPlacement="start"
-                            control={
-                                <Switch 
-                                    checked={billing} 
-                                    onChange={() => setBilling(!billing)}
-                                    color="secondary"
+            { noSlots 
+                ? null 
+                : (
+                    <Grid 
+                        item 
+                        container 
+                        justifyContent={checkout ? "space-between" : undefined}
+                        classes={{root: classes.slotContainer}}
+                    >
+                        <Slots slot={slot} setSlot={setSlot} checkout={checkout}/>
+                        {checkout && (
+                            <Grid item>
+                                <FormControlLabel
+                                    classes={{ root: classes.switchWrapper, label: classes.switchLabel }}
+                                    label="Billing"
+                                    labelPlacement="start"
+                                    control={
+                                        <Switch 
+                                            checked={billing === slot} 
+                                            onChange={() => setBilling(billing === slot ? false : slot)}
+                                            color="secondary"
+                                        />
+                                    } 
                                 />
-                            } 
-                        />
+                            </Grid>
+                        )}
                     </Grid>
-                )}
-            </Grid>
+                )
+            }
         </Grid>
     )
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
 import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
@@ -8,6 +8,7 @@ import IconButton from "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
 
 import Fields from "../auth/Fields"
+import { CartContext } from "../../contexts"
 
 import confirmationIcon from "../../images/tag.svg"
 import NameAdornment from "../../images/NameAdornment"
@@ -90,14 +91,33 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-export default function Confirmation() {
+export default function Confirmation(
+    {
+        detailsValues,
+        billingDetails,
+        detailsForBilling,
+        locationValues,
+        billingLocation,
+        locationForBilling,
+        shippingOptions,
+        selectedShipping
+    }
+) {
     const classes = useStyles()
+    const { cart } = useContext(CartContext)
+
     const [promo, setPromo] = useState({ promo: "" })
     const [promoError, setPromoError] = useState({})
 
+    const shipping = shippingOptions.find(option => option.label === selectedShipping)
+
+    const subtotal = cart.reduce((total, item) => total + item.variant.price * item.qty, 0)
+
+    const tax = subtotal * 0.075
+
     const firstFields = [
         {
-            value: "Customer name",
+            value: detailsValues.name,
             adornment: (
                 <div className={classes.nameWrapper}>               
                     <NameAdornment color="#fff" />
@@ -105,7 +125,7 @@ export default function Confirmation() {
             )
         },
         {
-            value: "CustomerEmail@xxx.com",
+            value: detailsValues.email,
             adornment: (
                 <div className={classes.emailWrapper}>               
                     <EmailAdornment color="#fff" />
@@ -113,7 +133,7 @@ export default function Confirmation() {
             )
         },
         {
-            value: "(555) 666-6666",
+            value: detailsValues.phone,
             adornment: (
                 <div className={classes.phoneWrapper}>               
                     <PhoneAdornment />
@@ -121,7 +141,7 @@ export default function Confirmation() {
             )
         },
         {
-            value: "123 Example St",
+            value: locationValues.street,
             adornment: (
                 <img src={streetAdornment} alt="street address" />
                 
@@ -131,7 +151,7 @@ export default function Confirmation() {
 
     const secondFields = [
         {
-            value: "Wichita, KS 67211",
+            value: `${locationValues.city}, ${locationValues.state} ${locationValues.zip}`,
             adornment: (
                 <img src={zipAdornment} alt="city, state, zip code" />
             )
@@ -154,17 +174,19 @@ export default function Confirmation() {
     const prices = [
         {
             label: "SUBTOTAL",
-            value: 99.99
+            value: subtotal.toFixed(2)
         },
         {
             label: "SHIPPING",
-            value: 19.99
+            value: shipping.price.toFixed(2)
         },
         {
             label: "TAX",
-            value: 9.99
+            value: tax.toFixed(2)
         },
     ]
+
+    const total = prices.reduce((total, item) => total + parseFloat(item.value), 0)
 
     const adornmentValue = (adornment, value) => (
         <>
@@ -250,7 +272,7 @@ export default function Confirmation() {
                             </Typography>
                         </Grid>    
                         <Grid item>
-                            <Chip label="$149.99" classes={{ root: classes.chipRoot, label: classes.chipLabel }} />
+                            <Chip label={`$${total}`} classes={{ root: classes.chipRoot, label: classes.chipLabel }} />
                         </Grid>    
                     </Grid>
                 </Button>

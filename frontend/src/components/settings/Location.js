@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react"
+import React, { useState, useEffect, useContext, useRef } from "react"
 import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
@@ -68,9 +68,13 @@ export default function Location({
     setErrors, 
     checkout,
     billing, 
-    setBilling
+    setBilling,
+    billingValues,
+    setBillingValues,
+    noSlots
 }) {
     const classes = useStyles(checkout)
+    const isMounted = useRef(false)
     const [loading, setLoading] = useState(false)
     const { dispatchFeedback } = useContext(FeedbackContext)
     
@@ -99,6 +103,7 @@ export default function Location({
     }
     
     useEffect(() => {
+        if (noSlots) return
         setValues(user.locations[slot])
     }, [slot])
 
@@ -121,6 +126,18 @@ export default function Location({
 
     }, [values])
 
+    useEffect(() => {
+        if (isMounted.current === false) {
+            isMounted.current = true
+            return
+        }
+        if (billing === false && isMounted.current) {
+            setValues(billingValues)
+        } else {
+            setBillingValues(values)
+        }
+    }, [billing])
+
     const fields = {
         street: {
             placeholder: "Street",
@@ -133,6 +150,8 @@ export default function Location({
             startAdornment: <img src={zipAdornment} alt="zip code" />
         }
     }
+
+    console.log("Location.js locationValues: ", values)
 
     return (
         <Grid 
@@ -151,8 +170,8 @@ export default function Location({
             <Grid item container direction="column" alignItems="center" classes={{ root: classes.fieldContainer }} >
                 <Fields 
                     fields={fields} 
-                    values={values} 
-                    setValues={setValues} 
+                    values={billing === slot ? billingValues : values} 
+                    setValues={billing === slot ? setBillingValues : setValues} 
                     errors={errors} 
                     setErrors={setErrors} 
                     isWhite
@@ -165,25 +184,39 @@ export default function Location({
                         : <Chip label={values.city ? `${values.city}, ${values.state}`:  "City, State"} />
                 }
             </Grid> 
-            <Grid item container justifyContent="space-between" classes={{root: classes.slotContainer}}>
-                <Slots slot={slot} setSlot={setSlot} checkout={checkout}/>
-                {checkout && (
-                    <Grid item>
-                        <FormControlLabel
-                            classes={{ root: classes.switchWrapper, label: classes.switchLabel }}
-                            label="Billing"
-                            labelPlacement="start"
-                            control={
-                                <Switch 
-                                    checked={billing} 
-                                    onChange={() => setBilling(!billing)}
-                                    color="secondary"
-                                />
-                            } 
+            { noSlots
+                ? null
+                : (
+                    <Grid 
+                        item 
+                        container 
+                        justifyContent="space-between" 
+                        classes={{root: classes.slotContainer}}
+                    >
+                        <Slots 
+                            slot={slot} 
+                            setSlot={setSlot} 
+                            checkout={checkout}
                         />
+                        { checkout && (
+                            <Grid item>
+                                <FormControlLabel
+                                    classes={{ root: classes.switchWrapper, label: classes.switchLabel }}
+                                    label="Billing"
+                                    labelPlacement="start"
+                                    control={
+                                        <Switch 
+                                            checked={billing === slot} 
+                                            onChange={() => setBilling(billing === slot ? false : slot)}
+                                            color="secondary"
+                                        />
+                                    } 
+                                />
+                            </Grid>
+                        )}
                     </Grid>
-                )}
-            </Grid>
+                )
+            }
         </Grid>
     )
 }

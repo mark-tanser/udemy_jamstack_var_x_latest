@@ -34,11 +34,13 @@ export default function CheckoutPortal({ user }) {
     const classes = useStyles()
     const [selectedStep, setSelectedStep] = useState(0)
     const [detailsValues, setDetailsValues] = useState({name: "", email: "", phone: ""})
+    const [billingDetails, setBillingDetails] = useState({name: "", email: "", phone: ""})
     const [detailsSlot, setDetailsSlot] = useState(0)
-    const [detailsBilling, setDetailsBilling] = useState(false)
+    const [detailsForBilling, setDetailsForBilling] = useState(false)
     const [locationValues, setLocationValues] = useState({street: "", zip: "", city: "", state: ""})
+    const [billingLocation, setBillingLocation] = useState({street: "", zip: "", city: "", state: ""})
     const [locationSlot, setLocationSlot] = useState(0)
-    const [locationBilling, setLocationBilling] = useState(false)
+    const [locationForBilling, setLocationForBilling] = useState(false)
     const [billingSlot, setBillingSlot] = useState(0)
     const [saveCard, setSaveCard] = useState(false)
 
@@ -58,9 +60,9 @@ export default function CheckoutPortal({ user }) {
         return Object.keys(valid).some(value => !valid[value])
     }
 
-    console.log(errorHelper(detailsValues))
+    console.log("CheckoutPortal.js locationValues: ", locationValues)
 
-    const steps = [
+    let steps = [
         {
             title: "Contact Info", 
             component: (
@@ -72,12 +74,28 @@ export default function CheckoutPortal({ user }) {
                     setSlot={setDetailsSlot} 
                     errors={errors} 
                     setErrors={setErrors} 
+                    billing={detailsForBilling}
+                    setBilling={setDetailsForBilling}
+                    billingValues={billingDetails}
+                    setBillingValues={setBillingDetails}
                     checkout
-                    billing={detailsBilling}
-                    setBilling={setDetailsBilling}
                 />
             ),
             error: errorHelper(detailsValues)
+        },
+        {
+            title: "Billing Info",
+            component: (    
+                <Details 
+                    values={billingDetails} 
+                    setValues={setBillingDetails} 
+                    errors={errors}
+                    setErrors={setErrors}
+                    checkout
+                    noSlots
+                />
+            ),
+            error: errorHelper(billingDetails)
         },
         {
             title: "Address",
@@ -88,14 +106,30 @@ export default function CheckoutPortal({ user }) {
                     setValues={setLocationValues}
                     slot={locationSlot}
                     setSlot={setLocationSlot}
-                    billing={locationBilling}
-                    setBilling={setLocationBilling}
+                    billing={locationForBilling}
+                    setBilling={setLocationForBilling}
                     errors={errors}
                     setErrors={setErrors}
+                    billingValues={billingLocation}
+                    setBillingValues={setBillingLocation}
                     checkout
                  />
             ),
             error: errorHelper(locationValues)
+        },
+        {
+            title: "Billing Address",
+            component: (
+                <Location 
+                    values={billingLocation} 
+                    setValues={setBillingLocation}
+                    errors={errors}
+                    setErrors={setErrors}
+                    checkout
+                    noSlots
+                />
+            ),
+            error: errorHelper(billingLocation)
         },
         {
             title: "Shipping",
@@ -124,14 +158,33 @@ export default function CheckoutPortal({ user }) {
         },
         {
             title: "Confirmation",
-            component: <Confirmation />
+            component: (
+                <Confirmation 
+                    detailsValues={detailsValues} 
+                    billingDetails={billingDetails} 
+                    detailsForBilling={detailsForBilling} 
+                    locationValues={locationValues} 
+                    billingLocation={billingLocation} 
+                    locationForBilling={locationForBilling} 
+                    shippingOptions={shippingOptions} 
+                    selectedShipping={selectedShipping} 
+                />
+            )
         },
         {title: `Thanks ${user.username}!`},
     ]
 
+    if (detailsForBilling != false) {
+        steps = steps.filter(step => step.title !== "Billing Info")
+    }
+
+    if (locationForBilling != FontFaceSetLoadEvent) {
+        steps = steps.filter(step => step.title !== "Billing Address")
+    }
+
     useEffect(() => {
         setErrors({})
-    }, [detailsSlot, locationSlot])
+    }, [detailsSlot, locationSlot, selectedStep])
 
     return (
         <Grid 
