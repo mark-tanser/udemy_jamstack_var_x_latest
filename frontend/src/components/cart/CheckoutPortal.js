@@ -54,10 +54,30 @@ export default function CheckoutPortal({ user }) {
         { label: "OVERNIGHT SHIPPING", price: 29.99 }
     ]
 
-    const errorHelper = values => {
+    const errorHelper = (values, forBilling, billingValues, slot) => {
         const valid = validate(values)
 
-        return Object.keys(valid).some(value => !valid[value])
+        if (forBilling !== false && forBilling !== undefined) {
+            // one slot has been marked as billing
+            const billingValid = validate(billingValues)
+
+            if (forBilling === slot) {
+                // if currently on same slot as one marked for billing ( ie: billing and shipping address are the same )
+                // then only need to validate one set
+                return Object.keys(billingValid).some(value => !billingValid[value])
+            } else {
+                // otherwise billing and shipping address are different
+                // validate both billing and shipping values
+                return Object.keys(billingValid).some(value => !billingValid[value]) 
+                    || Object.keys(valid).some(value => !valid[value])
+            }
+
+        } else {
+            // no slots marked as billing
+            return Object.keys(valid).some(value => !valid[value])
+        }
+
+        
     }
 
     console.log("CheckoutPortal.js locationValues: ", locationValues)
@@ -81,7 +101,7 @@ export default function CheckoutPortal({ user }) {
                     checkout
                 />
             ),
-            error: errorHelper(detailsValues)
+            error: errorHelper(detailsValues, detailsForBilling, billingDetails, detailsSlot)
         },
         {
             title: "Billing Info",
@@ -115,7 +135,7 @@ export default function CheckoutPortal({ user }) {
                     checkout
                  />
             ),
-            error: errorHelper(locationValues)
+            error: errorHelper(locationValues, detailsForBilling, billingDetails, detailsSlot)
         },
         {
             title: "Billing Address",

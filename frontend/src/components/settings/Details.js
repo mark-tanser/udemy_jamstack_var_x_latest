@@ -108,6 +108,7 @@ export default function Details({
 
     useEffect(() => {
         if (noSlots) return
+
         if (checkout) {
             setValues(user.contactInfo[slot])
         } else {
@@ -127,6 +128,11 @@ export default function Details({
     }, [values])
 
     useEffect(() => {
+        if (noSlots) {
+            isMounted.current = false
+            return
+        }
+
         if (isMounted.current === false) {
             isMounted.current = true
             return
@@ -200,8 +206,8 @@ export default function Details({
                 >
                     <Fields 
                         fields={pair}
-                        values={billing === slot ? billingValues : values}
-                        setValues={billing === slot ? setBillingValues : setValues}
+                        values={billing === slot && !noSlots ? billingValues : values}
+                        setValues={billing === slot && !noSlots ? setBillingValues : setValues}
                         errors={errors}
                         setErrors={setErrors}
                         isWhite
