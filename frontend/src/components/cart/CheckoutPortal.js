@@ -7,6 +7,7 @@ import IconButton from "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
 
 import CheckoutNavigation from "./CheckoutNavigation"
+import BillingConfirmation from "./BillingConfirmation"
 import Details from "../settings/Details"
 import Location from "../settings/Location"
 import Shipping from "./Shipping"
@@ -57,27 +58,27 @@ export default function CheckoutPortal({ user }) {
     const errorHelper = (values, forBilling, billingValues, slot) => {
         const valid = validate(values)
 
+        console.log("forBilling: ", forBilling)
         if (forBilling !== false && forBilling !== undefined) {
-            // one slot has been marked as billing
+            console.log("// one slot has been marked as billing")
             const billingValid = validate(billingValues)
 
             if (forBilling === slot) {
-                // if currently on same slot as one marked for billing ( ie: billing and shipping address are the same )
+                console.log("// on same slot as one marked for billing ( ie: billing and shipping address are the same )")
                 // then only need to validate one set
                 return Object.keys(billingValid).some(value => !billingValid[value])
             } else {
-                // otherwise billing and shipping address are different
+                console.log("// billing and shipping address are different")
                 // validate both billing and shipping values
-                return Object.keys(billingValid).some(value => !billingValid[value]) 
-                    || Object.keys(valid).some(value => !valid[value])
+                return (
+                    Object.keys(billingValid).some(value => !billingValid[value]) || 
+                    Object.keys(valid).some(value => !valid[value]))
             }
 
         } else {
-            // no slots marked as billing
+            console.log("// no slots marked as billing")
             return Object.keys(valid).some(value => !valid[value])
         }
-
-        
     }
 
     console.log("CheckoutPortal.js locationValues: ", locationValues)
@@ -198,7 +199,7 @@ export default function CheckoutPortal({ user }) {
         steps = steps.filter(step => step.title !== "Billing Info")
     }
 
-    if (locationForBilling != FontFaceSetLoadEvent) {
+    if (locationForBilling != false) {
         steps = steps.filter(step => step.title !== "Billing Address")
     }
 
@@ -228,6 +229,15 @@ export default function CheckoutPortal({ user }) {
             >
                 {steps[selectedStep].component}
             </Grid>
+            {steps[selectedStep].title === "Confirmation" && 
+                <BillingConfirmation 
+                    detailsForBilling={detailsForBilling}
+                    billingDetails={billingDetails}
+                    detailsSlot={detailsSlot}
+                    locationForBilling={locationForBilling}
+                    billingLocation={billingLocation}
+                    locationSlot = {locationSlot}
+                />}
         </Grid>
     )
 }
