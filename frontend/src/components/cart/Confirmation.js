@@ -186,7 +186,8 @@ export default function Confirmation(
         },
     ]
 
-    const total = prices.reduce((total, item) => total + parseFloat(item.value), 0)
+    const total = prices.reduce((total, item) => total + parseFloat(item.value), 0).toFixed(2)
+    // added .toFixed(2) to eliminate accumultaing rounding errors
 
     const adornmentValue = (adornment, value) => (
         <>
