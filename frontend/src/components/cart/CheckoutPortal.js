@@ -218,6 +218,10 @@ export default function CheckoutPortal({ user }) {
                 steps={steps} 
                 selectedStep={selectedStep} 
                 setSelectedStep={setSelectedStep} 
+                details={detailsValues}
+                detailsSlot={detailsSlot}
+                location={locationValues}
+                locationSlot={locationSlot}
             />
             <Grid 
                 item 
