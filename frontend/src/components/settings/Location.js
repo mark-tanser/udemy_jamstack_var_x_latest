@@ -155,8 +155,6 @@ export default function Location({
         }
     }
 
-    console.log("Location.js locationValues: ", values)
-
     return (
         <Grid 
             item 

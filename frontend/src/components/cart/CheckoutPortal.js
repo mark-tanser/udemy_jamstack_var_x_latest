@@ -58,17 +58,16 @@ export default function CheckoutPortal({ user }) {
     const errorHelper = (values, forBilling, billingValues, slot) => {
         const valid = validate(values)
 
-        console.log("forBilling: ", forBilling)
         if (forBilling !== false && forBilling !== undefined) {
-            console.log("// one slot has been marked as billing")
+            // one slot has been marked as billing
             const billingValid = validate(billingValues)
 
             if (forBilling === slot) {
-                console.log("// on same slot as one marked for billing ( ie: billing and shipping address are the same )")
+                // on same slot as one marked for billing ( ie: billing and shipping address are the same
                 // then only need to validate one set
                 return Object.keys(billingValid).some(value => !billingValid[value])
             } else {
-                console.log("// billing and shipping address are different")
+                // billing and shipping address are different
                 // validate both billing and shipping values
                 return (
                     Object.keys(billingValid).some(value => !billingValid[value]) || 
@@ -76,12 +75,10 @@ export default function CheckoutPortal({ user }) {
             }
 
         } else {
-            console.log("// no slots marked as billing")
+            // no slots marked as billing
             return Object.keys(valid).some(value => !valid[value])
         }
     }
-
-    console.log("CheckoutPortal.js locationValues: ", locationValues)
 
     let steps = [
         {
@@ -195,11 +192,11 @@ export default function CheckoutPortal({ user }) {
         {title: `Thanks ${user.username}!`},
     ]
 
-    if (detailsForBilling != false) {
+    if (detailsForBilling !== false) {
         steps = steps.filter(step => step.title !== "Billing Info")
     }
 
-    if (locationForBilling != false) {
+    if (locationForBilling !== false) {
         steps = steps.filter(step => step.title !== "Billing Address")
     }
 
