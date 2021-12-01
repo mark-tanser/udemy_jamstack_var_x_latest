@@ -99,6 +99,7 @@ export default function CheckoutPortal({ user }) {
                     checkout
                 />
             ),
+            hasActions: true,
             error: errorHelper(detailsValues, detailsForBilling, billingDetails, detailsSlot)
         },
         {
@@ -133,6 +134,7 @@ export default function CheckoutPortal({ user }) {
                     checkout
                  />
             ),
+            hasActions: true,
             error: errorHelper(locationValues, locationForBilling, billingLocation, locationSlot)
         },
         {

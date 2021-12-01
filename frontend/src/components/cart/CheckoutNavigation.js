@@ -6,11 +6,15 @@ import Button from "@material-ui/core/Button"
 import IconButton from "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
 
+import save from "../../images/save.svg"
+import Delete from "../../images/Delete.js"
+
 const useStyles = makeStyles(theme => ({
     navbar: {
         backgroundColor: theme.palette.secondary.main,
         width: "40rem",
-        height: "5rem"
+        height: "5rem",
+        position: "relative"
     },
     back: {
         visibility: ({ selectedStep }) => selectedStep === 0 ? "hidden" : "visible"
@@ -20,6 +24,18 @@ const useStyles = makeStyles(theme => ({
     },
     disabled: {
         opacity: 0.5
+    },
+    icon: {
+        height: "2.25rem",
+        width: "2.25rem"
+    },
+    actions: {
+        position: "absolute",
+        right: 0
+    },
+    delete: {
+        height: "2rem",
+        width: "2rem"
     }
 }))
 
@@ -51,6 +67,24 @@ export default function CheckoutNavigation({ steps, selectedStep, setSelectedSte
                     </Typography>
                </Button>
             </Grid>
+            {steps[selectedStep].hasActions ? (
+                <Grid item classes={{ root: classes.actions }}>
+                    <Grid container>
+                        <Grid item>
+                            <IconButton>
+                                <img src={save} alt="save" className={classes.icon}/>
+                            </IconButton>
+                        </Grid>
+                        <Grid item>
+                            <IconButton>
+                                <span className={classes.delete}>
+                                    <Delete color="#fff" />
+                                </span>
+                            </IconButton>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            ) : null}         
         </Grid>
     )
 }
