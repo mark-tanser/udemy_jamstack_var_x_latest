@@ -49,8 +49,10 @@ export default function CheckoutNavigation({
     selectedStep, 
     setSelectedStep,
     details,
+    setDetails,
     detailsSlot,
     location,
+    setLocation,
     locationSlot 
 }) {
     const classes = useStyles({ selectedStep, steps })
@@ -73,19 +75,43 @@ export default function CheckoutNavigation({
         const isLocation = steps[selectedStep].title === "Address"
 
         axios.post(process.env.GATSBY_STRAPI_URL + "/users-permissions/set-settings", {
-            details: isDetails ? details : undefined,
+            details: isDetails && action !== "delete" ? details : undefined,
             detailsSlot: isDetails ? detailsSlot : undefined,
-            location: isLocation ? location : undefined,
+            location: isLocation && action !== "delete" ? location : undefined,
             locationSlot: isLocation ? locationSlot : undefined
         }, {
             headers: { Authorization: `Bearer ${user.jwt}` }
-        }).then(response => {
+        })
+        .then(response => {
             setLoading(null)
-            dispatchFeedback(setSnackbar({status: "success", message: "Information Saved Successfully."}))
+            dispatchFeedback(
+                setSnackbar({
+                    status: "success", 
+                    message: `Information ${action === "delete" ? "Deleted" : "Saved"} Successfully.`
+                })
+            )
             dispatchUser(setUser({...response.data, jwt: user.jwt, onboarding: true}))
-        }).catch(error => {
+
+            if (action === "delete") {
+                if (isDetails) {
+                    setDetails({ name: "", email: "", phone: "" })
+                } else if (isLocation) {
+                    setLocation({ street: "", zip: "", city: "", state: "" })
+                }
+            }
+        })
+        .catch(error => {
             setLoading(null)
-            dispatchFeedback(setSnackbar({status: "error", message: "There was a problem saving your information, please try again."}))
+            dispatchFeedback(
+                setSnackbar({
+                    status: "error", 
+                    message: `
+                        There was a problem ${
+                            action === "delete" ? "deleting" : "saving"
+                        } your information, please try again.
+                    `
+                })
+            )
         })
     }
 
@@ -121,18 +147,25 @@ export default function CheckoutNavigation({
                         <Grid item>
                             {loading === "save" 
                                 ? <CircularProgress /> 
-                                : <IconButton onClick={() => handleAction("save")}>
-                                    <img src={save} alt="save" className={classes.icon}/>
-                                </IconButton>
+                                : (
+                                    <IconButton onClick={() => handleAction("save")}>
+                                        <img src={save} alt="save" className={classes.icon}/>
+                                    </IconButton>
+                                )
                             }
                             
                         </Grid>
                         <Grid item>
-                            <IconButton>
-                                <span className={classes.delete}>
-                                    <Delete color="#fff" />
-                                </span>
-                            </IconButton>
+                            {loading === "delete" 
+                                ? <CircularProgress /> 
+                                : (
+                                    <IconButton onClick={() => handleAction("delete")}>
+                                        <span className={classes.delete}>
+                                            <Delete color="#fff" />
+                                        </span>
+                                    </IconButton>
+                                )
+                            }
                         </Grid>
                     </Grid>
                 </Grid>
