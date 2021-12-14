@@ -53,7 +53,8 @@ export default function CheckoutNavigation({
     detailsSlot,
     location,
     setLocation,
-    locationSlot 
+    locationSlot,
+    setErrors
 }) {
     const classes = useStyles({ selectedStep, steps })
     const [loading, setLoading] = useState(null)
@@ -61,11 +62,13 @@ export default function CheckoutNavigation({
     const { user, dispatchUser } = useContext(UserContext)
 
     const handleAction = action => {
-        if (steps[selectedStep].error) {
-            dispatchFeedback(setSnackbar({
-                status: "error",
-                message: "All fields must be valid before saving"
-            }))
+        if (steps[selectedStep].error && action !== "delete") {
+            dispatchFeedback(
+                setSnackbar({
+                    status: "error",
+                    message: "All fields must be valid before saving"
+                })
+            )
             return
         }
 
@@ -87,12 +90,17 @@ export default function CheckoutNavigation({
             dispatchFeedback(
                 setSnackbar({
                     status: "success", 
-                    message: `Information ${action === "delete" ? "Deleted" : "Saved"} Successfully.`
+                    message: `Information ${
+                        action === "delete" ? "Deleted" : "Saved"
+                    } Successfully.`
                 })
             )
-            dispatchUser(setUser({...response.data, jwt: user.jwt, onboarding: true}))
+            dispatchUser(
+                setUser({...response.data, jwt: user.jwt, onboarding: true})
+            )
 
             if (action === "delete") {
+                setErrors({})
                 if (isDetails) {
                     setDetails({ name: "", email: "", phone: "" })
                 } else if (isLocation) {
