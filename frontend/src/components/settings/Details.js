@@ -104,10 +104,8 @@ export default function Details({
     const [visible, setVisible] = useState(false)
     const matchesXS = useMediaQuery(theme => theme.breakpoints.down("xs"))
 
-    
-
     useEffect(() => {
-        if (noSlots) return
+        if (noSlots || user.username === "Guest") return
 
         if (checkout) {
             setValues(user.contactInfo[slot])

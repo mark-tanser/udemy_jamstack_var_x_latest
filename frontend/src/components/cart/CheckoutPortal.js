@@ -180,6 +180,7 @@ export default function CheckoutPortal({ user }) {
             title: "Confirmation",
             component: (
                 <Confirmation 
+                    user={user}
                     detailsValues={detailsValues} 
                     billingDetails={billingDetails} 
                     detailsForBilling={detailsForBilling} 

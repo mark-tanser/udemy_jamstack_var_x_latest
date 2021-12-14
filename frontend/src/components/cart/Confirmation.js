@@ -1,7 +1,9 @@
 import React, { useState, useContext } from "react"
+import axios from "axios"
 import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
+import { CircularProgress } from "@material-ui/core"
 import Button from "@material-ui/core/Button"
 import { Chip } from "@material-ui/core"
 import IconButton from "@material-ui/core/IconButton"
@@ -91,19 +93,20 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-export default function Confirmation(
-    {
-        detailsValues,
-        billingDetails,
-        detailsForBilling,
-        locationValues,
-        billingLocation,
-        locationForBilling,
-        shippingOptions,
-        selectedShipping
-    }
-) {
+export default function Confirmation({
+    user,
+    detailsValues,
+    billingDetails,
+    detailsForBilling,
+    locationValues,
+    billingLocation,
+    locationForBilling,
+    shippingOptions,
+    selectedShipping
+}) 
+{
     const classes = useStyles()
+    const [loading, setLoading] = useState(false)
     const { cart } = useContext(CartContext)
 
     const [promo, setPromo] = useState({ promo: "" })
@@ -186,8 +189,7 @@ export default function Confirmation(
         },
     ]
 
-    const total = prices.reduce((total, item) => total + parseFloat(item.value), 0).toFixed(2)
-    // added .toFixed(2) to eliminate accumultaing rounding errors
+    const total = prices.reduce((total, item) => total + parseFloat(item.value), 0)
 
     const adornmentValue = (adornment, value) => (
         <>
@@ -201,6 +203,30 @@ export default function Confirmation(
             </Grid>
         </>
     )
+
+    const handleOrder = () => {
+        setLoading(true)
+
+        axios.post(process.env.GATSBY_STRAPI_URL + "/orders/place", {
+            shippingAddress: locationValues,
+            billingAddress: billingLocation,
+            shippingInfo: detailsValues,
+            billingInfo: billingDetails,
+            shippingOption: shipping,
+            subtotal: subtotal.toFixed(2),
+            tax: tax.toFixed(2),
+            total: total.toFixed(2),
+            items: cart,
+        }, {
+            headers: user.username === "Guest" ? undefined : { Authorization: `Bearer ${user.jwt}`}
+        }).then(response => {
+            setLoading(false)
+            console.log(response)
+        }).catch(error => {
+            setLoading(false)
+            console.error(error)
+        })
+    }
 
     return (
         <Grid itme container direction="column" classes={{ root: classes.mainContainer }}>
@@ -265,7 +291,7 @@ export default function Confirmation(
                 </Grid>
             ))}
             <Grid item classes={{ root: classes.buttonWrapper }}>
-                <Button classes={{ root: classes.button }} >
+                <Button classes={{ root: classes.button }} onClick={handleOrder}>
                     <Grid container justifyContent="space-around" alignItems="center">
                         <Grid item>
                             <Typography variant="h5">
@@ -273,7 +299,12 @@ export default function Confirmation(
                             </Typography>
                         </Grid>    
                         <Grid item>
-                            <Chip label={`$${total}`} classes={{ root: classes.chipRoot, label: classes.chipLabel }} />
+                            {loading ? <CircularProgress /> : (
+                                <Chip 
+                                    label={`$${total.toFixed(2)}`} 
+                                    classes={{ root: classes.chipRoot, label: classes.chipLabel }} 
+                                />
+                            )}
                         </Grid>    
                     </Grid>
                 </Button>
