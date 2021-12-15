@@ -14,13 +14,20 @@ const useStyles = makeStyles(theme => ({
         height: "2.5rem",
         minWidth: 0,
         border: `0.15rem solid ${theme.palette.secondary.main}`,
+        [theme.breakpoints.down("xs")]: {
+            width: ({ checkout }) => (checkout ? "2rem" : "2.5rem"),
+            height: ({ checkout }) => (checkout ? "2rem" : "2.5rem")
+        },
         "&:hover": {
             backgroundColor: "#fff"
         }
     },
     slotText: {
         color: theme.palette.secondary.main,
-        marginLeft: "-0.25rem"
+        marginLeft: "-0.25rem",
+        [theme.breakpoints.down("xs")]: {
+            fontSize: ({ checkout }) => (checkout ? "1.5rem" : undefined)
+        }
     },
     slotWrapper: {
         marginLeft: "1rem",
@@ -41,15 +48,19 @@ const useStyles = makeStyles(theme => ({
     shipping: {
         color: "#fff",
         fontWeight: 600,
-        marginLeft: "0.5rem"
+        marginLeft: "0.5rem",
+        [theme.breakpoints.down("xs")]: {
+            fontSize: "1rem",
+            marginTop: "0.4rem"
+        }
     }
 }))
 
 export default function Slots({slot, setSlot, checkout, noLabel}) {
-    const classes = useStyles()
+    const classes = useStyles({checkout})
 
     return (
-       <Grid item container xs={noLabel ? 3 : checkout ? 5 : undefined }>
+       <Grid item container xs>
             <Grid item classes={{ root: classes.slotWrapper }}>
                 {[1,2,3].map(number => (
                     <Button 

@@ -5,6 +5,7 @@ import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
 import IconButton from "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
+import { useMediaQuery } from "@material-ui/core"
 
 import CheckoutNavigation from "./CheckoutNavigation"
 import BillingConfirmation from "./BillingConfirmation"
@@ -20,7 +21,15 @@ const useStyles = makeStyles(theme => ({
     stepContainer: {
         width: "40rem",
         height: "25rem",
-        backgroundColor: theme.palette.primary.main
+        backgroundColor: theme.palette.primary.main,
+        [theme.breakpoints.down("sm")] : {
+            width: "100%"
+        }
+    },
+    container: {
+        [theme.breakpoints.down("md")] : {
+            marginBottom: "5rem"
+        }
     },
     "@global": {
         ".MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before": {
@@ -34,6 +43,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function CheckoutPortal({ user }) {
     const classes = useStyles()
+    const matchesMD = useMediaQuery(theme => theme.breakpoints.down("md"))
     const [selectedStep, setSelectedStep] = useState(0)
     const [detailsValues, setDetailsValues] = useState({name: "", email: "", phone: ""})
     const [billingDetails, setBillingDetails] = useState({name: "", email: "", phone: ""})
@@ -224,9 +234,10 @@ export default function CheckoutPortal({ user }) {
         <Grid 
             item 
             container 
-            alignItems="flex-end" 
+            alignItems={matchesMD ? "flex-start" : "flex-end"} 
             direction="column" 
-            xs={6}
+            classes={{ root: classes.container }}
+            lg={6}
         >
             <CheckoutNavigation 
                 steps={steps} 

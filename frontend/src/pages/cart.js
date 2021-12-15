@@ -31,7 +31,7 @@ export default function Cart() {
             classes={{ root: classes.cartContainer }}
           >
             <Grid item>
-              <Typography variant="h1">
+              <Typography variant="h1" align="center">
                 {user.username}'s Cart
               </Typography>
             </Grid>  

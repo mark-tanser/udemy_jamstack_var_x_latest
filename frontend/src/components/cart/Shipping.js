@@ -14,12 +14,19 @@ const useStyles = makeStyles(theme => ({
         borderRadius: 15,
         height: "10rem",
         width: "10rem",
+        [theme.breakpoints.down("xs")]: {
+            height: "6rem",
+            width: "6rem"
+        },
         "&:hover": {
             backgroundColor: theme.palette.secondary.light
         }
     },
     label: {
-        fontSize: "1.5rem"
+        fontSize: "1.5rem",
+        [theme.breakpoints.down("xs")]: {
+            fontSize: "0.9rem"
+        },
     },
     container: {
         height: "100%"
