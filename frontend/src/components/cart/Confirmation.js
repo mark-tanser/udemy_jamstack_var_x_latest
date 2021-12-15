@@ -11,7 +11,7 @@ import { makeStyles } from "@material-ui/core/styles"
 
 import Fields from "../auth/Fields"
 import { CartContext, FeedbackContext } from "../../contexts"
-import { setSnackbar } from "../../contexts/actions"
+import { setSnackbar, clearCart } from "../../contexts/actions"
 
 import confirmationIcon from "../../images/tag.svg"
 import NameAdornment from "../../images/NameAdornment"
@@ -111,12 +111,15 @@ export default function Confirmation({
     billingLocation,
     locationForBilling,
     shippingOptions,
-    selectedShipping
+    selectedShipping,
+    selectedStep,
+    setSelectedStep,
+    setOrder
 }) 
 {
     const classes = useStyles()
     const [loading, setLoading] = useState(false)
-    const { cart } = useContext(CartContext)
+    const { cart, dispatchCart } = useContext(CartContext)
     const { dispatchFeedback } = useContext(FeedbackContext)
 
     const [promo, setPromo] = useState({ promo: "" })
@@ -231,7 +234,10 @@ export default function Confirmation({
             headers: user.username === "Guest" ? undefined : { Authorization: `Bearer ${user.jwt}`}
         }).then(response => {
             setLoading(false)
-            console.log(response)
+
+            dispatchCart(clearCart())
+            setOrder(response.data.order)
+            setSelectedStep(selectedStep +1)
         }).catch(error => {
             setLoading(false)
             console.error(error)
