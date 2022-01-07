@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"
+import React, { useState, useContext, useEffect } from "react"
 import axios from "axios"
 import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
@@ -9,6 +9,7 @@ import { Chip } from "@material-ui/core"
 import IconButton from "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
 import { useMediaQuery } from "@material-ui/core"
+import { v4 as uuidv4 } from "uuid"
 
 import Fields from "../auth/Fields"
 import { CartContext, FeedbackContext } from "../../contexts"
@@ -118,6 +119,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Confirmation({
     user,
+    order,
     detailsValues,
     billingDetails,
     detailsForBilling,
@@ -134,6 +136,7 @@ export default function Confirmation({
     const classes = useStyles()
     const matchesXS = useMediaQuery(theme => theme.breakpoints.down("xs"))
     const [loading, setLoading] = useState(false)
+    const [clientSecret, setClientSecret] = useState(null)
     const { cart, dispatchCart } = useContext(CartContext)
     const { dispatchFeedback } = useContext(FeedbackContext)
 
@@ -257,44 +260,77 @@ export default function Confirmation({
             setLoading(false)
             console.error(error)
 
-            switch (error.response.status) {
-                case 400:
-                    dispatchFeedback(
-                        setSnackbar(
-                            {status: 'error', message: "Invalid Cart"}))
-                    break
-
-                case 409:
-                    dispatchFeedback(
-                        setSnackbar(
-                            {
-                                status: 'error', 
-                                message: 
-                                    `The following items are not available at the requested quantity.\n
-                                    Please update your cart and try again.\n` + 
-                                    `${
-                                        error.response.data.unavailable.map(
-                                            item => `\nItem: ${item.id}, Available: ${item.qty}`
-                                        )
-                                    }`
-                            }
-                        )
-                    )
-                    break
-
-                default:
-                    dispatchFeedback(
-                        setSnackbar(
-                            {
-                                status: 'error', 
-                                message: 
-                                    "Something went wrong, please refresh the page and try again. You have NOT been charged."
-                            }
-                        )
-                    )
-            }
+            
         })
     }
+
+    useEffect(() => {
+        if (!order && arguments.length !==0) {
+            const storedIntent = localStorage.getItem("intentID")
+            const idempotencyKey = uuidv4()
+
+            setClientSecret(null) // cleared when new intent created
+
+            axios.post(
+                process.env.GATSBY_STRAPI_URL + "/orders/process", 
+                {
+                    items: cart,
+                    total: total.toFixed(2),
+                    shippingOption: shipping,
+                    idempotencyKey,
+                    storedIntent,
+                    email: detailsValues.email
+                }, {
+                    headers: user.jwt 
+                        ? { Autherization: `Bearer ${user.jwt}`} 
+                        : undefined
+                }
+            ).then(response => {
+                setClientSecret(response.data.client_secret)
+                localStorage.setItem("intentID", response.data.intentID)
+            }).catch(error => {
+                console.error(error)
+                switch (error.response.status) {
+                    case 400:
+                        dispatchFeedback(
+                            setSnackbar(
+                                {status: 'error', message: "Invalid Cart"}))
+                        break
+    
+                    case 409:
+                        dispatchFeedback(
+                            setSnackbar(
+                                {
+                                    status: 'error', 
+                                    message: 
+                                        `The following items are not available at the requested quantity.\n
+                                        Please update your cart and try again.\n` + 
+                                        `${
+                                            error.response.data.unavailable.map(
+                                                item => `\nItem: ${item.id}, Available: ${item.qty}`
+                                            )
+                                        }`
+                                }
+                            )
+                        )
+                        break
+    
+                    default:
+                        dispatchFeedback(
+                            setSnackbar(
+                                {
+                                    status: 'error', 
+                                    message: 
+                                        "Something went wrong, please refresh the page and try again. You have NOT been charged."
+                                }
+                            )
+                        )
+                }
+            })
+        }
+    }, [cart])
+
+    console.log("CLIENT SECRET", clientSecret)
 
     return (
         <Grid itme container direction="column" classes={{ root: classes.mainContainer }}>
@@ -360,7 +396,11 @@ export default function Confirmation({
                 </Grid>
             ))}
             <Grid item classes={{ root: classes.buttonWrapper }}>
-                <Button classes={{ root: classes.button, disabled: classes.disabled }} onClick={handleOrder} disabled={cart.length === 0 || loading}>
+                <Button 
+                    classes={{ root: classes.button, disabled: classes.disabled }} 
+                    onClick={handleOrder} 
+                    disabled={cart.length === 0 || loading || !clientSecret}
+                >
                     <Grid container justifyContent="space-around" alignItems="center">
                         <Grid item>
                             <Typography variant="h5">
