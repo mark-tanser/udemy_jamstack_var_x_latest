@@ -71,6 +71,9 @@
     "orders": {
       "via": "users_permissions_user",
       "collection": "order"
+    },
+    "stripeID": {
+      "type": "string"
     }
   }
 }

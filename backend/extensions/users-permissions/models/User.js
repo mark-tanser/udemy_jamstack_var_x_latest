@@ -1,9 +1,19 @@
+var stripe = require("stripe")(process.env.STRIPE_SK)
+
 module.exports = {
     /**
      * Triggered before user creation.
      */
     lifecycles: {
       async beforeCreate(data) {
+
+        const customer = await stripe.customers.create({
+          name: data.username,
+          email: data.email
+        })
+
+        data.stripeID = customer.id
+
         data.paymentMethods = [
             {brand: "", last4: ""},
             {brand: "", last4: ""},
