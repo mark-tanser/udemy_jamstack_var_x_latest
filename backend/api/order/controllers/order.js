@@ -10,6 +10,11 @@ const stripe = require("stripe")(process.env.STRIPE_SK)
 
 const GUEST_ID = "61b00ceb7feff84c0c2c54f8";
 
+const sanitizeUser = user =>
+    sanitizeEntity(user, {
+        model: strapi.query("user", "users-permissions").model,
+    });
+
 module.exports = {
     async process(ctx) {
         const {
@@ -160,5 +165,32 @@ module.exports = {
 
         // send order with success status code
         ctx.send({ order }, 200)
+    },
+
+    async removeCard(ctx) {
+        const { card } = ctx.request.body
+        const { stripeID } = ctx.state.user
+
+        const stripeMethods = await stripe.paymentMethods.list(
+            { customer: stripeID, type: "card" }
+        )
+
+        const stripeCard = stripeMethods.data.find(method => method.card.last4 === card)
+
+        await stripe.paymentMethods.detach(stripeCard.id)
+
+        let newMethods = [...ctx.state.user.paymentMethods]
+
+        const cardSlot = newMethods.findIndex(method => method.last4 === card)
+
+        newMethods[cardSlot] = {brand: "", last4: ""}
+
+        const newUser = await strapi.plugins["users-permissions"].services.user.edit(
+            { id: ctx.state.user.id },
+            { paymentMethods: newMethods }
+        )
+
+        ctx.send({ user: sanitizeUser(newUser)}, 200)
+
     }
 };

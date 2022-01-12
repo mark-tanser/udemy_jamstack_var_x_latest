@@ -1,16 +1,21 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
 import { FormControlLabel, Switch } from "@material-ui/core"
 import IconButton from "@material-ui/core/IconButton"
+import { CircularProgress } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js"
 
 import Slots from "./Slots"
 
+import { FeedbackContext, UserContext } from "../../contexts"
+import { setSnackbar, setUser } from "../../contexts/actions"
+
 import cardIcon from "../../images/card.svg"
+import axios from "axios"
 
 const useStyles = makeStyles(theme => ({
     number: {
@@ -63,6 +68,9 @@ const useStyles = makeStyles(theme => ({
         borderBottom: "2px solid #fff",
         height: "2rem",
         marginTop: "-1rem"
+    },
+    spinner: {
+        marginLeft: "3rem"
     }
 }))
 
@@ -81,8 +89,39 @@ export default function Payments({
     const classes = useStyles({ checkout, selectedStep, stepNumber })
     const stripe = useStripe()
     const elements = useElements()
+
+    const [loading, setLoading] = useState(false)
+
+    const { dispatchFeedback } = useContext(FeedbackContext)
+    const { dispatchUser } = useContext(UserContext)
     
     const card = user.username === "Guest" ? {last4: "", brand: ""} : user.paymentMethods[slot]
+
+    const removeCard = () => {
+        setLoading(true)
+
+        axios.post(process.env.GATSBY_STRAPI_URL + "/orders/removeCard", {
+            card: card.last4
+        }, {
+            headers: { Authorization: `Bearer ${user.jwt}` }
+        }).then(response => {
+            setLoading(false)
+
+            dispatchUser(setUser({...response.data.user, jwt: user.jwt, onboarding: true}))
+            setCardError(true)
+            setCard({brand: "", last4: ""})
+        }).catch(error => {
+            setLoading(false)
+            console.error(error)
+
+            dispatchFeedback(setSnackbar(
+                {
+                    status: "error", 
+                    message: "There was a problem removing your card. Please try again"
+                })
+            )
+        })
+    }
 
     const handleSubmit = async event => {
         event.preventDefault()
@@ -166,8 +205,11 @@ export default function Payments({
                     </Typography>
                 </Grid>
                 { card.last4 && (
-                    <Grid item>
-                        <Button variant="contained" classes={{ root: classes.removeCard }} >
+                    <Grid item classes={{ root: clsx({
+                        [classes.spinner]: loading
+                    })}}>
+                        {loading ? <CircularProgress color="secondary" /> : (
+                            <Button onClick={removeCard} variant="contained" classes={{ root: classes.removeCard }} >
                             <Typography 
                                 variant="h6" 
                                 classes={{ root: classes.removeCardText }}
@@ -175,6 +217,7 @@ export default function Payments({
                                 remove card
                             </Typography>
                         </Button>
+                        )}
                    </Grid>     
                 )}
             </Grid>
@@ -188,7 +231,11 @@ export default function Payments({
                             labelPlacement="start"
                             control={
                                 <Switch 
-                                    checked={saveCard} 
+                                    disabled={user.paymentMethods[slot].last4 !== ""}
+                                    checked={user.paymentMethods[slot].last4 !== ""
+                                        ? true
+                                        : saveCard
+                                    } 
                                     onChange={() => setSaveCard(!saveCard)}
                                     color="secondary"
                                 />

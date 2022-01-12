@@ -100,7 +100,7 @@ export default function Thankyou({ selectedShipping, order }) {
                     <Grid item>
                         <Button classes={{ root: classes.details }}>
                             <Typography variant="body2" classes={{ root: classes.detailsText}}>
-                                Details >
+                                Details {'>'}
                             </Typography>
                         </Button>
                     </Grid>
@@ -110,7 +110,7 @@ export default function Thankyou({ selectedShipping, order }) {
             <Grid item classes={{ root: classes.shopWrapper }}>
                 <Button component={Link} to="/hats">
                     <Typography variant="body2" classes={{ root: classes.shopText }}>
-                            Shop >
+                            Shop {'>'}
                     </Typography>
                 </Button>
             </Grid>
