@@ -57,9 +57,11 @@ export default function CheckoutPortal({ user }) {
     const [billingLocation, setBillingLocation] = useState({street: "", zip: "", city: "", state: ""})
     const [locationSlot, setLocationSlot] = useState(0)
     const [locationForBilling, setLocationForBilling] = useState(false)
-    const [billingSlot, setBillingSlot] = useState(0)
+    
+    const [cardSlot, setCardSlot] = useState(0)
     const [cardError, setCardError] = useState(true)
     const [saveCard, setSaveCard] = useState(false)
+    const [card, setCard] = useState({ brand: "", last4: "" })
 
     const [errors, setErrors] = useState({})
 
@@ -188,8 +190,9 @@ export default function CheckoutPortal({ user }) {
             title: "Payment",
             component: (
                 <Payments 
-                    slot={billingSlot}
-                    setSlot={setBillingSlot}
+                    setCard={setCard}
+                    slot={cardSlot}
+                    setSlot={setCardSlot}
                     user={user}
                     saveCard={saveCard}
                     setSaveCard={setSaveCard}
@@ -206,6 +209,10 @@ export default function CheckoutPortal({ user }) {
                 <Confirmation 
                     user={user}
                     order={order}
+                    card={card}
+                    saveCard={saveCard}
+                    cardSlot={cardSlot}
+                    saveCard={saveCard}
                     detailsValues={detailsValues} 
                     billingDetails={billingDetails} 
                     detailsForBilling={detailsForBilling} 
