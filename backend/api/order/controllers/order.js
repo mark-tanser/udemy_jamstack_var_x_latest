@@ -18,7 +18,8 @@ module.exports = {
             shippingOption,
             idempotencyKey,
             storedIntent,
-            email
+            email,
+            savedCard
         } = ctx.request.body;
 
         let serverTotal = 0; //initialise serverTotal count
@@ -56,6 +57,16 @@ module.exports = {
             // send conflict error
             ctx.send({ unavailable }, 409)
         } else {
+            let saved;
+
+            if (savedCard) {
+                const stripeMethods = await stripe.paymentMethods.list(
+                    {customer: ctx.state.user.stripeID, type: "card"}
+                )
+
+                saved = stripeMethods.data.find(method => method.card.last4 === savedCard)
+            }
+
             // if there's an existing payment intent then update it
             if (storedIntent) {
                 const update = await stripe.paymentIntents.update(storedIntent, {
@@ -69,7 +80,8 @@ module.exports = {
                     amount: total * 100,
                     currency: "usd",
                     customer: ctx.state.user ? ctx.state.user.stripeID : undefined,
-                    receipt_email: email
+                    receipt_email: email,
+                    payment_method: saved ? saved.id : undefined
                 }, { idempotencyKey })
 
                 ctx.send({client_secret: intent.client_secret, intentID: intent.id})

@@ -1,9 +1,10 @@
 import React, { useState, useContext, useEffect } from "react"
 import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
-import Typography from "@material-ui/core/Typography"
-import Button from "@material-ui/core/Button"
-import IconButton from "@material-ui/core/IconButton"
+import { Typography } from "@material-ui/core"
+
+import { Elements } from "@stripe/react-stripe-js"
+import { loadStripe } from "@stripe/stripe-js"
 import { makeStyles } from "@material-ui/core/styles"
 
 import Details from "./Details"
@@ -21,6 +22,8 @@ const useStyles = makeStyles(theme => ({
         height: "50%"
     }
 }))
+
+const stripePromise = loadStripe(process.env.GATSBY_STRIPE_PK)
 
 export default function Settings({ setSelectedSetting }) {
     const classes = useStyles()
@@ -61,12 +64,14 @@ export default function Settings({ setSelectedSetting }) {
                     errors={detailsErrors}
                     setErrors={setDetailsErrors}
                 />
+            <Elements stripe={stripePromise}>
                 <Payments 
                     user={user} 
                     edit={edit}
                     slot={billingSlot}
                     setSlot={setBillingSlot}
                 />
+            </Elements>
             </Grid>
             <Grid 
                 container 

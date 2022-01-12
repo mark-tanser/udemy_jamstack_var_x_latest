@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
@@ -125,6 +125,18 @@ export default function Payments({
             } }} onChange={handleCardChange} />
         </form>
     )
+
+    useEffect(() => {
+        if (!checkout || !user.jwt) return
+
+        if (user.paymentMethods[slot].last4 !== "") {
+            setCard(user.paymentMethods[slot])
+            setCardError(false)
+        } else {
+            setCard({brand: "", last4: "" })
+            setCardError(true)
+        }
+    }, [slot])
 
     return (
         <Grid 

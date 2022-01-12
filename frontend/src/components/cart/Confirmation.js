@@ -247,20 +247,24 @@ export default function Confirmation({
     const handleOrder = async () => {
         setLoading(true)
 
+        const savedCard = user.jwt && user.paymentMethods[cardSlot].last4 !== ""
+
         const idempotencyKey = uuidv4()
         const cardElement = elements.getElement(CardElement)
         const result = await stripe.confirmCardPayment(clientSecret, {
-            payment_method: {
-                card: cardElement,
-                billing_details: {
-                    address: {
-                        city: billingLocation.city,
-                        state: billingLocation.state,
-                        line1: billingLocation.street
-                    },
-                    email: billingDetails.email,
-                    name: billingDetails.name,
-                    phone: billingDetails.phone
+            payment_method: savedCard
+                ? undefined
+                : {
+                    card: cardElement,
+                    billing_details: {
+                        address: {
+                            city: billingLocation.city,
+                            state: billingLocation.state,
+                            line1: billingLocation.street
+                        },
+                        email: billingDetails.email,
+                        name: billingDetails.name,
+                        phone: billingDetails.phone
                 }
             },
             setup_future_usage: saveCard ? "off_session" : undefined
@@ -344,7 +348,10 @@ export default function Confirmation({
                     shippingOption: shipping,
                     idempotencyKey,
                     storedIntent,
-                    email: detailsValues.email
+                    email: detailsValues.email,
+                    savedCard: user.jwt && user.paymentMethods[cardSlot].last4 !== ""
+                        ? card.last4
+                        : undefined
                 }, {
                     headers: user.jwt 
                         ? { Authorization: `Bearer ${user.jwt}`} 
