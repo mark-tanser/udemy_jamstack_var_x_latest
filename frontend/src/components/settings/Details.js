@@ -59,6 +59,7 @@ const useStyles = makeStyles(theme => ({
         bottom: ({ checkout }) => (checkout ? -8 : 0)
     }, 
     detailsContainer: {
+        display: ({ checkout, selectedStep, stepNumber }) => checkout && selectedStep !== stepNumber ? "none" : "flex",
         position: "relative",
         [theme.breakpoints.down("md")]: {
             borderBottom: "4px solid #fff",
@@ -100,9 +101,11 @@ export default function Details({
         setBilling,
         billingValues,
         setBillingValues,
-        noSlots
+        noSlots,
+        selectedStep,
+        stepNumber
     }) {
-    const classes = useStyles({ checkout })
+    const classes = useStyles({ checkout, selectedStep, stepNumber })
     const isMounted = useRef(false)
     const [visible, setVisible] = useState(false)
     const matchesXS = useMediaQuery(theme => theme.breakpoints.down("xs"))

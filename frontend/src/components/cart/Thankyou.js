@@ -31,7 +31,8 @@ const useStyles = makeStyles(theme => ({
     },
     container: {
         height: "100%",
-        position: "relative"
+        position: "relative",
+        display: ({ selectedStep, stepNumber }) => selectedStep !== stepNumber ? "none" : "flex",
     },
     shopWrapper: {
         position: "absolute",
@@ -93,7 +94,7 @@ export default function Thankyou({ selectedShipping, order }) {
                 <Grid item container justifyContent={matchesXS ? "space-around" : "space-between"} alignItems="center">
                     <Grid item>
                         <Typography variant="body2" classes={{ root: classes.order }}>
-                            Order #{order.id.slice(order.id.length -10, order.id.length)}
+                            Order #{order?.id.slice(order.id.length -10, order.id.length)}
                         </Typography>
                     </Grid>
                     <Grid item>

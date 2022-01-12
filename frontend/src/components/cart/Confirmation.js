@@ -100,7 +100,8 @@ const useStyles = makeStyles(theme => ({
         marginTop: "auto"
     },
     mainContainer: {
-        height: "100%"
+        height: "100%",
+        display: ({ selectedStep, stepNumber }) => selectedStep !== stepNumber ? "none" : "flex",
     },
     chipRoot: {
         backgroundColor: "#fff"
@@ -131,10 +132,11 @@ export default function Confirmation({
     selectedShipping,
     selectedStep,
     setSelectedStep,
+    stepNumber,
     setOrder
 }) 
 {
-    const classes = useStyles()
+    const classes = useStyles({selectedStep, stepNumber})
     const stripe = useStripe()
     const elements = useElements()
     const matchesXS = useMediaQuery(theme => theme.breakpoints.down("xs"))
@@ -215,7 +217,7 @@ export default function Confirmation({
         },
         {
             label: "SHIPPING",
-            value: shipping.price.toFixed(2)
+            value: shipping?.price.toFixed(2)
         },
         {
             label: "TAX",
@@ -297,7 +299,7 @@ export default function Confirmation({
     }
 
     useEffect(() => {
-        if (!order && cart.length !==0) {
+        if (!order && cart.length !==0 && selectedStep === stepNumber) {
             const storedIntent = localStorage.getItem("intentID")
             const idempotencyKey = uuidv4()
 
@@ -360,7 +362,7 @@ export default function Confirmation({
                 }
             })
         }
-    }, [cart])
+    }, [cart, selectedStep, stepNumber])
 
     console.log("CLIENT SECRET", clientSecret)
 
