@@ -56,6 +56,10 @@
       "via": "orders",
       "plugin": "users-permissions",
       "model": "user"
+    },
+    "transaction": {
+      "type": "string",
+      "required": true
     }
   }
 }
