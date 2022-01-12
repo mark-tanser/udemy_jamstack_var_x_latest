@@ -19,7 +19,7 @@ module.exports = {
             idempotencyKey,
             storedIntent,
             email
-        } = ctx.requents.body;
+        } = ctx.request.body;
 
         let serverTotal = 0; //initialise serverTotal count
         let unavailable = []; //create unavailable items list
@@ -56,13 +56,15 @@ module.exports = {
             // send conflict error
             ctx.send({ unavailable }, 409)
         } else {
-            if (stroedIntent) {
+            // if there's an existing payment intent then update it
+            if (storedIntent) {
                 const update = await stripe.paymentIntents.update(storedIntent, {
                     amount: total * 100 // $1 = 100 units in Stripe
                 }, { idempotencyKey}) 
 
                 ctx.send({client_secret: update.client_secret, intentID: update.id})
             } else {
+                // otherwise generate a new payment intent
                 const intent = await stripe.paymentIntents.create({
                     amount: total * 100,
                     currency: "usd",

@@ -265,7 +265,7 @@ export default function Confirmation({
     }
 
     useEffect(() => {
-        if (!order && arguments.length !==0) {
+        if (!order && cart.length !==0) {
             const storedIntent = localStorage.getItem("intentID")
             const idempotencyKey = uuidv4()
 
@@ -282,7 +282,7 @@ export default function Confirmation({
                     email: detailsValues.email
                 }, {
                     headers: user.jwt 
-                        ? { Autherization: `Bearer ${user.jwt}`} 
+                        ? { Authorization: `Bearer ${user.jwt}`} 
                         : undefined
                 }
             ).then(response => {
