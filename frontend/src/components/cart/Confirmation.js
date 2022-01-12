@@ -8,6 +8,7 @@ import Button from "@material-ui/core/Button"
 import { Chip } from "@material-ui/core"
 import IconButton from "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
+import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js"
 import { useMediaQuery } from "@material-ui/core"
 import { v4 as uuidv4 } from "uuid"
 
@@ -134,6 +135,8 @@ export default function Confirmation({
 }) 
 {
     const classes = useStyles()
+    const stripe = useStripe()
+    const elements = useElements()
     const matchesXS = useMediaQuery(theme => theme.breakpoints.down("xs"))
     const [loading, setLoading] = useState(false)
     const [clientSecret, setClientSecret] = useState(null)
@@ -235,10 +238,40 @@ export default function Confirmation({
         </>
     )
 
-    const handleOrder = () => {
+    const handleOrder = async () => {
         setLoading(true)
 
-        axios.post(process.env.GATSBY_STRAPI_URL + "/orders/place", {
+        const idempotencyKey = uuidv4()
+        const cardElement = elements.getElement(CardElement)
+        const result = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: {
+                card: cardElement,
+                billing_details: {
+                    address: {
+                        city: billingLocation.city,
+                        state: billingLocation.state,
+                        line1: billingLocation.street
+                    },
+                    email: billingDetails.email,
+                    name: billingDetails.name,
+                    phone: billingDetails.phone
+                }
+            }
+        }, { idempotencyKey })
+
+        if (result.error) {
+            console.error(result.error.message)
+            dispatchFeedback(setSnackbar({
+                status: "error",
+                message: result.error.message
+            }))
+            setLoading(false)
+        } else if (result.paymentIntent.status === "succeeded") {
+            console.log("PAYMENT SUCCESSFUL")
+        }
+
+        /*
+        axios.post(process.env.GATSBY_STRAPI_URL + "/orders/finalize", {
             shippingAddress: locationValues,
             billingAddress: billingLocation,
             shippingInfo: detailsValues,
@@ -259,9 +292,8 @@ export default function Confirmation({
         }).catch(error => {
             setLoading(false)
             console.error(error)
-
-            
         })
+        */
     }
 
     useEffect(() => {
