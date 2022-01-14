@@ -158,6 +158,19 @@ module.exports = {
         // remove sensitive info
         order = sanitizeEntity(order, { model: strapi.models.order })
 
+        
+        // generate confirmation email html
+        const confirmation = await strapi.services.order.confirmationEmail(order)
+        console.log('EMAIL:', confirmation)
+        console.log(order.billingInfo.email)
+        
+        // send order confirmation email
+        await strapi.plugins["email"].services.email.send({
+            to: order.billingInfo.email,
+            subject: 'VAR-X Order Confirmation',
+            html: confirmation
+        })
+
         // override order.user when Guest
         if (order.users_permissions_user.username === "Guest") {
             order.users_permissions_user = { username: "Guest" }
