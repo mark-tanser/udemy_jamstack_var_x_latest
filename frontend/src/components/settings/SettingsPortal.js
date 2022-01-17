@@ -9,6 +9,7 @@ import { useMediaQuery } from "@material-ui/core"
 import useResizeAware from "react-resize-aware"
 
 import Settings from "./Settings"
+import OrderHistory from "./OrderHistory"
 import { UserContext } from "../../contexts"
 import { setUser } from "../../contexts/actions"
 
@@ -56,7 +57,8 @@ const useStyles = makeStyles(theme => ({
         }
     },
     button: {
-        backgroundColor: theme.palette.primary.main
+        backgroundColor: theme.palette.primary.main,
+        display: "flex"
     },
     addHover: {
         "&:hover": {
@@ -98,13 +100,14 @@ export default function SettingsPortal() {
             : "22rem"
 
     const buttons = [
-        { label: "settings", icon: settingsIcon, component: Settings }, 
-        { label: "order History", icon: orderHistoryIcon },
+        { label: "Settings", icon: settingsIcon, component: Settings, large: true }, 
+        { label: "Order History", icon: orderHistoryIcon, component: OrderHistory },
         { label: "Favorites", icon: favoritesIcon },
         { label: "Subscriptions", icon: subscriptionIcon }
     ]
 
     const handleClick = setting => {
+        console.log("handleClick")
         if (selectedSetting === setting) {
             setSelectedSetting(null)
         } else {
@@ -125,7 +128,9 @@ export default function SettingsPortal() {
 
                 const size = {
                     height: selectedSetting === button.label 
-                        ? matchesMD ? "120rem" : "60rem" 
+                        ? matchesMD && button.large
+                            ? "120rem" 
+                            : "60rem" 
                         : buttonHeight,
                     width: selectedSetting === button.label ? `${sizes.width}px` : buttonWidth,
                     borderRadius: selectedSetting === button.label ? 0 : 25,

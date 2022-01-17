@@ -8,6 +8,7 @@ import IconButton from "@material-ui/core/IconButton"
 import { CircularProgress } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js"
+import { useMediaQuery } from "@material-ui/core"
 
 import Slots from "./Slots"
 
@@ -20,7 +21,11 @@ import axios from "axios"
 const useStyles = makeStyles(theme => ({
     number: {
         color: "#FFF",
-        marginBottom: "5rem"
+        marginBottom: "5rem",
+        [theme.breakpoints.down("xs")]: {
+            marginBottom: ({ checkout }) => (checkout ? "1rem" : undefined),
+            fontSize: ({ checkout }) => (checkout ? "1.5rem" : undefined)
+        }
     },
     removeCard: {
         backgoundColor: "#FFF",
@@ -29,6 +34,9 @@ const useStyles = makeStyles(theme => ({
         marginLeft: "2rem",
         "&:hover": {
             backgroundColor: "#FFF"
+        },
+        [theme.breakpoints.down("xs")]: {
+            marginLeft: ({ checkout }) => (checkout ? 0 : undefined)
         }
     },
     removeCardText: {
@@ -40,7 +48,7 @@ const useStyles = makeStyles(theme => ({
     icon: {
         marginBottom: "3rem",
         [theme.breakpoints.down("xs")]: {
-            marginBottom: "1rem"
+            marginBottom: ({ checkout }) => checkout ? "3rem" : "1rem"
         },
     },
     paymentContainer: {
@@ -61,16 +69,28 @@ const useStyles = makeStyles(theme => ({
     },
     switchLabel: {
         color: "#fff",
-        fontWeight: 600
+        fontWeight: 600,
+        [theme.breakpoints.down("xs")]: {
+            fontSize: "1.25rem",
+        }
     },
     form: {
         width: "75%",
         borderBottom: "2px solid #fff",
         height: "2rem",
-        marginTop: "-1rem"
+        marginTop: "-1rem",
+        [theme.breakpoints.down("xs")]: {
+            width: "85%",
+        }
     },
     spinner: {
         marginLeft: "3rem"
+    },
+    switchItem: {
+        width: "100%"
+    },
+    numberWrapper: {
+        marginBottom: "6rem"
     }
 }))
 
@@ -89,6 +109,8 @@ export default function Payments({
     const classes = useStyles({ checkout, selectedStep, stepNumber })
     const stripe = useStripe()
     const elements = useElements()
+
+    const matchesXS = useMediaQuery(theme => theme.breakpoints.down('xs'))
 
     const [loading, setLoading] = useState(false)
 
@@ -191,7 +213,9 @@ export default function Payments({
             <Grid item>
                 <img src={cardIcon} alt="payment settings" className={classes.icon}/>
             </Grid>
-            <Grid item container justifyContent="center">
+            <Grid item container justifyContent="center" classes={{ root: clsx({
+                [classes.numberWrapper]: checkout && matchesXS
+            }) }}>
                 { checkout && !card.last4 ? cardWrapper : null }
                 <Grid item>
                     <Typography 
@@ -224,7 +248,9 @@ export default function Payments({
             <Grid item container justifyContent="space-between" classes={{root: classes.slotContainer}}>
                 <Slots slot={slot} setSlot={setSlot} noLabel />
                 {checkout && user.username !== "Guest" && (
-                    <Grid item>
+                    <Grid item classes={{ root: clsx({
+                        [classes.switchItem]: matchesXS
+                    }) }}>
                         <FormControlLabel
                             classes={{ root: classes.switchWrapper, label: classes.switchLabel }}
                             label="Save Card For Future Use"

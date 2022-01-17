@@ -153,7 +153,7 @@ module.exports = {
             transaction,
             paymentMethod,
             users_permissions_user: orderCustomer
-        });
+        }); //NOTE user: changed to user_permissions_user:
 
         // remove sensitive info
         order = sanitizeEntity(order, { model: strapi.models.order })
@@ -163,13 +163,15 @@ module.exports = {
         const confirmation = await strapi.services.order.confirmationEmail(order)
         console.log('EMAIL:', confirmation)
         console.log(order.billingInfo.email)
+
         
         // send order confirmation email
         await strapi.plugins["email"].services.email.send({
             to: order.billingInfo.email,
             subject: 'VAR-X Order Confirmation',
             html: confirmation
-        })
+        });
+        
 
         // override order.user when Guest
         if (order.users_permissions_user.username === "Guest") {
@@ -205,5 +207,20 @@ module.exports = {
 
         ctx.send({ user: sanitizeUser(newUser)}, 200)
 
+    },
+
+    async history(ctx) {
+        const orders = await strapi.services.order.find({
+            users_permissions_user: ctx.state.user.id
+        }) //NOTE user: changed to user_permissions_user:
+        console.log(orders)
+
+        const cleanOrders = orders.map(order => sanitizeEntity(
+            order,
+            { model: strapi.models.order }
+        ))
+        console.log(cleanOrders)
+
+        ctx.send({ orders: cleanOrders }, 200);
     }
 };
