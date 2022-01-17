@@ -74,6 +74,10 @@
     },
     "stripeID": {
       "type": "string"
+    },
+    "reviews": {
+      "via": "users_permissions_user",
+      "collection": "review"
     }
   }
 }

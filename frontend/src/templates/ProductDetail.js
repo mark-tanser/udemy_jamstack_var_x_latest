@@ -6,6 +6,7 @@ import Layout from '../components/ui/layout'
 import ProductImages from '../components/product-detail/ProductImages'
 import ProductInfo from '../components/product-detail/ProductInfo'
 import RecentlyViewed from '../components/product-detail/RecentlyViewed'
+import ProductReviews from "../components/product-detail/ProductReviews"
 
 import { GET_DETAILS } from '../apollo/queries'
 
@@ -77,6 +78,7 @@ export default function ProductDetail({ pageContext: { name, id, category, descr
                     />
                 </Grid>
                 <RecentlyViewed products={JSON.parse(window.localStorage.getItem("recentlyViewed"))}/>
+                <ProductReviews/>
             </Grid>
         </Layout>
 

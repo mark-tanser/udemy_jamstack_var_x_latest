@@ -38,6 +38,13 @@
       "private": false,
       "required": false,
       "unique": false
+    },
+    "reviews": {
+      "via": "product",
+      "collection": "review"
+    },
+    "rating": {
+      "type": "decimal"
     }
   }
 }
