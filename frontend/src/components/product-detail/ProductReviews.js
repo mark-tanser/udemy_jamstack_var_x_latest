@@ -43,7 +43,7 @@ export default function ProductReviews( { product, edit, setEdit } ) {
             classes={{ root: classes.reviews }}
         >
             {edit && (
-                <ProductReview user={user} reviews={reviews} product={product} setEdit={setEdit} />
+                <ProductReview user={user} reviews={reviews} setReviews={setReviews} product={product} setEdit={setEdit} />
             )}
             {reviews
                 .filter(
