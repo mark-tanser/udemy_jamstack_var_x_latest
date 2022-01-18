@@ -78,7 +78,7 @@ export default function ProductDetail({ pageContext: { name, id, category, descr
                     />
                 </Grid>
                 <RecentlyViewed products={JSON.parse(window.localStorage.getItem("recentlyViewed"))}/>
-                <ProductReviews/>
+                <ProductReviews product={id} />
             </Grid>
         </Layout>
 
