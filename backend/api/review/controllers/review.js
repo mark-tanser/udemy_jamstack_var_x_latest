@@ -12,16 +12,18 @@ module.exports = {
     let entity;
     if (ctx.is("multipart")) {
       const { data, files } = parseMultipartData(ctx);
-      data.user = ctx.state.user.id;
+      data.users_permissions_user = ctx.state.user.id;
       entity = await strapi.services.review.create(data, { files });
     } else {
-      ctx.request.body.user = ctx.state.user.id;
+      ctx.request.body.users_permissions_user = ctx.state.user.id;
       entity = await strapi.services.review.create(ctx.request.body);
     }
-    console.log("entity.product.id:", entity.product.id);
+    
     await strapi.services.review.average(entity.product.id);
     return sanitizeEntity(entity, { model: strapi.models.review });
   },
+
+  // my version of Strapi has 'users_permission_user' in place of 'user' that is referenced in the course
 
   async update(ctx) {
     const { id } = ctx.params;
@@ -30,7 +32,7 @@ module.exports = {
 
     const [review] = await strapi.services.review.find({
       id,
-      user: ctx.state.user.id,
+      users_permissions_user: ctx.state.user.id,
     });
 
     if (!review) {
@@ -55,7 +57,7 @@ module.exports = {
 
     const [review] = await strapi.services.review.find({
       id,
-      user: ctx.state.user.id,
+      users_permissions_user: ctx.state.user.id,
     });
 
     if (!review) {
@@ -67,3 +69,4 @@ module.exports = {
     return sanitizeEntity(entity, { model: strapi.models.review });
   },
 };
+

@@ -19,6 +19,8 @@ export default function ProductReviews( { product } ) {
     const classes = useStyles()
     const [reviews, setReviews] = useState([])
 
+    console.log("product:", product)
+
     const { data } = useQuery(GET_REVIEWS, { variables: { id: product } })
 
     useEffect(() => {
@@ -31,7 +33,13 @@ export default function ProductReviews( { product } ) {
 
     return (
         <Grid item container direction="column" classes={{ root: classes.reviews }}>
-            <ProductReview product={product}/>
+            {reviews.map(review => (
+                <ProductReview 
+                    key={review.id} 
+                    product={product} 
+                    review={review} 
+                />
+            ))}
         </Grid>
     )
 }

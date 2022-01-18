@@ -37,6 +37,9 @@ const useStyles = makeStyles(theme => ({
     rating: {
         cursor: "pointer"
     },
+    review: {
+        marginBottom: "3rem"
+    },
     "@global": {
         ".MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before": {
           borderBottom: `2px solid ${theme.palette.primary.main}`,
@@ -47,7 +50,7 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-export default function ProductReview({ product }) {
+export default function ProductReview({ product, review }) {
     const classes = useStyles()
     const { user } = useContext(UserContext)
     const { dispatchFeedback } = useContext(FeedbackContext)
@@ -55,7 +58,7 @@ export default function ProductReview({ product }) {
 
     const [values, setValues] = useState({ message: "" })
     const [tempRating, setTempRating] = useState(0)
-    const [rating, setRating] = useState(null)
+    const [rating, setRating] = useState(review ? review.rating : null)
     const [loading, setLoading] = useState(null)
 
 
@@ -92,24 +95,25 @@ export default function ProductReview({ product }) {
     }
 
     return (
-        <Grid item container direction="column">
+        <Grid item container direction="column" classes={{ root: classes.review }}>
             <Grid item container justifyContent="space-between">
                 <Grid item>
                     <Typography variant="h4" classes={{ root: classes.light }}>
-                        {user.username}
+                        {review ? review.users_permissions_user.username : user.username}
                     </Typography>
                 </Grid>
                 <Grid 
                     item 
-                    classes={{ root: classes.rating }}
+                    classes={{ root: clsx({ [classes.rating]: !review }) }}
                     ref={ratingRef} 
-                    onClick={() => setRating(tempRating)}
+                    onClick={() => review ? null : setRating(tempRating)}
                     onMouseLeave={() => {
                         if (tempRating > rating) {
                             setTempRating(rating)
                         }
                     } }
                     onMouseMove={e => {
+                        if (review) return
                         const hoverRating = ((ratingRef.current.getBoundingClientRect().left - e.clientX) 
                             / ratingRef.current.getBoundingClientRect().width) * -5
                         setTempRating(Math.round(hoverRating * 2) / 2)
@@ -120,32 +124,44 @@ export default function ProductReview({ product }) {
             </Grid>
             <Grid item>
                 <Typography variant="h5" classes={{ root: clsx(classes.date, classes.light) }}>
-                    {new Date().toLocaleDateString()}
+                    {review ? new Date(review.createdAt).toLocaleDateString([], {
+                        day: "numeric",
+                        month: "numeric",
+                        year: "numeric"
+                    }) : new Date().toLocaleDateString()}
                 </Typography>
             </Grid>
             <Grid item>
-                <Fields 
-                    values={values} 
-                    setValues={setValues} 
-                    fields={fields}
-                    fullWidth
-                    noError
-                />
+                {review 
+                    ? (<Typography variant="body1">{review.text}</Typography>)
+                    : (
+                        <Fields 
+                            values={values} 
+                            setValues={setValues} 
+                            fields={fields}
+                            fullWidth
+                            noError
+                        />
+                    )
+                }
             </Grid>
-            <Grid item container classes={{ root: classes.buttonContainer}}>
-                <Grid item>
-                    {loading === "leave-review" ? <CircularProgress /> : (
-                        <Button onClick={handleReview} disabled={!rating} variant="contained" color="primary">
-                            <span className={classes.reviewButtonText}>Leave Review</span>
+            {review 
+                ? null 
+                : <Grid item container classes={{ root: classes.buttonContainer}}>
+                    <Grid item>
+                        {loading === "leave-review" ? <CircularProgress /> : (
+                            <Button onClick={handleReview} disabled={!rating} variant="contained" color="primary">
+                                <span className={classes.reviewButtonText}>Leave Review</span>
+                            </Button>
+                        )}
+                    </Grid>
+                    <Grid item>
+                        <Button>
+                            <span className={classes.cancelButtonText}>Cancel</span>
                         </Button>
-                    )}
-                </Grid>
-                <Grid item>
-                    <Button>
-                        <span className={classes.cancelButtonText}>Cancel</span>
-                    </Button>
-                </Grid>
-            </Grid>
+                    </Grid>
+                </Grid>}
+            
         </Grid>
     )
 }

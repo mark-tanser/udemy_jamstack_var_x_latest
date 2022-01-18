@@ -18,10 +18,12 @@ export const GET_REVIEWS = gql`
                 text
                 rating
                 createdAt
-                user {
+                users_permissions_user {
                     username
                 }
             }
         }
     }
 `
+
+// my version of Strapi has 'users_permission_user' in place of 'user' that is referenced in the course
