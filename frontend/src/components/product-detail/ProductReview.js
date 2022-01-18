@@ -8,10 +8,11 @@ import Button from "@material-ui/core/Button"
 import IconButton from "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
 
+import { FeedbackContext } from "../../contexts"
+
 import Rating from "../home/Rating"
 import Fields from "../auth/Fields"
 
-import { UserContext, FeedbackContext } from "../../contexts"
 import { setSnackbar } from "../../contexts/actions"
 
 const useStyles = makeStyles(theme => ({
@@ -50,15 +51,18 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-export default function ProductReview({ product, review, setEdit }) {
+export default function ProductReview({ product, review, setEdit, reviews, user }) {
     const classes = useStyles()
-    const { user } = useContext(UserContext)
     const { dispatchFeedback } = useContext(FeedbackContext)
     const ratingRef = useRef(null)
 
-    const [values, setValues] = useState({ message: "" })
+    const found = !review 
+        ? reviews.find(review => review.users_permissions_user.username === user.username)
+        : null
+
+    const [values, setValues] = useState({ message: found ? found.text : "" })
     const [tempRating, setTempRating] = useState(0)
-    const [rating, setRating] = useState(review ? review.rating : null)
+    const [rating, setRating] = useState(review ? review.rating : found ? found.rating : null)
     const [loading, setLoading] = useState(null)
 
 
@@ -93,6 +97,10 @@ export default function ProductReview({ product, review, setEdit }) {
             }))
         })
     }
+
+    const buttonDisabled = found 
+        ? found.text === values.message && found.rating === rating
+        : !rating
 
     return (
         <Grid item container direction="column" classes={{ root: classes.review }}>
@@ -150,8 +158,8 @@ export default function ProductReview({ product, review, setEdit }) {
                 : <Grid item container classes={{ root: classes.buttonContainer}}>
                     <Grid item>
                         {loading === "leave-review" ? <CircularProgress /> : (
-                            <Button onClick={handleReview} disabled={!rating} variant="contained" color="primary">
-                                <span className={classes.reviewButtonText}>Leave Review</span>
+                            <Button onClick={handleReview} disabled={buttonDisabled} variant="contained" color="primary">
+                                <span className={classes.reviewButtonText}>{found ? "Edit" : "Leave"} Review</span>
                             </Button>
                         )}
                     </Grid>
