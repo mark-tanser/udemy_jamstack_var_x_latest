@@ -97,6 +97,7 @@ export default function QuickView({
     setSelectedColor,
     hasStyles,
     stock,
+    rating,
     imageIndex
 }) {
     const classes = useStyles()
@@ -143,7 +144,7 @@ export default function QuickView({
                                     <Typography variant="h4">
                                         {name}
                                     </Typography>
-                                    <Rating number={4}/>
+                                    <Rating number={rating}/>
                                 </Grid>
                                 <Grid item>
                                     <Typography variant="h3" classes={{ root: classes.stock }}>
