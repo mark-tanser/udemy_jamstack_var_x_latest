@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useContext } from "react"
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
-import Pagination from "@material-ui/lab/Pagination"
-import PaginationItem from "@material-ui/lab/PaginationItem"
 import Button from "@material-ui/core/Button"
 import IconButton from "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
@@ -11,6 +9,7 @@ import { useQuery } from "@apollo/client"
 import { UserContext } from "../../contexts"
 
 import ProductReview from "./ProductReview"
+import { StyledPagination } from "../../templates/ProductList"
 import { GET_REVIEWS } from "../../apollo/queries"
 
 const useStyles = makeStyles(theme => ({
@@ -19,16 +18,6 @@ const useStyles = makeStyles(theme => ({
     },
     pagination: {
         marginBottom: "3rem"
-    },
-    "@global": {
-        ".MuiPaginationItem-root": {
-            fontFamily: 'Montserrat',
-            fontSize: '2rem',
-            color: theme.palette.primary.main,
-            "&.Mui-selected": {
-                color: '#fff',
-            },
-        },
     },
 }))
 
@@ -69,6 +58,7 @@ export default function ProductReviews( { product, edit, setEdit } ) {
                         ? review.users_permissions_user.username !== user.username 
                         : review
                 )
+                .slice((page - 1) * reviewsPerPage, page * reviewsPerPage)
                 .map(review => (
                 <ProductReview 
                     reviews={reviews}
@@ -80,7 +70,7 @@ export default function ProductReviews( { product, edit, setEdit } ) {
             }
             <Grid item container justify="flex-end">
                 <Grid item>
-                    <Pagination 
+                    <StyledPagination 
                         count={numPages} 
                         page={page} 
                         onChange={(e, newPage) => setPage(newPage)} 
