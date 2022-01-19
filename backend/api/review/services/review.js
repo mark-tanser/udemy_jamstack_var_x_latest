@@ -23,7 +23,6 @@
         if (product.reviews.length > 0) {
             average = total / product.reviews.length
         };
-        console.log("average:", average);
   
         await strapi.services.product.update(
             { id },
