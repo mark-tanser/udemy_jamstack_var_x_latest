@@ -78,6 +78,10 @@
     "reviews": {
       "via": "users_permissions_user",
       "collection": "review"
+    },
+    "favorites": {
+      "via": "users_permissions_user",
+      "collection": "favorite"
     }
   }
 }
