@@ -80,6 +80,7 @@ export default function ProductDetail({ pageContext: { name, id, category, descr
                         stock={stock}
                         rating={rating}
                         setEdit={setEdit}
+                        product={id}
                     />
                 </Grid>
                 <RecentlyViewed products={JSON.parse(window.localStorage.getItem("recentlyViewed"))}/>
