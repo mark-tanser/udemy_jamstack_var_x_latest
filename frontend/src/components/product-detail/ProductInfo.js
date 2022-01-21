@@ -16,9 +16,9 @@ import QtyButton from '../product-list/QtyButton'
 import { colorIndex } from '../product-list/ProductFrameGrid'
 
 import { UserContext, FeedbackContext } from "../../contexts"
-import { setSnackbar } from "../../contexts/actions"
+import { setSnackbar, setUser } from "../../contexts/actions"
 
-import favorite from '../../images/favorite.svg'
+import Favorite from '../../images/Favorite.js'
 import subscription from '../../images/subscription.svg'
 
 
@@ -141,7 +141,7 @@ export default function ProductInfo({
     product
 }) {
     const classes = useStyles()
-    const { user } = useContext(UserContext)
+    const { user, dispatchUser } = useContext(UserContext)
     const { dispatchFeedback } = useContext(FeedbackContext)
 
     const [selectedSize, setSelectedSize] = useState(variants[selectedVariant].size)
@@ -197,12 +197,14 @@ export default function ProductInfo({
         reviewRef.scrollIntoView({ behavior: "smooth" })
     }
 
+    const existingFavorite = user.favorites?.find(favorite => favorite.product === product)
+
     const handleFavorite = () => {
         if (user.username === "Guest") {
             dispatchFeedback(setSnackbar(
                 { 
                     status: "error",
-                    message: "You must be logged in to add an itemn to favorites.?"
+                    message: "You must be logged in to add an item to favorites"
                 }
             ))
             return
@@ -210,17 +212,38 @@ export default function ProductInfo({
 
         setLoading(true)
 
-        axios.post(process.env.GATSBY_STRAPI_URL + "/favorites", { product }, {
-            headers: { Authorization: `Bearer ${user.jwt}` }
-        }).then(response => {
+        const axiosFunction = existingFavorite 
+            ? axios.delete 
+            : axios.post
+        const route = existingFavorite 
+            ? `/favorites/${existingFavorite.id}` 
+            : "/favorites"
+        const auth = { Authorization: `Bearer ${user.jwt}` }
+
+        axiosFunction(
+            process.env.GATSBY_STRAPI_URL + route, 
+            { product, headers: existingFavorite ? auth : undefined }, 
+            { headers: auth }
+        ).then(response => {
             setLoading(false)
 
             dispatchFeedback(setSnackbar(
                 {
                     status: "success", 
-                    message: "Added Product to Favorites"
+                    message: `${existingFavorite ? "Deleted" : "Added"} Product ${existingFavorite ? "From" : "To"} Favorites`
                 }
             ))
+
+            let newFavorites = [...user.favorites]
+
+            if (existingFavorite) {
+                newFavorites = newFavorites.filter(favorite => favorite.id !== existingFavorite.id)
+            } else {
+                newFavorites.push({ id: response.data.id, product: response.data.product.id })
+            }
+
+            dispatchUser(setUser({ ...user, favorites: newFavorites }))
+
         }).catch(error => {
             setLoading(false)
             console.error(error)
@@ -228,9 +251,10 @@ export default function ProductInfo({
             dispatchFeedback(setSnackbar(
                 {
                     status: "error",
-                    message: "There was aproblem adding to Favorites. Please try again"
+                    message: `There was a problem ${existingFavorite ? "deleting from" : "adding to"} Favorites. Please try again`
                 }
             ))
+
         })
     }
 
@@ -253,12 +277,13 @@ export default function ProductInfo({
                     {loading 
                         ? <CircularProgress size="4rem" /> 
                         : (
-                            <IconButton onClick={handleFavorite} classes={{ root: classes.iconButton }}>
-                            <img 
-                                src={favorite} 
-                                alt="add item to favorites" 
-                                className={classes.icon} 
-                            />
+                            <IconButton 
+                                onClick={handleFavorite} 
+                                classes={{ root: classes.iconButton }}
+                            >
+                                <span className={classes.icon}>
+                                    <Favorite filled={existingFavorite}/>
+                                </span>
                     </IconButton>
                     )}
                     

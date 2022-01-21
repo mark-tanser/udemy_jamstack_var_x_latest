@@ -12,7 +12,7 @@ module.exports = {
         let entity;
         if (ctx.is("multipart")) {
             const { data, files } = parseMultipartData(ctx);
-            data.user = ctx.state.user.id
+            data.users_permissions_user = ctx.state.user.id
             entity = await strapi.services.favorite.create(data, { files });
         } else {
             ctx.request.body.users_permissions_user = ctx.state.user.id
@@ -24,7 +24,7 @@ module.exports = {
     async delete(ctx) {
         const { id } = ctx.params;
 
-        const [favorite] = await strapi.services.favorite.find({ id, user: ctx.state.user.id })
+        const [favorite] = await strapi.services.favorite.find({ id, users_permissions_user: ctx.state.user.id });
 
         if (!favorite) return ctx.unauthorized("You can't update this entry.")
 
