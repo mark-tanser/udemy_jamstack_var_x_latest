@@ -14,7 +14,7 @@ import QtyButton from "../product-list/QtyButton"
 import { CartContext } from "../../contexts"
 import { removeFromCart } from "../../contexts/actions"
 
-import FavoriteIcon from "../../images/Favorite"
+import FavoriteIcon from "../ui/favorite"
 import SubscribeIcon from "../../images/Subscription"
 import DeleteIcon from "../../images/Delete"
 
@@ -79,7 +79,12 @@ export default function Item({ item }) {
     }
 
     const actions = [
-        { icon: FavoriteIcon, color: theme.palette.secondary.main}, 
+        { component: FavoriteIcon, props: {
+            color: theme.palette.secondary.main,
+            size: matchesXS ? 2 : 3,
+            buttonClass: classes.actionButton,
+            variant: item.variant.id
+        }}, 
         { icon: SubscribeIcon, color: theme.palette.secondary.main },
         { icon: DeleteIcon, color: theme.palette.error.main, size: matchesXS ? "1.75rem" : "2.5rem", onClick: handleDelete }
     ]
@@ -135,18 +140,25 @@ export default function Item({ item }) {
                     <Grid item container justifyContent="flex-end" xs={5} sm>
                         {actions.map((action,i) => (
                             <Grid item key={i}>
-                                <IconButton 
-                                    onClick={() => action.onClick()} 
-                                    disableRipple 
-                                    classes={{ root: classes.actionButton }}
-                                >
-                                    <span 
-                                        className={classes.actionWrapper} 
-                                        style={{ height: action.size, width: action.size }}
+                                {action.component 
+                                ? (
+                                    <action.component {...action.props}/>
+                                ) 
+                                : (
+                                    <IconButton 
+                                        onClick={() => action.onClick()} 
+                                        disableRipple 
+                                        classes={{ root: classes.actionButton }}
                                     >
-                                        <action.icon color={action.color} />
-                                    </span>
-                                </IconButton>
+                                        <span 
+                                            className={classes.actionWrapper} 
+                                            style={{ height: action.size, width: action.size }}
+                                        >
+                                            <action.icon color={action.color} />
+                                        </span>
+                                    </IconButton>
+                                )}
+                                
                             </Grid>
                         ))}
                     </Grid>

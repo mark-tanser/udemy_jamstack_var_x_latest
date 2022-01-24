@@ -58,7 +58,7 @@ const sanitizeUser = user =>
             const favorites = await strapi.services.favorite.find({ user })
             newUser.favorites = favorites.map(favorite => (
                 { 
-                    product: favorite.product.id,
+                    variant: favorite.variant.id,
                     id: favorite.id
                 }
             ))
