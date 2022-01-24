@@ -32,6 +32,28 @@ module.exports = {
         return sanitizeEntity(entity, { model: strapi.models.favorite });
     },
 
+    async userFavorites(ctx) {
+        let favorites = await strapi.services.favorite.find({ users_permissions_user: ctx.state.user.id })
+
+        await Promise.all(
+            favorites.map(async (favorite, i) => {
+                const variants = await strapi.services.variant.find(
+                    { product: favorite.variant.product }
+                )
+
+                variants.forEach(variant => {
+                    delete favorites[i].updated_by
+                    delete favorites[i].created_by
+                })
+                favorites[i].variants = variants
+                delete favorites[i].user
+                delete favorites[i].updated_by
+                delete favorites[i].created_by
+            })
+        )
+
+        ctx.send(favorites, 200)
+    }
 
 
 

@@ -27,8 +27,6 @@ export default function ProductReviews( { product, edit, setEdit } ) {
     const [reviews, setReviews] = useState([])
     const [page, setPage] = useState(1)
 
-    console.log("product:", product)
-
     const { data } = useQuery(GET_REVIEWS, { variables: { id: product } })
 
     useEffect(() => {

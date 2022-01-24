@@ -12,13 +12,13 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "product": {
-      "model": "product"
-    },
     "users_permissions_user": {
       "plugin": "users-permissions",
       "model": "user",
       "via": "favorites"
+    },
+    "variant": {
+      "model": "variant"
     }
   }
 }
