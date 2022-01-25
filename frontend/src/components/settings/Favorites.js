@@ -2,19 +2,20 @@ import React, { useContext, useState, useEffect } from "react"
 import axios from "axios"
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
-import { DataGrid } from "@material-ui/data-grid"
 import IconButton from "@material-ui/core/IconButton"
+import { CircularProgress } from "@material-ui/core"
 import { Chip } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
 import Sizes from "../product-list/Sizes"
 import Swatches from "../product-list/Swatches"
 import QtyButton from "../product-list/QtyButton"
+import SettingsGrid from "./SettingsGrid"
 
 import Delete from "../../images/Delete"
 
 import { UserContext, FeedbackContext } from "../../contexts"
-import { setSnackbar } from "../../contexts/actions"
+import { setSnackbar, setUser } from "../../contexts/actions"
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -39,13 +40,14 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-export default function Favorites() {
+export default function Favorites( { setSelectedSetting }) {
     const classes = useStyles()
     const [products, setProducts] = useState([])
     const [selectedVariants, setSelectedVariants] = useState({})
     const [selectedSizes, setSelectedSizes] = useState({})
     const [selectedColors, setSelectedColors] = useState({})
-    const { user } = useContext(UserContext)
+    const [loading, setLoading] = useState(null)
+    const { user, dispatchUser } = useContext(UserContext)
     const { dispatchFeedback } = useContext(FeedbackContext)
 
     const setSelectedHelper = (selectedFunction, values, value, row) => {
@@ -106,8 +108,45 @@ export default function Favorites() {
             }
         })
 
+    const handleDelete = row => {
+        setLoading(row)
+
+        axios.delete(process.env.Gatsby_Strapi_URL + `/favorites/${row}`, {
+            headers: { Authorization: `Bearer ${user.jwt}`}
+        }).then(response => {
+            setLoading(null)
+
+            const newProducts = products.filter(product => product.id !== row)
+            const newFavorites = user.favorites.filter(favorite => favorite.id !== row)
+
+            setProducts(newProducts)
+            dispatchUser(setUser({...user, favorites: newFavorites}))
+
+            dispatchFeedback(setSnackbar(
+                {
+                    status: "success",
+                    message: "Product Removed From Favorites."
+                }
+            ))
+        }).catch(error => {
+            setLoading(null)
+            console.error(error)
+
+            dispatchFeedback(setSnackbar(
+                {
+                    status: "error",
+                    message: "There was a problem removing this product from your favorites. Please try again"
+                }
+            ))
+        })
+    }
+
     const columns = [
-        { field: "item", headerName: "Item", width: 250, renderCell: ({ value }) => (
+        { 
+            field: "item", 
+            headerName: "Item", 
+            width: 250, 
+            renderCell: ({ value }) => (
             <Grid container direction="column">
                 <Grid item>
                     <img 
@@ -173,11 +212,20 @@ export default function Favorites() {
         { field: "price", headerName: "Price", width: 250, renderCell: ({ value }) => (
             <Chip classes={{ root: classes.chipRoot }} label={`$${value}`} />
         ) }, 
-        { field: "", width: 500, sortable: false, renderCell: ({ value }) => (
-            <IconButton>
-                <span className={classes.deleteWrapper} >
-                    <Delete />
-                </span>
+        { field: "", width: 500, sortable: false, disableColumnMenu: true, renderCell: ({ value, row }) => (
+            <IconButton
+                onClick={() => handleDelete(row.id)}
+                disabled={!!loading} //coerse to boolean
+            >
+                {loading === row.id 
+                    ? <CircularProgress size="2rem" color="secondary" />
+                    : (
+                        <span className={classes.deleteWrapper} >
+                            <Delete />
+                        </span>
+                    )
+                }
+                
             </IconButton>
         ) }
     ]
@@ -223,11 +271,11 @@ export default function Favorites() {
 
     return (
         <Grid item container classes={{ root: classes.container }}>
-            <DataGrid 
-                hideFooterSelectedRowCount 
-                rows={rows} 
-                columns={columns} 
-                pageSize={5}
+            <SettingsGrid 
+                setSelectedSetting={setSelectedSetting}
+                rows={rows}
+                columns={columns}
+                rowsPerPage={3}
             />
         </Grid>
     )
