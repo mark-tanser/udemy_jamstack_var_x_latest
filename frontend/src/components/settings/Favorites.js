@@ -50,19 +50,61 @@ export default function Favorites() {
 
     const setSelectedHelper = (selectedFunction, values, value, row) => {
         selectedFunction({ ...values, [row]: value })
+
+        // find favorite products in the list of products
+        const { variants } = products.find(favorite => favorite.id === row)
+        const selectedVariant = selectedVariants[row]
+
+        let newVariant
+
+        // determine whether changing the selected color or size
+        if (value.includes("#")) {
+            // if it's a color
+            newVariant = variants.find(
+                variant => 
+                    variant.size === selectedSizes[row] 
+                    && variant.style === variants[selectedVariant].style 
+                    && variant.color === value
+            )
+        } else {
+            let newColors = []
+
+            variants.map(variant => {
+                // check that new color hasn't already been included in the array and then include it in the new list
+                if(
+                    !newColors.includes(variant.color) 
+                    && variant.size === value 
+                    && variants[selectedVariant].style === variant.style
+                ) {
+                    newColors.push(variant.color)
+                }
+            })
+
+            newVariant = variants.find(
+                variant => variant.size === values 
+                && variant.style === variants[selectedVariant].style 
+                && variant.color === newColors[0]
+            )
+        }
+
+        setSelectedVariants({...selectedVariants, [row]: variants.indexOf(newVariant)})
     }
 
     const createData = data => 
-        data.map(item => ({
-            item: { 
-                name: item.variants[0].product.name.split(" ")[0], 
-                image: item.variants[0].images[0].url 
-            },
-            variant: { all: item.variants, current: item.variant },
-            quantity: item.variants,
-            price: item.variants[0].price,
-            id: item.id
-        }))
+        data.map(item => {
+            const selectedVariant = selectedVariants[item.id]
+
+            return {
+                item: { 
+                    name: item.variants[selectedVariant].product.name.split(" ")[0], 
+                    image: item.variants[selectedVariant].images[0].url 
+                },
+                variant: { all: item.variants, current: item.variant },
+                quantity: item.variants,
+                price: item.variants[selectedVariant].price,
+                id: item.id
+            }
+        })
 
     const columns = [
         { field: "item", headerName: "Item", width: 250, renderCell: ({ value }) => (
@@ -115,14 +157,19 @@ export default function Favorites() {
                 </Grid>
             )
         } }, 
-        { field: "quantity", headerName: "Quantity", width: 250, sortable: false, renderCell: ({ value }) => (
-            <QtyButton 
-                variants={value} 
-                selectedVariant={0} 
-                name={value[0].product.name.split(" ")[0]}
-                stock={[{qty: value[0].qty}]} 
-            />
-        ) },
+        { field: "quantity", headerName: "Quantity", width: 250, sortable: false, renderCell: ({ value, row }) => {
+            const selectedVariant = selectedVariants[row.id]
+            const stock = value.map(variant => ({ qty: variant.qty }))
+            
+            return (
+                <QtyButton 
+                    variants={value} 
+                    selectedVariant={selectedVariant} 
+                    name={value[selectedVariant].product.name.split(" ")[0]}
+                    stock={stock} 
+                />
+            )
+        } },
         { field: "price", headerName: "Price", width: 250, renderCell: ({ value }) => (
             <Chip classes={{ root: classes.chipRoot }} label={`$${value}`} />
         ) }, 
@@ -135,7 +182,9 @@ export default function Favorites() {
         ) }
     ]
 
-    const rows = createData(products)
+    const rows = Object.keys(selectedVariants).length > 0 
+        ? createData(products)
+        : []
     
 
     useEffect(() => {
@@ -143,7 +192,26 @@ export default function Favorites() {
             .get(process.env.GATSBY_STRAPI_URL + "/favorites/userFavorites", {
                 headers: { Authorization: `Bearer ${user.jwt}` } 
             })
-            .then(response => { setProducts(response.data) })
+            .then(response => { 
+                setProducts(response.data) 
+
+                let newVariants = {}
+                let newSizes = {}
+                let newColors = {}
+
+                response.data.forEach(favorite => {
+                    const found = favorite.variants.find(variant => variant.id === favorite.variant.id)
+                    const index = favorite.variants.indexOf(found)
+
+                    newVariants = {...newVariants, [favorite.id]: index}
+                    newSizes = {...newSizes, [favorite.id]: favorite.variant.size}
+                    newColors = {...newColors, [favorite.id]: favorite.variant.color}
+                })
+
+                setSelectedVariants(newVariants)
+                setSelectedSizes(newSizes)
+                setSelectedColors(newColors)
+            })
             .catch(error => {
                 console.log(error)
                 dispatchFeedback(setSnackbar(
