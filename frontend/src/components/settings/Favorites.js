@@ -1,10 +1,8 @@
 import React, { useContext, useState, useEffect } from "react"
 import axios from "axios"
-import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
 import { DataGrid } from "@material-ui/data-grid"
-import Button from "@material-ui/core/Button"
 import IconButton from "@material-ui/core/IconButton"
 import { Chip } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
@@ -44,8 +42,15 @@ const useStyles = makeStyles(theme => ({
 export default function Favorites() {
     const classes = useStyles()
     const [products, setProducts] = useState([])
+    const [selectedVariants, setSelectedVariants] = useState({})
+    const [selectedSizes, setSelectedSizes] = useState({})
+    const [selectedColors, setSelectedColors] = useState({})
     const { user } = useContext(UserContext)
     const { dispatchFeedback } = useContext(FeedbackContext)
+
+    const setSelectedHelper = (selectedFunction, values, value, row) => {
+        selectedFunction({ ...values, [row]: value })
+    }
 
     const createData = data => 
         data.map(item => ({
@@ -76,13 +81,47 @@ export default function Favorites() {
                 </Grid>
             </Grid>
         ) }, 
-        { field: "variant", headerName: "Variant", width: 275, sortable: false, renderCell: ({ value }) => (
-            <Grid container direction="column">
-                {value.current.id}
-            </Grid>
-        ) }, 
+        { 
+            field: "variant", 
+            headerName: "Variant", 
+            width: 275, sortable: false, 
+            renderCell: ({ value, row }) => {
+                let sizes = []
+                let colors = []
+
+                value.all.map(variant => {
+                    sizes.push(variant.size)
+
+                    if(
+                        !colors.includes(variant.color) 
+                        && variant.size === selectedSizes[row.id] 
+                        && variant.style === value.current.style) {
+                        colors.push(variant.color)
+                    }
+            })
+
+            return (
+                <Grid container direction="column">
+                    <Sizes 
+                        sizes={sizes}
+                        selectedSize={selectedSizes[row.id]}
+                        setSelectedSize={(size) => setSelectedHelper(setSelectedSizes, selectedSizes, size, row.id)}
+                    />
+                    <Swatches 
+                        colors={colors}
+                        selectedColor={selectedColors[row.id]}
+                        setSelectedColor={(color) => setSelectedHelper(setSelectedColors, selectedColors, color, row.id)}
+                    />
+                </Grid>
+            )
+        } }, 
         { field: "quantity", headerName: "Quantity", width: 250, sortable: false, renderCell: ({ value }) => (
-            <div>{value.id}</div>
+            <QtyButton 
+                variants={value} 
+                selectedVariant={0} 
+                name={value[0].product.name.split(" ")[0]}
+                stock={[{qty: value[0].qty}]} 
+            />
         ) },
         { field: "price", headerName: "Price", width: 250, renderCell: ({ value }) => (
             <Chip classes={{ root: classes.chipRoot }} label={`$${value}`} />
