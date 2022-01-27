@@ -19,7 +19,7 @@ import { colorIndex } from '../product-list/ProductFrameGrid'
 import { UserContext, FeedbackContext } from "../../contexts"
 import { setSnackbar } from "../../contexts/actions"
 
-import subscription from '../../images/subscription.svg'
+import Subscription from "../ui/subscription"
 
 
 
@@ -213,7 +213,14 @@ export default function ProductInfo({
                     <Favorite size={4} variant={variants[selectedVariant].id} noPadding />
                 </Grid>
                 <Grid item classes={{ root: classes.iconWrapper }}>
-                    <img src={subscription} alt="add item to subscriptions" className={classes.icon} />
+                    <Subscription 
+                        stock={stock}
+                        variant={variants[selectedVariant]}
+                        name={name.split(" ")[0]}
+                        selectedVariant={selectedVariant}
+                        size={4} 
+                        noPadding
+                    />
                 </Grid>
             </Grid>
             <Grid 

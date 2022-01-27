@@ -1,6 +1,6 @@
 {
   "kind": "collectionType",
-  "collectionName": "users-permissions_user",
+  "collectionName": "users_permissions_user",
   "info": {
     "name": "user",
     "description": ""
@@ -82,6 +82,10 @@
     "favorites": {
       "via": "users_permissions_user",
       "collection": "favorite"
+    },
+    "subscriptions": {
+      "via": "users_permissions_user",
+      "collection": "subscription"
     }
   }
 }

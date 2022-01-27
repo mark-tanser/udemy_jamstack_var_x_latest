@@ -15,6 +15,7 @@ const sanitizeUser = user =>
         model: strapi.query("user", "users-permissions").model,
     });
 
+
 module.exports = {
     async process(ctx) {
         const {
@@ -113,12 +114,50 @@ module.exports = {
         let orderCustomer;
         if (ctx.state.user) {orderCustomer = ctx.state.user.id;} else {orderCustomer = GUEST_ID}
 
+        const frequencies = await strapi.services.order.frequency();
+        console.log("frequencies:", frequencies);
 
         //wait for all tasks to complete successfully
         await Promise.all(
             items.map(async (clientItem) => {
                 //find item
-                const serverItem = await strapi.services.variant.findOne({id: clientItem.variant.id})
+                const serverItem = await strapi.services.variant.findOne({id: clientItem.variant.id});
+
+                console.log("clientItem:", clientItem);
+
+                if (clientItem.subscription) {
+                    const frequency = frequencies.find((option) => option.label === clientItem.subscription);
+
+                    console.log("users_permissions_user:", orderCustomer,
+                        "variant:", clientItem.variant.id,
+                        "name:", clientItem.name,
+                        "frequency:", frequency.value,
+                        "last_delivery:", new Date(),
+                        "next_delivery:", frequency.delivery(),
+                        "quantity:", clientItem.qty,
+                        "paymentMethod:", paymentMethod,
+                        "shippingAddress:", shippingAddress,
+                        "billingAddress:", billingAddress,
+                        "shippingInfo:", shippingInfo,
+                        "billingInfo:", billingInfo)
+
+                    await strapi.services.subscription.create(
+                        { 
+                            users_permissions_user: orderCustomer,
+                            variant: clientItem.variant.id,
+                            name: clientItem.name,
+                            frequency: frequency.value,
+                            last_delivery: new Date(),
+                            next_delivery: frequency.delivery(),
+                            quantity: clientItem.qty,
+                            paymentMethod,
+                            shippingAddress,
+                            billingAddress,
+                            shippingInfo,
+                            billingInfo
+                        }
+                    )
+                }
                 
                 //update the quantity in stock
                 await strapi.services.variant.update(

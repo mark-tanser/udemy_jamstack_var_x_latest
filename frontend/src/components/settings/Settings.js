@@ -30,6 +30,9 @@ export default function Settings({ setSelectedSetting }) {
     const { user, dispatchUser } = useContext(UserContext)
     const [edit, setEdit]  = useState(false)
     const [changesMade, setChangesMade] = useState(false)
+
+    const hasSubscriptionActive = user.subscriptions.length > 0
+
     const [detailsValues, setDetailsValues] = useState({name: "", phone: "", email: "", password: "********"})
     const [detailsSlot, setDetailsSlot] = useState(0)
     const [detailsErrors, setDetailsErrors] = useState({})
@@ -70,6 +73,7 @@ export default function Settings({ setSelectedSetting }) {
                     edit={edit}
                     slot={billingSlot}
                     setSlot={setBillingSlot}
+                    hasSubscriptionActive={hasSubscriptionActive}
                 />
             </Elements>
             </Grid>

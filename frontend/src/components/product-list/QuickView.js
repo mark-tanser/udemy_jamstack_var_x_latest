@@ -108,6 +108,8 @@ export default function QuickView({
 
     const stockDisplay = getStockDisplay(stock, selectedVariant)
 
+    const linkURL = `/${encodeURIComponent(product.node.category.name.toLowerCase())}/${encodeURIComponent(product.node.name.split(" ")[0].toLowerCase())}${hasStyles ? `?style=${variant.style}` : ""}`
+    console.log("LINK URL: ", linkURL)
 
     return (
         <Dialog 
@@ -120,9 +122,7 @@ export default function QuickView({
                     <Grid 
                         item
                         component={Link} 
-                        to={`/${product.node.category.name.toLowerCase()}/${product.node.name
-                            .split(" ")[0]
-                            .toLowerCase()}${hasStyles ? `?style=${variant.style}` : ""}`}
+                        to={`/${product.node.category.name.toLowerCase()}/${product.node.name.split(" ")[0].toLowerCase()}${hasStyles ? `?style=${variant.style}` : ""}`}
                     >
                         <img 
                             src={url} 

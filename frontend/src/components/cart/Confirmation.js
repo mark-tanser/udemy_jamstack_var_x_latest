@@ -248,6 +248,7 @@ export default function Confirmation({
         setLoading(true)
 
         const savedCard = user.jwt && user.paymentMethods[cardSlot].last4 !== ""
+        console.log("SAVED CARD", savedCard)
 
         const idempotencyKey = uuidv4()
         const cardElement = elements.getElement(CardElement)
@@ -278,6 +279,12 @@ export default function Confirmation({
             }))
             setLoading(false)
         } else if (result.paymentIntent.status === "succeeded") {
+
+            console.log("AXIOS POST...")
+            console.log("transaction: ", result.paymentIntent.id)
+            console.log("Save Card: ", saveCard)
+
+
             axios.post(process.env.GATSBY_STRAPI_URL + "/orders/finalize", {
                 shippingAddress: locationValues,
                 billingAddress: billingLocation,
@@ -317,13 +324,14 @@ export default function Confirmation({
                 console.error(error)
                 console.log("FAILED PAYMENT INTENT", result.paymentIntent.id)
                 console.log("FAILED CART", cart)
+                console.log("PAYMENT INTENT STATUS", result.paymentIntent.status )
 
                 localStorage.removeItem("intentID")
                 setClientSecret(null)
 
                 dispatchFeedback(setSnackbar({
                     status: "error",
-                    message: "There was a problem saving your order. Please keep this screen open and contact support."
+                    message: "There was a bit of a problem saving your order. Please keep this screen open and contact support."
                 }))
             })
         }

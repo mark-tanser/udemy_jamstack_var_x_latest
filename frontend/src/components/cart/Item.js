@@ -10,12 +10,13 @@ import { makeStyles } from "@material-ui/core/styles"
 import { useTheme } from "@material-ui/core"
 
 import QtyButton from "../product-list/QtyButton"
+import SubscriptionIcon from "../ui/subscription"
+import SelectFrequency from "../ui/select-frequency"
 
 import { CartContext } from "../../contexts"
-import { removeFromCart } from "../../contexts/actions"
+import { removeFromCart, changeFrequency } from "../../contexts/actions"
 
 import FavoriteIcon from "../ui/favorite"
-import SubscribeIcon from "../../images/Subscription"
 import DeleteIcon from "../../images/Delete"
 
 const useStyles = makeStyles(theme => ({
@@ -36,7 +37,6 @@ const useStyles = makeStyles(theme => ({
     actionWrapper: {
         height: "3rem",
         width: "3rem",
-        marginBottom: -8,
         [theme.breakpoints.down("xs")] : {
             height: "2rem",
             width: "2rem"
@@ -44,13 +44,13 @@ const useStyles = makeStyles(theme => ({
     },
     infoContainer: {
         width: "35rem",
-        height: "8rem",
+        height: ({ subscription }) => subscription ? "10rem" : "8rem",
         position: "relative",
         marginLeft: "1rem"
     },
     chipWrapper: {
         position: "absolute",
-        top: "3.5rem"
+        top: ({ subscription }) => subscription ? "4.25rem" : "3.5rem"
     },
     itemContainer: {
         margin: "2rem 0 2rem 2rem",
@@ -65,12 +65,30 @@ const useStyles = makeStyles(theme => ({
         "&:hover": {
             backgroundColor: "transparent"
         }
+    },
+    chipRoot: {
+        marginLeft: "1rem",
+        "&:hover": {
+            cursor: "pointer"
+        }
+    },
+    actionContainer: {
+        marginBottom: "-0.5rem"
+    },
+    favoriteIcon: {
+        marginTop: 2
+    },
+    chipLabel: {
+        [theme.breakpoints.down("xs")]: {
+            fontSize: "1.25rem"
+        }
     }
 }))
 
 export default function Item({ item }) {
-    const classes = useStyles()
+    const classes = useStyles({ subscription: item.subscription })
     const theme = useTheme()
+    const [frequency, setFrequency] = useState(item.subscription || "Month")
     const matchesXS = useMediaQuery(theme => theme.breakpoints.down("xs"))
     const { dispatchCart } = useContext(CartContext)
 
@@ -78,14 +96,27 @@ export default function Item({ item }) {
         dispatchCart(removeFromCart(item.variant, item.qty))
     }
 
+    const handleFrequency = newFrequency => {
+        dispatchCart(changeFrequency(item.variant, newFrequency))
+        setFrequency(newFrequency)
+    }
+
     const actions = [
         { component: FavoriteIcon, props: {
             color: theme.palette.secondary.main,
             size: matchesXS ? 2 : 3,
-            buttonClass: classes.actionButton,
+            buttonClass: clsx(classes.actionButton, classes.favoriteIcon),
             variant: item.variant.id
         }}, 
-        { icon: SubscribeIcon, color: theme.palette.secondary.main },
+        { 
+            component: SubscriptionIcon, 
+            props: {
+                color: theme.palette.secondary.main,
+                isCart: item,
+                size: matchesXS ? 2 : 3,
+                cartFrequency: frequency
+            } 
+        },
         { icon: DeleteIcon, color: theme.palette.error.main, size: matchesXS ? "1.75rem" : "2.5rem", onClick: handleDelete }
     ]
 
@@ -118,18 +149,34 @@ export default function Item({ item }) {
                             variants={[item.variant]} 
                             stock={[{ qty: item.stock }]} 
                             isCart
+                            white
+                            hideCartButton
                         />
                     </Grid>
                 </Grid>
                 <Grid 
                     item 
                     container 
-                    alignItems="center" 
+                    alignItems="center"
                     classes={{ root: classes.chipWrapper }}
                 >
                     <Grid item>
                         <Chip label={`$${item.variant.price}`} />
                     </Grid>
+                    {item.subscription ? (
+                        <Grid item>
+                            <SelectFrequency 
+                                chip={
+                                    <Chip 
+                                        label={`Every ${frequency}`} 
+                                        classes={{ root: classes.chipRoot, label: classes.chipLabel }}
+                                    />
+                                } 
+                                value={frequency} 
+                                setValue={handleFrequency} 
+                            />
+                        </Grid>
+                    ) : null}
                 </Grid>
                 <Grid item container justifyContent="space-between" alignItems="flex-end">
                     <Grid item xs={7} sm>
@@ -137,7 +184,13 @@ export default function Item({ item }) {
                             ID: {item.variant.id}
                         </Typography>
                     </Grid>
-                    <Grid item container justifyContent="flex-end" xs={5} sm>
+                    <Grid 
+                        item 
+                        container 
+                        justifyContent="flex-end" 
+                        xs={5} 
+                        sm
+                        classes={{ root: classes.actionContainer }}>
                         {actions.map((action,i) => (
                             <Grid item key={i}>
                                 {action.component 

@@ -10,6 +10,8 @@
  * See more details here: https://strapi.io/documentation/developer-docs/latest/setup-deployment-guides/configurations.html#cron-tasks
  */
 
+const stripe = require("stripe")(process.env.STRIPE_SK)
+
 module.exports = {
   /**
    * Simple example.
@@ -18,4 +20,85 @@ module.exports = {
   // '0 1 * * 1': () => {
   //
   // }
+
+
+  // set task for every day at 8am...
+  "0 8 * * *": async () => {
+    const subscriptions = await strapi.services.subscription.find({
+      next_delivery: new Date() 
+    })
+
+    await Promise.allSettled(
+      subscriptions.map(async subscription => {
+        const paymentMethods = await stripe.paymentMethods.list({
+          customer: subscription.user.stripeID,
+          type: "card"
+        });
+        
+        const paymentMethod = paymentMethods.data.find(
+          method => method.card.last4 === subscription.paymentMethod.last4
+        );
+
+        try {
+          const paymentIntent = await stripe.paymentIntents.create({ 
+            amount: Math.round(subscription.variant.price * 1.075 * 100),
+            currency: "usd",
+            customer: subscription.user.stripeID,
+            payment_mehtod: paymentMethod.id,
+            off_session: true,
+            confirm: true
+          });
+
+          var order = await strapi.services.order.create({
+            shippingAddress: subscription.shippingAddress,
+            billingAddress: subscription.billingAddress,
+            shippingInfo: subscription.shippingInfo,
+            billingInfo: subscription.billingInfo,
+            shippingOption: {
+              label: "subscription",
+              price: 0
+            },
+            subtotal:  subscription.price,
+            tax: subscription.variant.price * 0.075,
+            total: subscription.variant.price * 1.075,
+            items: [{
+              variant: subscription.variant,
+              name: subscription.name,
+              qty: subscription.qiantity,
+              product: subscription.variant.product
+            }],
+            transaction: paymentIntent.id,
+            paymentMethod: subscription.paymentMethod,
+            user: subscription.user.id,
+            subscription: subscription.id
+          });
+
+          const frequencies = await strapi.services.order.frequency();
+
+          const confirmation = await strapi.services.order.confirmationEmail(order)
+          await strapi.plugins["email"].services.email.send({
+              to: subscription.billingInfo.email,
+              subject: "VAR-X Order Confirmation",
+              html: confirmation
+          });
+
+          const frequency = frequencies.find(option => option.value === subscription.frequency);
+          await strapi.services.subscription.update(
+            { id: subscription.id },
+            { 
+                next_delivery: frequency.delivery(),
+                last_delivery: new Date()
+            }
+          );
+
+        } catch (error) {
+          // Notify customer payment failed, and prompt them to enter new information
+          // to be built later using email
+          console.log(error);
+        }
+
+      })
+    )
+  }
+
 };

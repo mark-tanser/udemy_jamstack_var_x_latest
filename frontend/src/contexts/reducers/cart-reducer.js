@@ -1,4 +1,11 @@
-import { ADD_TO_CART, REMOVE_FROM_CART, CLEAR_CART } from "../actions/action-types"
+import { CardElement } from "@stripe/react-stripe-js"
+import { 
+    ADD_TO_CART, 
+    REMOVE_FROM_CART, 
+    CLEAR_CART, 
+    CHANGE_FREQUENCY,
+    TOGGLE_SUBSCRIPTION
+ } from "../actions/action-types"
 
 export default function cartReducer(state, action) {
     let newCart = [...state]
@@ -38,6 +45,24 @@ export default function cartReducer(state, action) {
                 newCart = newCart.filter(item => item.variant !== action.payload.variant)
             } else {
                 newCart[existingIndex] = { ...newCart[existingIndex], qty: newQty}
+            }
+
+            saveData(newCart)
+            return newCart
+
+        case CHANGE_FREQUENCY:
+            newCart[existingIndex].subscription = action.payload.frequency
+            saveData(newCart)
+            return newCart
+
+        case TOGGLE_SUBSCRIPTION:
+            //check for existing subscription
+            const existingSubscription = !!newCart[existingIndex].subscription // !! coerce to boolean
+
+            if (existingSubscription) {
+                delete newCart[existingIndex].subscription
+            } else {
+                newCart[existingIndex].subscription = action.payload.frequency
             }
 
             saveData(newCart)

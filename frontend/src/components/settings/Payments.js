@@ -52,11 +52,12 @@ const useStyles = makeStyles(theme => ({
         },
     },
     paymentContainer: {
+        height: "100%",
         display: ({ checkout, selectedStep, stepNumber }) => checkout && selectedStep !== stepNumber ? "none" : "flex",
         borderLeft: ({ checkout }) => checkout ? 0 : "4px solid #FFF",
         position: "relative",
         [theme.breakpoints.down("md")]: {
-            height: "30rem",
+            height: ({ checkout }) => !checkout ? "30rem" : "100%",
             borderLeft: 0
         },
     },
@@ -104,7 +105,9 @@ export default function Payments({
     checkout,
     selectedStep,
     stepNumber,
-    setCard
+    setCard,
+    hasSubscriptionCart,
+    hasSubscriptionActive,
 }) {
     const classes = useStyles({ checkout, selectedStep, stepNumber })
     const stripe = useStripe()
@@ -119,7 +122,22 @@ export default function Payments({
     
     const card = user.username === "Guest" ? {last4: "", brand: ""} : user.paymentMethods[slot]
 
+    const subscriptionPayment = user.subscriptions.find(subscription => subscription.paymentMethod.last4 === card.last4)
+
     const removeCard = () => {
+        // collect remaining saved cards
+        const remaining = user.paymentMethods.filter(method => method.last4 !== "")
+
+        if ((hasSubscriptionActive && remaining.length === 1) || subscriptionPayment) {
+            dispatchFeedback(setSnackbar(
+                {
+                    status: "error",
+                    message: "You cannot remove your last card with an active subscription. Please add another card first."
+                }
+            ))
+            return
+        }
+
         setLoading(true)
 
         axios.post(process.env.GATSBY_STRAPI_URL + "/orders/removeCard", {
@@ -257,8 +275,8 @@ export default function Payments({
                             labelPlacement="start"
                             control={
                                 <Switch 
-                                    disabled={user.paymentMethods[slot].last4 !== ""}
-                                    checked={user.paymentMethods[slot].last4 !== ""
+                                    disabled={user.paymentMethods[slot].last4 !== "" || hasSubscriptionCart}
+                                    checked={user.paymentMethods[slot].last4 !== ""|| hasSubscriptionCart
                                         ? true
                                         : saveCard
                                     } 

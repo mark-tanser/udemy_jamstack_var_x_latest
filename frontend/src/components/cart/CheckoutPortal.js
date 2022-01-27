@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
@@ -18,6 +18,8 @@ import Payments from "../settings/Payments"
 import Confirmation from "./Confirmation"
 import Thankyou from "./Thankyou"
 import validate from "../ui/validate"
+
+import { CartContext } from "../../contexts"
 
 const useStyles = makeStyles(theme => ({
     stepContainer: {
@@ -47,7 +49,12 @@ const stripePromise = loadStripe(process.env.GATSBY_STRIPE_PK)
 
 export default function CheckoutPortal({ user }) {
     const classes = useStyles()
+    const { cart } = useContext(CartContext)
     const matchesMD = useMediaQuery(theme => theme.breakpoints.down("md"))
+
+    const hasSubscriptionCart = cart.some(item => item.subscription)
+    const hasSubscriptionActive = user.subscriptions?.length > 0
+
     const [selectedStep, setSelectedStep] = useState(0)
     const [detailsValues, setDetailsValues] = useState({name: "", email: "", phone: ""})
     const [billingDetails, setBillingDetails] = useState({name: "", email: "", phone: ""})
@@ -60,7 +67,7 @@ export default function CheckoutPortal({ user }) {
     
     const [cardSlot, setCardSlot] = useState(0)
     const [cardError, setCardError] = useState(true)
-    const [saveCard, setSaveCard] = useState(false)
+    const [saveCard, setSaveCard] = useState(hasSubscriptionCart)
     const [card, setCard] = useState({ brand: "", last4: "" })
 
     const [errors, setErrors] = useState({})
@@ -198,6 +205,8 @@ export default function CheckoutPortal({ user }) {
                     setSaveCard={setSaveCard}
                     setCardError={setCardError}
                     selectedStep={selectedStep}
+                    hasSubscriptionCart={hasSubscriptionCart}
+                    hasSubscriptionActive={hasSubscriptionActive}
                     checkout
                 />
             ),

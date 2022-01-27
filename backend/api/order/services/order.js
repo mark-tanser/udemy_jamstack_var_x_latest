@@ -6,6 +6,7 @@
  */
 
 module.exports = {
+
   async frequency() {
     return [
       {
@@ -64,6 +65,7 @@ module.exports = {
       },
     ];
   },
+  
 
   async confirmationEmail(order) {
     return `
