@@ -5,6 +5,7 @@ import Grid from '@material-ui/core/Grid'
 import { useStaticQuery, graphql } from 'gatsby'
 
 import { makeStyles } from '@material-ui/core/styles'
+import { Link } from 'gatsby'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
 import featuredAdornment from '../../images/featured-adornment.svg'
@@ -35,14 +36,18 @@ export default function FeaturedProducts() {
     const matchesMD = useMediaQuery(theme => theme.breakpoints.down('md'))
 
     const data = useStaticQuery(graphql`
-    query GetFeatured {
+      query GetFeatured {
         allStrapiProduct(filter: {promo: {}, featured: {eq: true}, parent: {}}) {
           edges {
             node {
               name
               strapiId
+              category {
+                name
+              }
               variants {
                 price
+                style
                 images {
                   url
                 }
