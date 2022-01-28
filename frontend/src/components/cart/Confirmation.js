@@ -348,6 +348,27 @@ export default function Confirmation({
 
             setClientSecret(null) // cleared when new intent created
 
+            
+
+            console.log("CHECKING ORDER PROCESS INPUTS...")
+
+            const tempSavedCard = user.jwt && user.paymentMethods[cardSlot].last4 !== ""
+                ? card.last4
+                : undefined
+            
+            const tempHeaders = user.jwt 
+                ? { Authorization: `Bearer ${user.jwt}`} 
+                : undefined
+
+            console.log("items: ", cart)
+            console.log("total: ", total.toFixed(2))
+            console.log("shippingOption: ", shipping)
+            console.log("idempotencyKey: ", idempotencyKey)
+            console.log("storedIntent: ", storedIntent)
+            console.log("email: ", detailsValues.email)
+            console.log("savedCard: ", tempSavedCard)
+            console.log("headers: ", tempHeaders)
+
             axios.post(
                 process.env.GATSBY_STRAPI_URL + "/orders/process", 
                 {

@@ -94,8 +94,6 @@ export default function Location({
                 )
             .then(response => {
                 setLoading(false)
-                console.log(response)
-
                 const { place_name, admin_name1 } = response.data.records[0].fields
 
                 handleValues({ ...values, city: place_name, state: admin_name1 })

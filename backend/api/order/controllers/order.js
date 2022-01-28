@@ -10,7 +10,7 @@ const stripe = require("stripe")(process.env.STRIPE_SK)
 
 const GUEST_ID = "61b00ceb7feff84c0c2c54f8";
 
-const sanitizeUser = user =>
+const sanitizeUser = (user) =>
     sanitizeEntity(user, {
         model: strapi.query("user", "users-permissions").model,
     });
@@ -54,7 +54,10 @@ module.exports = {
         ];
 
         // USES HARD_CODED SHIPPING OPTIONS AND TAX RATE 7.5%
-        const shippingValid = shippingOptions.find((option) => option.label === shippingOption.label && option.price === shippingOption.price);
+        const shippingValid = shippingOptions.find(
+            (option) => 
+            option.label === shippingOption.label && 
+            option.price === shippingOption.price);
 
         if (shippingValid === undefined || 
             ((serverTotal + shippingValid.price) * 1.075).toFixed(2) !== total
@@ -65,16 +68,6 @@ module.exports = {
             // send conflict error
             ctx.send({ unavailable }, 409)
         } else {
-            let saved;
-
-            if (savedCard) {
-                const stripeMethods = await stripe.paymentMethods.list(
-                    {customer: ctx.state.user.stripeID, type: "card"}
-                )
-
-                saved = stripeMethods.data.find(method => method.card.last4 === savedCard)
-            }
-
             // if there's an existing payment intent then update it
             if (storedIntent) {
                 const update = await stripe.paymentIntents.update(storedIntent, {
@@ -83,6 +76,15 @@ module.exports = {
 
                 ctx.send({client_secret: update.client_secret, intentID: update.id})
             } else {
+                let saved;
+
+                if (savedCard) {
+                    const stripeMethods = await stripe.paymentMethods.list(
+                        {customer: ctx.state.user.stripeID, type: "card"}
+                    );
+
+                    saved = stripeMethods.data.find((method) => method.card.last4 === savedCard);
+                }
                 // otherwise generate a new payment intent
                 const intent = await stripe.paymentIntents.create({
                     amount: total * 100,
