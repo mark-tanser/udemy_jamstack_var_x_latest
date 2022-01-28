@@ -179,7 +179,14 @@ export default function Details({
         ]
     }
 
-    
+    // passes values if billing switch is set before inputting billing values
+    const handleValues = values => {
+        if (billing === slot && !noSlots) {            
+            setBillingValues(values)
+        }
+
+        setValues(values)
+    }    
 
     return (
         <Grid 
@@ -212,7 +219,7 @@ export default function Details({
                     <Fields 
                         fields={pair}
                         values={billing === slot && !noSlots ? billingValues : values}
-                        setValues={billing === slot && !noSlots ? setBillingValues : setValues}
+                        setValues={handleValues}
                         errors={errors}
                         setErrors={setErrors}
                         isWhite
