@@ -280,11 +280,6 @@ export default function Confirmation({
             setLoading(false)
         } else if (result.paymentIntent.status === "succeeded") {
 
-            console.log("AXIOS POST...")
-            console.log("transaction: ", result.paymentIntent.id)
-            console.log("Save Card: ", saveCard)
-
-
             axios.post(process.env.GATSBY_STRAPI_URL + "/orders/finalize", {
                 shippingAddress: locationValues,
                 billingAddress: billingLocation,
@@ -381,7 +376,7 @@ export default function Confirmation({
                     savedCard: user.jwt && user.paymentMethods[cardSlot].last4 !== ""
                         ? card.last4
                         : undefined
-                }, {
+                }, {                    
                     headers: user.jwt 
                         ? { Authorization: `Bearer ${user.jwt}`} 
                         : undefined

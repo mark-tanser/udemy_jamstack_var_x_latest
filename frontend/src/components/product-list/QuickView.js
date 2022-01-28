@@ -108,9 +108,6 @@ export default function QuickView({
 
     const stockDisplay = getStockDisplay(stock, selectedVariant)
 
-    const linkURL = `/${encodeURIComponent(product.node.category.name.toLowerCase())}/${encodeURIComponent(product.node.name.split(" ")[0].toLowerCase())}${hasStyles ? `?style=${variant.style}` : ""}`
-    console.log("LINK URL: ", linkURL)
-
     return (
         <Dialog 
             classes={{ paper: classes.dialog }} 

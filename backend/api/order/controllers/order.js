@@ -8,13 +8,12 @@
 const { sanitizeEntity } = require("strapi-utils");
 const stripe = require("stripe")(process.env.STRIPE_SK)
 
-const GUEST_ID = "61b00ceb7feff84c0c2c54f8";
+const GUEST_ID = "61f391457aff986e5a232834";
 
 const sanitizeUser = (user) =>
     sanitizeEntity(user, {
         model: strapi.query("user", "users-permissions").model,
     });
-
 
 module.exports = {
     async process(ctx) {
@@ -72,7 +71,7 @@ module.exports = {
             if (storedIntent) {
                 const update = await stripe.paymentIntents.update(storedIntent, {
                     amount: total * 100 // $1 = 100 units in Stripe
-                }, { idempotencyKey}) 
+                }, {idempotencyKey}) 
 
                 ctx.send({client_secret: update.client_secret, intentID: update.id})
             } else {
@@ -87,7 +86,7 @@ module.exports = {
                 }
                 // otherwise generate a new payment intent
                 const intent = await stripe.paymentIntents.create({
-                    amount: total * 100,
+                    amount: Math.ceil(total * 100),
                     currency: "usd",
                     customer: ctx.state.user ? ctx.state.user.stripeID : undefined,
                     receipt_email: email,
