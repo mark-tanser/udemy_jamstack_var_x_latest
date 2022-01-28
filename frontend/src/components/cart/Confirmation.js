@@ -156,7 +156,7 @@ export default function Confirmation({
 
     const subtotal = cart.reduce((total, item) => total + item.variant.price * item.qty, 0)
 
-    const tax = subtotal * 0.075
+    const tax = (subtotal + shipping?.price) * 0.075
 
     const firstFields = [
         {

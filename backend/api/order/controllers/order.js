@@ -56,7 +56,9 @@ module.exports = {
         // USES HARD_CODED SHIPPING OPTIONS AND TAX RATE 7.5%
         const shippingValid = shippingOptions.find((option) => option.label === shippingOption.label && option.price === shippingOption.price);
 
-        if (shippingValid === undefined || (serverTotal * 1.075 + shippingValid.price).toFixed(2) !== total) {
+        if (shippingValid === undefined || 
+            ((serverTotal + shippingValid.price) * 1.075).toFixed(2) !== total
+        ) {
             // send invalid error
             ctx.send({error: "Invalid Cart"}, 400)
         } else if (unavailable.length > 0) {
