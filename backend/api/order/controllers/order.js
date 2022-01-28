@@ -6,13 +6,13 @@
  */
 
 const { sanitizeEntity } = require("strapi-utils");
-const stripe = require("stripe")(process.env.STRIPE_SK)
+const stripe = require("stripe")(process.env.STRIPE_SK);
 
 const GUEST_ID = "61f391457aff986e5a232834";
 
 const sanitizeUser = (user) =>
     sanitizeEntity(user, {
-        model: strapi.query("user", "users-permissions").model,
+        model: strapi.query("users_permissions_user", "users-permissions").model,
     });
 
 module.exports = {

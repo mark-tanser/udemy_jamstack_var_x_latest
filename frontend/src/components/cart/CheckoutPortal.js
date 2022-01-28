@@ -221,7 +221,6 @@ export default function CheckoutPortal({ user }) {
                     card={card}
                     saveCard={saveCard}
                     cardSlot={cardSlot}
-                    saveCard={saveCard}
                     detailsValues={detailsValues} 
                     billingDetails={billingDetails} 
                     detailsForBilling={detailsForBilling} 
