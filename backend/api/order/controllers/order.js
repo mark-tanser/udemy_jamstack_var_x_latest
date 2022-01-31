@@ -91,9 +91,9 @@ module.exports = {
                     customer: ctx.state.user ? ctx.state.user.stripeID : undefined,
                     receipt_email: email,
                     payment_method: saved ? saved.id : undefined
-                }, { idempotencyKey })
+                }, { idempotencyKey });
 
-                ctx.send({client_secret: intent.client_secret, intentID: intent.id})
+                ctx.send({ client_secret: intent.client_secret, intentID: intent.id} )
             }
         }
     },
