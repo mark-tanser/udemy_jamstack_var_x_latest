@@ -9,7 +9,7 @@ module.exports = ({ env }) => (
                 defaultFrom: "tanser.mark@gmail.com",
                 defaultTo: "tanser.mark@gmail.com"
             }
-        }
+        },
         upload: {
             provider: "aws-s3",
             providerOptions: {
