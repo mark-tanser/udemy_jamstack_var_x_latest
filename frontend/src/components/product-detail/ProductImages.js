@@ -36,7 +36,7 @@ export default function ProductImages({ images, selectedImage, setSelectedImage 
         <Grid item container direction="column" alignItems="center" lg={6}>
             <Grid item>
                 <img 
-                    src={process.env.GATSBY_STRAPI_URL + images[selectedImage].url}
+                    src={images[selectedImage].url}
                     alt="product_large"
                     className={classes.selected}
                 />
@@ -50,7 +50,7 @@ export default function ProductImages({ images, selectedImage, setSelectedImage 
                     >
                         <IconButton>
                             <img 
-                                src={process.env.GATSBY_STRAPI_URL + image.url} 
+                                src={image.url} 
                                 alt={`product_small${i}`} 
                                 className={classes.small}
                             />
