@@ -10,5 +10,5 @@ module.exports = ({ env }) => (
                 defaultTo: "tanser.mark@gmail.com"
             }
         }
-    }
+    },
 );
