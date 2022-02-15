@@ -1,5 +1,6 @@
 module.exports = ({ env }) => (
     {
+
         email: {
             provider: "sendgrid",
             providerOptions: {
@@ -10,16 +11,19 @@ module.exports = ({ env }) => (
                 defaultTo: "tanser.mark@gmail.com"
             }
         },
+
         upload: {
-            provider: "aws-s3",
-            providerOptions: {
-                accessKeyId: env("AWS_ACCESS_KEY_ID"),
-                secretAccessKey: env("AWS_ACCESS_SECRET"),
-                region: env("AWS_REGION"),
-                params: {
-                    Bucket: env("AWS_BUCKET_NAME")
-                }
-            }
-        }
+	
+            		provider: "aws-s3",
+            		providerOptions: {
+                		accessKeyId: env("AWS_ACCESS_KEY_ID"),
+                		secretAccessKey: env("AWS_ACCESS_SECRET"),
+                		region: env("AWS_REGION"),
+                			params: {
+                    				Bucket: env("AWS_BUCKET_NAME")
+                			}
+            			}
+        	
+	}
     }
 );
