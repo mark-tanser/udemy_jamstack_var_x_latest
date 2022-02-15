@@ -224,18 +224,21 @@ const ContactPage = () => {
     fetch("/", { 
       method: "POST", 
       headers: { "Content-Type": "application/x-www-form-urlencoded" }, 
-      body: encodeURI({ 
+      body: encode({ 
         "form-name": "contact", 
         name: storeValueIsStoreObject.name, 
         number: values.phone, 
         email: values.email, 
-        message: values.message }) }).then(() => {
+        message: values.message }) 
+      })
+        .then(() => {
           setValues({name: "", phone: "", email: "", message: ""})
           dispatchFeedback(setSnackbar({
             status: "success",
             message: "Message sent successfully"
           }))
-        }).catch(error => {
+        })
+        .catch(error => {
           console.error(error)
           dispatchFeedback(setSnackbar({
             status: "error",
