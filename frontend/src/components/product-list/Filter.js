@@ -5,7 +5,7 @@ import Chip from "@material-ui/core/Chip"
 import FormControl from "@material-ui/core/FormControl"
 import FormControlLabel from "@material-ui/core/FormControlLabel"
 import FormGroup from "@material-ui/core/FormGroup"
-import Checkbox from "@material-ui/core/CheckBox"
+import Checkbox from "@material-ui/core/Checkbox"
 import { makeStyles } from "@material-ui/core/styles"
 
 import filter from '../../images/filter.svg'
