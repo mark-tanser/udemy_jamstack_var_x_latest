@@ -164,7 +164,7 @@ const encode = data => (
 const ContactPage = () => {
   const classes = useStyles()
   const theme = useTheme()
-  const { dispatchFeedback } = useCOntext(FeedbackContext)
+  const { dispatchFeedback } = useContext(FeedbackContext)
 
   const matchesMD = useMediaQuery(theme => theme.breakpoints.down('md'))
   const matchesXS = useMediaQuery(theme => theme.breakpoints.down('xs'))
