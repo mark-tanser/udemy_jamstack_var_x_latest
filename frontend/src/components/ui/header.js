@@ -81,7 +81,7 @@ export default function Header({ categories }) {
   const classes = useStyles()
   const { cart } = useContext(CartContext)
   const matchesMD = useMediaQuery((theme) => theme.breakpoints.down('md')) // returns true if viewport is below breakpoint
-  const { key } = useIsClient()
+  const { useIsClient, key } = useIsClient()
   const [drawerOpen, setDrawerOpen] = useState(false) // state with function to set state and default (closed)
 
   if ( typeof window !== "undefined" ) { 
@@ -94,6 +94,7 @@ export default function Header({ categories }) {
     const pathname = typeof window !== "undefined" 
       ? window.location.pathname.split("/")[1] 
       : null
+
     const found = routes.indexOf(
       routes.filter(
         ({ node: { name, link } }) => 
@@ -107,7 +108,7 @@ export default function Header({ categories }) {
 
   const tabs = (
     <Tabs 
-      value={activeIndex()}
+      value={!isClient ? 0 : activeIndex()}
       classes={{ indicator: classes.coloredIndicator, root: classes.tabs }}
     >
       {routes.map(route => (
@@ -134,7 +135,7 @@ export default function Header({ categories }) {
       <List disablePadding>
         {[...routes, {node: {name: "Account", strapiId: 'account', link: '/account'}}].map((route, i) => (
           <ListItem
-            selected={activeIndex() === i}
+            selected={!isClient ? false : activeIndex() === i}
             component={Link}
             to={route.node.link || `/${route.node.name.toLowerCase()}`}
             divider 
@@ -192,7 +193,11 @@ export default function Header({ categories }) {
               >
                 {action.alt === "cart" 
                   ? (
-                    <Badge overlap="circle" badgeContent={cart.length} classes={{ badge: classes.badge }}>
+                    <Badge 
+                      key={key}
+                      overlap="circle" 
+                      badgeContent={cart.length} 
+                      classes={{ badge: classes.badge }}>
                       {image}
                     </Badge>
                   ) 
