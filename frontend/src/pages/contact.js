@@ -227,7 +227,7 @@ const ContactPage = () => {
       body: encodeURI({ 
         "form-name": "contact", 
         name: storeValueIsStoreObject.name, 
-        number: values.number, 
+        number: values.phone, 
         email: values.email, 
         message: values.message }) }).then(() => {
           setValues({name: "", phone: "", email: "", message: ""})
