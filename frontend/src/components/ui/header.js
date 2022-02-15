@@ -16,6 +16,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Link/*, navigate*/ } from 'gatsby'
 
 import { CartContext } from '../../contexts'
+import { useIsClient } from '../../hooks'
 
 import search from '../../images/search.svg'
 import cartIcon from '../../images/cart.svg'
@@ -80,7 +81,7 @@ export default function Header({ categories }) {
   const classes = useStyles()
   const { cart } = useContext(CartContext)
   const matchesMD = useMediaQuery((theme) => theme.breakpoints.down('md')) // returns true if viewport is below breakpoint
-
+  const { key } = useIsClient()
   const [drawerOpen, setDrawerOpen] = useState(false) // state with function to set state and default (closed)
 
   if ( typeof window !== "undefined" ) { 
