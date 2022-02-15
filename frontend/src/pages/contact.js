@@ -226,7 +226,7 @@ const ContactPage = () => {
       headers: { "Content-Type": "application/x-www-form-urlencoded" }, 
       body: encode({ 
         "form-name": "contact", 
-        name: storeValueIsStoreObject.name, 
+        name: values.name, 
         number: values.phone, 
         email: values.email, 
         message: values.message }) 
