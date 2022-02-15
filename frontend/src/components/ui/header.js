@@ -83,7 +83,9 @@ export default function Header({ categories }) {
 
   const [drawerOpen, setDrawerOpen] = useState(false) // state with function to set state and default (closed)
 
-  window.process = {env:{NODE_ENV:''}} // inserted to avoid 'process is not defined' runtime error
+  if ( typeof window !== "undefined" ) { 
+    window.process = {env:{NODE_ENV:''}} // inserted to avoid 'process is not defined' runtime error
+  }
 
   const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent)
 
