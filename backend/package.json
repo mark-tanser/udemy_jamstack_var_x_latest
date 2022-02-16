@@ -1,8 +1,9 @@
 {
-  "name": "backend",
+  "name": "udemy-jamstack-course",
   "private": true,
-  "version": "0.1.0",
-  "description": "A Strapi application",
+  "description": "The backend of a jamsatck ecommerce course on Edemy",
+  "version": "1.0.0",
+  "author": "Mark Tanser <tanser.mark@gmail.com>",
   "scripts": {
     "develop": "strapi develop",
     "start": "strapi start",
