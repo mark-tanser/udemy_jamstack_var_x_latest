@@ -16,7 +16,7 @@ module.exports = {
     `gatsby-plugin-material-ui`,
     `gatsby-plugin-sitemap`,
     {
-      resolve: 'gatsby-plugin-robots-txt',
+      resolve: `gatsby-plugin-robots-txt`,
       options: {
         host: "https://marks-sandbox.com",
         sitemap: "https://marks-sandbox.com/sitemap.xml",
@@ -24,7 +24,7 @@ module.exports = {
       }
     },
     {
-      resolve: 'gatsby-plugin-web-font-loader',
+      resolve: `gatsby-plugin-web-font-loader`,
       options: {
         google: {
           families: ['Philosopher:700:latin', 'Montserrat:700,600,500,400,300:latin']
@@ -47,7 +47,16 @@ module.exports = {
       },
     },
     `gatsby-transformer-sharp`,
-    `gatsby-plugin-sharp`,
+    {
+      resolve: `gatsby-plugin-sharp`,
+      options: {
+        defaults: {
+          formats: [`auto`, `webp`],
+          placeholder: `blurred`,
+          breakpoints: [300, 600, 960, 1280, 1920]
+        }
+      }
+    },
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
