@@ -1,7 +1,7 @@
 {
   "name": "udemy-jamstack-course",
   "private": true,
-  "description": "The frontend of a jamsatck ecommerce course on Edemy",
+  "description": "The frontend of a jamsatck ecommerce course on Udemy",
   "version": "1.0.0",
   "author": "Mark Tanser <tanser.mark@gmail.com>",
   "dependencies": {
