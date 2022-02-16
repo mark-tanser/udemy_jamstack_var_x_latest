@@ -1,9 +1,9 @@
 {
-  "name": "gatsby-starter-default",
+  "name": "udemy-jamstack-course",
   "private": true,
-  "description": "A simple starter to get up and developing quickly with Gatsby",
-  "version": "0.1.0",
-  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
+  "description": "The frontend of a jamsatck ecommerce course on Edemy",
+  "version": "1.0.0",
+  "author": "Mark Tanser <tanser.mark@gmail.com>",
   "dependencies": {
     "@apollo/client": "^3.2.9",
     "@material-ui/core": "^4.12.3",
@@ -54,9 +54,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gatsbyjs/gatsby-starter-default"
+    "url": "https://github.com/mark-tanser/udemy_jamstack_var_x_latest"
   },
   "bugs": {
-    "url": "https://github.com/gatsbyjs/gatsby/issues"
+    "url": "https://github.com/mark-tanser/udemy_jamstack_var_x_latest/issues"
   }
 }
