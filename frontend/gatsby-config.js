@@ -7,7 +7,7 @@ module.exports = {
     author: `@gatsbyjs`,
     keywords: ["jamstack", "coding", "eccommerce"],
     siteUrl: 'https://marks-sandbox.com',
-    twitterUserName: '@varx',
+    twitterUsername: '@varx',
     defaultImage: ""
   },
   plugins: [
