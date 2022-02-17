@@ -3,9 +3,9 @@ require("dotenv").config()
 module.exports = {
   siteMetadata: {
     title: `Var X Udemy Course`,
-    description: `Jamstack approach to eccommerce website construction`,
+    description: `Jamstack approach to ecommerce website construction`,
     author: `@gatsbyjs`,
-    keywords: ["jamstack", "coding", "eccommerce"],
+    keywords: ["jamstack", "coding", "ecommerce"],
     siteUrl: 'https://marks-sandbox.com',
     twitterUsername: '@varx',
     defaultImage: ""
@@ -14,6 +14,15 @@ module.exports = {
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-image`,
     `gatsby-plugin-material-ui`,
+    `gatsby-plugin-sitemap`,
+    {
+      resolve: `gatsby-plugin-robots.txt`,
+      options: {
+        host: "https://marks-sandbox.com",
+        sitemap: "https://marks-sandbox.com/sitemap.xml",
+        policies: [{ userAgent: '*', allow: '/' }]
+      }
+    },
     {
       resolve: 'gatsby-plugin-web-font-loader',
       options: {
@@ -39,22 +48,22 @@ module.exports = {
     },
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,
-    /*{
+    {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `gatsby-starter-default`,
-        short_name: `starter`,
+        name: `VAR-X`,
+        short_name: `VAR-X`,
         start_url: `/`,
-        background_color: `#663399`,
-        theme_color: `#663399`,
+        background_color: `#99B898`,
+        theme_color: `#99B898`,
         display: `minimal-ui`,
-        icon: `src/images/gatsby-icon.png`, // This path is relative to the root of the site.
+        icon: `src/images/favicon.png`, // This path is relative to the root of the site.
       },
     },
-    */
+    
     `gatsby-plugin-gatsby-cloud`,
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.dev/offline
-    // `gatsby-plugin-offline`,
+    `gatsby-plugin-offline`,
   ],
 }
