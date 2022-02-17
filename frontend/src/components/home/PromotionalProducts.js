@@ -8,7 +8,6 @@ import clsx from 'clsx'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 import { Link, useStaticQuery, graphql } from 'gatsby'
 import { makeStyles } from '@material-ui/core/styles'
-import { GatsbyImage, getImage } from 'gatsby-plugin-image'
 
 import promoAdornment from '../../images/promo-adornment.svg'
 import explore from '../../images/explore.svg'
@@ -87,74 +86,65 @@ export default function PromotionalProducts() {
     const matchesMD = useMediaQuery(theme => theme.breakpoints.down('md'))
 
     const data = useStaticQuery(graphql`
-        query MyQuery {
-            allStrapiProduct(filter: {promo: {eq: true}}) {
-                edges {
-                    node {
-                        name
-                        description
-                        strapiId
-                        category {
-                            name
-                        }
-                        variants {
-                            images {
-                                localFile {
-                                    childImageSharp {
-                                        gatsbyImageData
-                                    }
-                                }
-                            }
-                        }
-                    
-                    }
+    query MyQuery {
+        allStrapiProduct(filter: {promo: {eq: true}}) {
+          edges {
+            node {
+                name
+                description
+                strapiId
+                category {
+                    name
                 }
+                variants {
+                    images {
+                    url
+                }
+              }
+              
             }
+          }
         }
+    }
     `)
 
     var slides = []
 
-    data.allStrapiProduct.edges.map(({ node }, i) => {
-        const image = getImage(node.variants[0].images[0].localFile)
-
-        return
-            slides.push({
-                key: i,
-                content: (
-                    <Grid container direction='column' alignItems='center'>
-                        <Grid item>
-                            <IconButton 
-                                disableRipple
-                                onClick={() => setSelectedSlide(i)}
-                                classes={{ 
-                                    root: clsx(classes.iconButton, {
-                                        [classes.space]: selectedSlide !== i
-                                    }),
-                                }}
-                            >
-                                <GatsbyImage 
-                                    image={image}
-                                    alt={`images-${i}`} 
-                                    className={classes.carouselImage}
-                                    objectFit="contain"
-                                />
-                            </IconButton>
-                        </Grid>
-                        <Grid item>
-                            {selectedSlide === i ? (
-                                <Typography variant="h1" classes={{ root: classes.productName }}>
-                                    {node.category.name.toLowerCase()}
-                                </Typography>
-                            ) : null}
-                        </Grid>
+    data.allStrapiProduct.edges.map(({ node }, i) => slides.push(
+        {
+            key: i,
+            content: (
+                <Grid container direction='column' alignItems='center'>
+                    <Grid item>
+                        <IconButton 
+                            disableRipple
+                            onClick={() => setSelectedSlide(i)}
+                            classes={{ 
+                                root: clsx(classes.iconButton, {
+                                    [classes.space]: selectedSlide !== i
+                                }),
+                            }}
+                        >
+                            <img 
+                                src={node.variants[0].images[0].url} 
+                                alt={`images-${i}`} 
+                                className={classes.carouselImage}
+                            />
+                        </IconButton>
                     </Grid>
-                ),
-                description: node.description,
-                url: `/${node.category.name.toLowerCase()}`
-            })
-    })
-    
+                    <Grid item>
+                        {selectedSlide === i ? (
+                            <Typography variant="h1" classes={{ root: classes.productName }}>
+                                {node.category.name.toLowerCase()}
+                            </Typography>
+                        ) : null}
+                    </Grid>
+                </Grid>
+            ),
+            description: node.description,
+            url: `/${node.category.name.toLowerCase()}`
+        })
+    )
 
     return (
         <Grid 

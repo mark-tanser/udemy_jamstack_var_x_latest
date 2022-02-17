@@ -49,11 +49,7 @@ export default function FeaturedProducts() {
                 price
                 style
                 images {
-                  localFile {
-                    childImageSharp {
-                        gatsbyImageData
-                    }
-                  }
+                  url
                 }
               }
             }

@@ -5,7 +5,6 @@ import Typography from "@material-ui/core/Typography"
 import useMediaQuery from "@material-ui/core/useMediaQuery"
 import { makeStyles } from "@material-ui/core/styles"
 import { navigate } from "gatsby"
-import { GatsbyImage, getImage } from "gatsby-plugin-image"
 
 import QuickView from './QuickView'
 import frame from '../../images/product-frame-grid.svg'
@@ -107,10 +106,9 @@ export default function ProductFrameGrid({
 
     const imgURL = 
         imageIndex !== -1 
-            ? product.node.variants[imageIndex].images[0].localFile
-            : variant.images[0].localFile
+            ? product.node.variants[imageIndex].images[0].url 
+            : variant.images[0].url
 
-    const image = getImage(imgURL)
         
     const productName = product.node.name.split(" ")[0]
 
@@ -132,8 +130,8 @@ export default function ProductFrameGrid({
                     )
                     : setOpen(true)}>
                         <Grid item classes={{ root: classes.frame }}>
-                            <GatsbyImage 
-                                image={image}
+                            <img 
+                                src={imgURL} 
                                 alt={product.node.name} 
                                 className={classes.product}
                             />
@@ -148,7 +146,7 @@ export default function ProductFrameGrid({
             <QuickView 
                 open={open} 
                 setOpen={setOpen} 
-                image={image} 
+                url={imgURL} 
                 name={productName} 
                 price={variant.price}
                 product={product}

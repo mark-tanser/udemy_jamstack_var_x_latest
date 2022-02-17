@@ -14,17 +14,8 @@ module.exports = {
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-image`,
     `gatsby-plugin-material-ui`,
-    `gatsby-plugin-sitemap`,
     {
-      resolve: `gatsby-plugin-robots-txt`,
-      options: {
-        host: "https://marks-sandbox.com",
-        sitemap: "https://marks-sandbox.com/sitemap.xml",
-        policy: [{ userAgent: '*', allow: '/' }]
-      }
-    },
-    {
-      resolve: `gatsby-plugin-web-font-loader`,
+      resolve: 'gatsby-plugin-web-font-loader',
       options: {
         google: {
           families: ['Philosopher:700:latin', 'Montserrat:700,600,500,400,300:latin']
@@ -47,32 +38,23 @@ module.exports = {
       },
     },
     `gatsby-transformer-sharp`,
-    {
-      resolve: `gatsby-plugin-sharp`,
-      options: {
-        defaults: {
-          formats: [`auto`, `webp`],
-          placeholder: `blurred`,
-          breakpoints: [300, 600, 960, 1280, 1920]
-        }
-      }
-    },
-    {
+    `gatsby-plugin-sharp`,
+    /*{
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `VAR-X`,
-        short_name: `VAR-X`,
+        name: `gatsby-starter-default`,
+        short_name: `starter`,
         start_url: `/`,
-        background_color: `#99B898`,
-        theme_color: `#99B898`,
+        background_color: `#663399`,
+        theme_color: `#663399`,
         display: `minimal-ui`,
-        icon: `src/images/favicon.png`,
+        icon: `src/images/gatsby-icon.png`, // This path is relative to the root of the site.
       },
     },
-    
+    */
     `gatsby-plugin-gatsby-cloud`,
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.dev/offline
-    `gatsby-plugin-offline`,
+    // `gatsby-plugin-offline`,
   ],
 }

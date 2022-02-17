@@ -8,7 +8,6 @@ import Button from "@material-ui/core/Button"
 import IconButton from "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
 import { useTheme } from "@material-ui/core"
-import { GatsbyImage, getImage } from "gatsby-plugin-image"
 
 import QtyButton from "../product-list/QtyButton"
 import SubscriptionIcon from "../ui/subscription"
@@ -121,14 +120,12 @@ export default function Item({ item }) {
         { icon: DeleteIcon, color: theme.palette.error.main, size: matchesXS ? "1.75rem" : "2.5rem", onClick: handleDelete }
     ]
 
-    const image = getImage(item.variant.images[0].localFile)
-
     return (
         <Grid item container classes={{ root: classes.itemContainer }}>
             <Grid item>
-                <GatsbyImage 
+                <img 
                     className={classes.productImage} 
-                    image={image} 
+                    src={item.variant.images[0].url} 
                     alt={item.variant.id} 
                 />
             </Grid>

@@ -27,11 +27,7 @@ exports.createPages = async ({ graphql, actions} ) => {
                                 style
                                 price
                                 images {
-                                    localFile {
-                                        childImageSharp {
-                                            gatsbyImageData
-                                        }
-                                    }
+                                    url
                                 }
                             }
                         }

@@ -8,8 +8,6 @@ import clsx from "clsx"
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 import { makeStyles, useTheme } from "@material-ui/core/styles"
 
-import SEO from "../components/ui/seo"
-
 import { FeedbackContext } from "../contexts"
 import { setSnackbar } from "../contexts/actions"
 
@@ -253,7 +251,6 @@ const ContactPage = () => {
 
   return (
     <Layout>
-      <SEO title="Contact Us" description="Contact Us about any questions you have" />
       <Grid 
         container 
         justifyContent="space-around" 

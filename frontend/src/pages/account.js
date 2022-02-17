@@ -6,7 +6,6 @@ import { setUser } from "../contexts/actions"
 import { useIsClient } from "../hooks"
 
 import Layout from "../components/ui/layout"
-import SEO from "../components/ui/seo"
 import AuthPortal from "../components/auth/AuthPortal"
 import SettingsPortal from "../components/settings/SettingsPortal"
 
@@ -17,7 +16,6 @@ export default function Account() {
 
   return (
     <Layout key={key}>
-      <SEO title="Account" description="Login or Sign Up" />
       {user.jwt && user.onboarding ? <SettingsPortal /> : <AuthPortal />}
     </Layout>
   )

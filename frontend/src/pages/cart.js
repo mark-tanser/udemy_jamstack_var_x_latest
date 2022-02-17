@@ -3,7 +3,6 @@ import clsx from 'clsx'
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
 import { useMediaQuery } from "@material-ui/core"
-import SEO from "../components/ui/seo"
 import Button from "@material-ui/core/Button"
 import IconButton from "@material-ui/core/IconButton"
 
@@ -35,7 +34,6 @@ export default function Cart() {
 
     return (
         <Layout>
-          <SEO title="Cart" description="Buy cool stuff here" />
           <Grid 
             container 
             direction="column" 
