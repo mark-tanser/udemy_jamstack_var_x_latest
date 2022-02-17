@@ -16,7 +16,7 @@ module.exports = {
     `gatsby-plugin-material-ui`,
     `gatsby-plugin-sitemap`,
     {
-      resolve: `gatsby-plugin-robots.txt`,
+      resolve: `gatsby-plugin-robots-txt`,
       options: {
         host: "https://marks-sandbox.com",
         sitemap: "https://marks-sandbox.com/sitemap.xml",
