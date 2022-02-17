@@ -9,6 +9,8 @@ import IconButton from "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
 import { UserContext } from "../contexts"
 
+import SEO from "../components/ui/seo"
+
 import Layout from "../components/ui/layout"
 import CheckoutPortal from "../components/cart/CheckoutPortal"
 import CartItems from "../components/cart/CartItems"
@@ -34,6 +36,7 @@ export default function Cart() {
 
     return (
         <Layout>
+          <SEO title="Cart" description="This is your cart"/>
           <Grid 
             container 
             direction="column" 

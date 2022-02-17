@@ -7,11 +7,12 @@ import FeaturedProducts from '../components/home/FeaturedProducts'
 import MarketingButtons from '../components/home/MarketingButtons'
 import CallToAction from '../components/home/CallToAction'
 
-//import Seo from "../components/ui/seo"
+import Seo from "../components/ui/seo"
 
 
 const IndexPage = () => (
   <Layout>
+    <SEO title="Home" />
     <HeroBlock />
     <PromotionalProducts />
     <FeaturedProducts />

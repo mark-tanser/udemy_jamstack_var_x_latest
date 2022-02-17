@@ -11,6 +11,8 @@ import { makeStyles, useTheme } from "@material-ui/core/styles"
 import { FeedbackContext } from "../contexts"
 import { setSnackbar } from "../contexts/actions"
 
+import SEO from "../components/ui/seo"
+
 import address from '../images/address.svg'
 import Email from '../images/EmailAdornment.js'
 import send from '../images/send.svg'
@@ -251,6 +253,7 @@ const ContactPage = () => {
 
   return (
     <Layout>
+      <SEO title="Contact Us" description="Send us a message from this page"/>
       <Grid 
         container 
         justifyContent="space-around" 

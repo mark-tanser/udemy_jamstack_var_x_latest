@@ -8,6 +8,8 @@ import ProductInfo from '../components/product-detail/ProductInfo'
 import RecentlyViewed from '../components/product-detail/RecentlyViewed'
 import ProductReviews from "../components/product-detail/ProductReviews"
 
+import SEO from '../components/ui/seo'
+
 import { GET_DETAILS } from '../apollo/queries'
 
 export default function ProductDetail({ pageContext: { name, id, category, description, variants, product} }) {
@@ -70,6 +72,7 @@ export default function ProductDetail({ pageContext: { name, id, category, descr
 
     return (
         <Layout>
+            <SEO title={name.split(" ")[0]} description={description} />
             <Grid container direction="column">
                 <Grid item container direction={matchesMD ? "column" : "row"}>
                     <ProductImages 

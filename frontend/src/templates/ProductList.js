@@ -6,6 +6,8 @@ import Grid from '@material-ui/core/Grid'
 import { makeStyles, styled } from '@material-ui/core/styles'
 import { graphql } from 'gatsby'
 
+import SEO from '../components/ui/seo'
+
 import Layout from '../components/ui/layout'
 import DynamicToolbar from '../components/product-list/DynamicToolbar'
 import ListOfProducts from '../components/product-list/ListOfProducts'
@@ -147,6 +149,7 @@ export default function ProductList({
 
     return (
         <Layout>
+            <SEO title={name} description={description} />
             <Grid container direction="column" alignItems="center">
                 <div ref={scrollRef} />
                 <DynamicToolbar 
