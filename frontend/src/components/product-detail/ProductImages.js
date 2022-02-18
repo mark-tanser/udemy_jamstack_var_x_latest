@@ -2,6 +2,7 @@ import React from "react"
 import Grid from "@material-ui/core/Grid"
 import IconButton from  "@material-ui/core/IconButton"
 import { makeStyles } from "@material-ui/core/styles"
+import { GatsbyImage, getImage } from "gatsby-plugin-image"
 
 const useStyles = makeStyles(theme => ({
     selected: {
@@ -42,21 +43,24 @@ export default function ProductImages({ images, selectedImage, setSelectedImage 
                 />
             </Grid>
             <Grid item container justifyContent="center">
-                {images.map((image,i) => (
-                    <Grid 
-                        onClick={() => setSelectedImage(i)}
-                        item classes={{ root: classes.imageItem }} 
-                        key={image.url}
-                    >
-                        <IconButton>
-                            <img 
-                                src={image.url} 
-                                alt={`product_small${i}`} 
-                                className={classes.small}
-                            />
-                        </IconButton>
-                    </Grid>
-                ))}
+                {images.map((imageData,i) => {
+                    const image = getIamge(imageData.localFile)
+                    return (
+                        <Grid 
+                            onClick={() => setSelectedImage(i)}
+                            item classes={{ root: classes.imageItem }} 
+                            key={i}
+                        >
+                            <IconButton>
+                                <GatsbyImage 
+                                    image={image} 
+                                    alt={`product_small${i}`} 
+                                    className={classes.small}
+                                />
+                            </IconButton>
+                        </Grid>
+                    )
+                })}
             </Grid>            
         </Grid>
     )

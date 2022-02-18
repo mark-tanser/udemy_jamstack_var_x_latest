@@ -10,6 +10,7 @@ import { Link } from "gatsby"
 import { useQuery } from '@apollo/client'
 import { GET_DETAILS } from '../../apollo/queries'
 import explore from '../../images/explore.svg'
+import { GatsbyImage, getImage } from "gatsby-plugin-image"
 
 import Rating from './Rating'
 import frame from '../../images/product-frame-grid.svg'
@@ -87,6 +88,8 @@ export default function FeaturedProduct({ node, i, matchesMD, expanded, setExpan
 
     const [rating, setRating] = useState(0)
 
+    const image = getImage(node.variants[0].images[0].localFile)
+
     const alignment = matchesMD 
         ? "center" 
         : i === 0 || i === 3
@@ -118,8 +121,8 @@ export default function FeaturedProduct({ node, i, matchesMD, expanded, setExpan
                 onClick={() => expanded === i ? setExpanded(null) : setExpanded(i)}
                 classes={{ root: classes.frame }}
             >
-                <img 
-                    src={node.variants[0].images[0].url}
+                <GatsbyImage
+                    image={image}
                     alt={node.name}
                     className={classes.featured}
                 />

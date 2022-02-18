@@ -10,6 +10,7 @@ import Sizes from './Sizes'
 import Swatches from './Swatches'
 import QtyButton from './QtyButton'
 
+import { GatsbyImage, getImage } from "gatsby-plugin-image"
 import { getStockDisplay } from '../product-detail/ProductInfo'
 
 import { colorIndex } from './ProductFrameGrid'
@@ -91,21 +92,23 @@ export default function ProductFrameList({
                 justifyContent="space-around" 
                 classes={{ root: classes.frame }}
             >
-                {images.map(image => (
-                    <Grid 
-                        item key={image.url} 
-                        component={Link} 
-                        to={`/${product.node.category.name.toLowerCase()}/${product.node.name
-                            .split(" ")[0]
-                            .toLowerCase()}${hasStyles ? `?style=${variant.style}` : ""}`}
-                    >
-                        <img 
-                            src={image.url} 
-                            alt={image.url} 
-                            className={classes.productImage} 
-                        />
-                    </Grid>
-                ))}
+                {images.map((image, i) => {
+                    const gatsbyData = getImage(image.localFile)
+                    return (
+                        <Grid 
+                            item key={image.url} 
+                            component={Link} 
+                            to={`/${product.node.category.name.toLowerCase()}/${product.node.name
+                                .split(" ")[0]
+                                .toLowerCase()}${hasStyles ? `?style=${variant.style}` : ""}`}
+                        >
+                            <GatsbyImage 
+                                image={gatsbyData} 
+                                alt={image.url} 
+                                className={classes.productImage} 
+                            />
+                        </Grid>
+                )})}
             </Grid>
             <Grid 
                 item 

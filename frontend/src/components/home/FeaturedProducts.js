@@ -12,6 +12,8 @@ import featuredAdornment from '../../images/featured-adornment.svg'
 
 import FeaturedProduct from './FeaturedProduct'
 
+import { GatsbyImage, getImage } from 'gatsby-plugin-image'
+
 
 const useStyles = makeStyles(theme => ({
     background: {
@@ -49,7 +51,11 @@ export default function FeaturedProducts() {
                 price
                 style
                 images {
-                  url
+                  localFile {
+                    childImageSharp {
+                        gatsbyImageData
+                    }
+                  }
                 }
               }
             }
