@@ -39,7 +39,7 @@ export default function ProductImages({ images, selectedImage, setSelectedImage 
         <Grid item container direction="column" alignItems="center" lg={6}>
             <Grid item>
                 <GatsbyImage 
-                    src={image}
+                    image={image}
                     alt="product_large"
                     className={classes.selected}
                 />
