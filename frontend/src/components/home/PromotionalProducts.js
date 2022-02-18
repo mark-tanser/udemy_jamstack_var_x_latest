@@ -116,7 +116,7 @@ export default function PromotionalProducts() {
     var slides = []
 
     data.allStrapiProduct.edges.map(({ node }, i) => {
-        const image = getImage(node.varaints[0].images[0].localFile)
+        const image = getImage(node.variants[0].images[0].localFile)
         return slides.push(
             {
                 key: i,
