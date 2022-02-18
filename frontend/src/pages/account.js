@@ -16,7 +16,7 @@ export default function Account() {
 
   return (
     <Layout key={key}>
-      {/*<SEO title="Account" description="This is the Account page where you can login or signup"/>*/}
+      <SEO title="Account" description="This is the Account page where you can login or signup"/>
       {user.jwt && user.onboarding ? <SettingsPortal /> : <AuthPortal />}
     </Layout>
   )
