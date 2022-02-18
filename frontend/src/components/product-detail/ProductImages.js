@@ -33,18 +33,20 @@ const useStyles = makeStyles(theme => ({
 export default function ProductImages({ images, selectedImage, setSelectedImage }) {
     const classes = useStyles()
 
+    const image = getImage(images[selectedImage].localFile)
+
     return (
         <Grid item container direction="column" alignItems="center" lg={6}>
             <Grid item>
-                <img 
-                    src={images[selectedImage].url}
+                <GatsbyImage 
+                    src={image}
                     alt="product_large"
                     className={classes.selected}
                 />
             </Grid>
             <Grid item container justifyContent="center">
                 {images.map((imageData,i) => {
-                    const image = getIamge(imageData.localFile)
+                    const image = getImage(imageData.localFile)
                     return (
                         <Grid 
                             onClick={() => setSelectedImage(i)}
