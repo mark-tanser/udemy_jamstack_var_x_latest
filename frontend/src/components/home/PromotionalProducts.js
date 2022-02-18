@@ -101,7 +101,7 @@ export default function PromotionalProducts() {
                             images {
                                 localFile {
                                     childImageSharp {
-                                        gatsbyImageData()
+                                        gatsbyImageData
                                     }
                                 }
                             }
