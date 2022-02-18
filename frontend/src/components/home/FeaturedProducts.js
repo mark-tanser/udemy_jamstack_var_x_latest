@@ -78,7 +78,7 @@ export default function FeaturedProducts() {
                     key={node.strapiId} 
                     node={node} 
                     i={i} 
-                    matches={matchesMD} 
+                    matchesMD={matchesMD} 
                 />
             ))}
         </Grid>
