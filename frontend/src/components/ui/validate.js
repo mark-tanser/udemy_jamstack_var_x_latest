@@ -11,7 +11,7 @@ export default function validate(values) {
         confirmation: val => /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val),
         //street: val => /^(\d+) ?([A-Za-z](?= ))? (.*?) ([^ ]+?) ?((?<= )APT)? ?((?<= )\d*)?$/.test(val),
         //for Safari to work, I needed to replace with this instead...
-        street: val => /^(?=.*[A-Za-z])(?=.*\d)(?!.*[^A-Za-z0-9\-#\.\/ ])/.test(val)
+        street: val => /^(?=.*[A-Za-z])(?=.*\d)(?!.*[^A-Za-z0-9\-#\.\/ ])/.test(val),
         zip: val => /^\d{5}(-\d{4})?$/.test(val),
         promo: val => true,
         city: val => val.length !== 0,
