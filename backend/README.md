@@ -1,3 +1,5 @@
 # Strapi application
 
-A quick description of your strapi application
+To update:
+
+git push heroku main
