@@ -5,7 +5,7 @@ module.exports = ({ env }) => ({
   url: env("URL", "https://mt-strapi-var-x.herokuapp.com"),
   admin: {
     auth: {
-      secret: env('ADMIN_JWT_SECRET', '16824c0bbada9bdf8c548d536562410c'),
+      secret: env('ADMIN_JWT_SECRET'),
     },
   },
 });
